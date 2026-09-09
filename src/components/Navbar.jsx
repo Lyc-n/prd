@@ -1,5 +1,5 @@
 import { NavLink } from 'react-router-dom'
-import { LayoutDashboard, Sparkles, MinusCircle, Database, Route, Kanban, CircleHelp } from 'lucide-react'
+import { LayoutDashboard, Sparkles, MinusCircle, Database, Route, Kanban, CircleHelp, Download } from 'lucide-react'
 import ThemeToggle from './ThemeToggle'
 
 export const NAV_ITEMS = [
@@ -12,6 +12,8 @@ export const NAV_ITEMS = [
   { to: '/qna', label: 'Tanya Jawab', icon: CircleHelp, end: false },
 ]
 
+const DOWNLOAD_URL = '/PRD - Dashboard PWS Posyandu.md'
+
 export default function Navbar() {
   return (
     <header className="sticky top-0 z-30 border-b border-zinc-200 dark:border-zinc-800 bg-zinc-50/85 dark:bg-zinc-950/85 backdrop-blur">
@@ -19,7 +21,18 @@ export default function Navbar() {
         <NavLink to="/" className="text-sm font-medium text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-100 transition">
           PRD · Dashboard PWS Posyandu
         </NavLink>
-        <ThemeToggle />
+        <div className="flex items-center gap-2">
+          <a
+            href={DOWNLOAD_URL}
+            download="PRD - Dashboard PWS Posyandu.md"
+            className="inline-flex items-center gap-1.5 px-3 h-9 rounded-md border border-zinc-200 dark:border-zinc-800 text-xs font-medium text-zinc-700 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-900 transition"
+            title="Unduh berkas PRD (markdown)"
+          >
+            <Download className="w-3.5 h-3.5" />
+            <span className="hidden sm:inline">Unduh PRD</span>
+          </a>
+          <ThemeToggle />
+        </div>
       </div>
       <nav className="mx-auto w-full max-w-6xl px-4 sm:px-6 lg:px-8 flex items-center gap-1 overflow-x-auto no-scrollbar py-2">
         {NAV_ITEMS.map(({ to, label, icon: Icon, end }) => (

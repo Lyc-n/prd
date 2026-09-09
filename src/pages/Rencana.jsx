@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Kanban, MousePointerClick, Clock } from 'lucide-react'
+import { Kanban, MousePointerClick, Clock, ChevronDown, Info } from 'lucide-react'
 import SectionTitle from '../components/SectionTitle'
 import PageIntro from '../components/PageIntro'
 import Accordion from '../components/Accordion'
@@ -29,6 +29,8 @@ const FILTER_OPTS = {
   ],
 }
 
+const taskByCode = Object.fromEntries(TASKS.map((t) => [t.id, t.nama]))
+
 function matches(t, f, done) {
   if (f.jalur !== 'all' && t.jalur !== f.jalur) return false
   if (f.level !== 'all' && t.level !== f.level) return false
@@ -42,51 +44,101 @@ function TaskCard({ t, done, onToggle }) {
   const lv = LEVEL[t.level]
   const JIcon = j.icon
   const isDone = done.includes(t.id)
+  const [open, setOpen] = useState(false)
 
   return (
     <article
-      className={`rounded-lg border border-zinc-200 dark:border-zinc-800 border-t-2 bg-white dark:bg-zinc-900 p-4 ${j.top} ${isDone ? 'task-done' : ''}`}
+      className={`rounded-lg border border-zinc-200 dark:border-zinc-800 border-t-2 bg-white dark:bg-zinc-900 p-4 ${j.top} ${isDone ? 'task-done' : ''} ${open ? 'ring-2 ring-indigo-300 dark:ring-indigo-700' : ''}`}
     >
       <div className="flex items-start gap-2.5">
-        <span className={`shrink-0 inline-flex items-center justify-center w-9 h-9 rounded-md border ${j.chip} font-mono text-xs font-bold`}>
-          {t.id}
-        </span>
-        <div className="min-w-0 flex-1">
-          <p className="task-title text-sm font-medium text-zinc-900 dark:text-zinc-100 leading-snug">{t.nama}</p>
-          <p className="mt-1 text-xs text-zinc-500 dark:text-zinc-400 inline-flex items-center gap-1.5">
-            <JIcon className={`w-3.5 h-3.5 ${j.text}`} />
-            {j.label}
-          </p>
-        </div>
+        <button
+          type="button"
+          onClick={() => setOpen(!open)}
+          aria-expanded={open}
+          title="Klik untuk penjelasan sederhana"
+          className="min-w-0 flex-1 flex items-start gap-2.5 text-left group"
+        >
+          <span className={`shrink-0 inline-flex items-center justify-center w-9 h-9 rounded-md border ${j.chip} font-mono text-xs font-bold`}>
+            {t.id}
+          </span>
+          <span className="min-w-0 flex-1">
+            <span className="task-title block text-sm font-medium text-zinc-900 dark:text-zinc-100 leading-snug group-hover:underline">
+              {t.nama}
+            </span>
+            <span className="mt-1 text-xs text-zinc-500 dark:text-zinc-400 inline-flex items-center gap-1.5">
+              <JIcon className={`w-3.5 h-3.5 ${j.text}`} />
+              {j.label}
+            </span>
+          </span>
+          <ChevronDown className={`w-4 h-4 text-zinc-400 shrink-0 mt-1 transition-transform duration-200 ${open ? 'rotate-180' : ''}`} />
+        </button>
         <input
           type="checkbox"
           checked={isDone}
           onChange={() => onToggle(t.id)}
-          className="mt-0.5 w-5 h-5 cursor-pointer accent-emerald-600"
+          className="mt-1 w-5 h-5 cursor-pointer accent-emerald-600 shrink-0"
           aria-label={'Tandai ' + t.id + ' selesai'}
         />
       </div>
+
       <div className="mt-3 flex flex-wrap items-center gap-1.5 text-xs">
         <span className={`inline-flex items-center gap-1 px-2 py-1 rounded-full ${lv.cls} font-medium`}>
-          {lv.icon} {lv.label}
+          {lv.icon} {lv.label} · {lv.nama}
         </span>
         <span className="inline-flex items-center gap-1 px-2 py-1 rounded-full bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-400">
-          <Clock className="w-3 h-3" /> {t.jam} jam
+          <Clock className="w-3 h-3" /> ±{t.jam} jam
         </span>
       </div>
-      <div className="mt-3 pt-3 border-t border-zinc-100 dark:border-zinc-800 flex items-center gap-1.5 flex-wrap text-xs text-zinc-500 dark:text-zinc-400">
-        <span className="font-medium uppercase tracking-[0.12em] text-[10px]">Membutuhkan</span>
-        {t.dep.length === 0 ? (
-          <span className="text-zinc-400">—</span>
-        ) : (
-          t.dep.map((d) => (
-            <span key={d} className="inline-flex items-center px-2 py-0.5 rounded-md bg-zinc-100 dark:bg-zinc-800 font-mono text-[11px] text-zinc-600 dark:text-zinc-400">
-              {d}
-            </span>
-          ))
-        )}
-      </div>
+
+      {open && (
+        <div className="mt-3 rounded-md border border-emerald-200 dark:border-emerald-900 bg-emerald-50 dark:bg-emerald-950/30 p-3">
+          <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-emerald-700 dark:text-emerald-400">
+            Dalam bahasa sederhana
+          </p>
+          <p className="mt-1.5 text-sm text-emerald-900 dark:text-emerald-200 leading-relaxed">{t.clear}</p>
+          <div className="mt-3 pt-3 border-t border-emerald-200/70 dark:border-emerald-900/70 space-y-2 text-xs text-emerald-800 dark:text-emerald-300">
+            <p>
+              <span className="font-semibold">Level {lv.icon} {lv.label} · {lv.nama}:</span> {lv.penjelasan}
+            </p>
+            <p>
+              <span className="font-semibold">Dikerjakan lebih dulu:</span>{' '}
+              {t.dep.length === 0 ? (
+                'Tidak ada — bisa langsung dimulai.'
+              ) : (
+                <span className="inline-flex flex-wrap gap-1.5">
+                  {t.dep.map((d) => (
+                    <span key={d} className="inline-flex items-center px-2 py-0.5 rounded-md bg-emerald-100 dark:bg-emerald-900/50 font-mono text-[11px]">
+                      {d} · {taskByCode[d] || d}
+                    </span>
+                  ))}
+                </span>
+              )}
+            </p>
+          </div>
+        </div>
+      )}
     </article>
+  )
+}
+
+function LevelLegend() {
+  return (
+    <div className="grid gap-2 sm:grid-cols-3">
+      {['S', 'M', 'L'].map((k) => {
+        const lv = LEVEL[k]
+        return (
+          <div key={k} className="rounded-lg border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 p-3.5">
+            <p className="flex items-center gap-2 text-sm font-medium">
+              <span>{lv.icon}</span>
+              <span>
+                {lv.label} · {lv.nama}
+              </span>
+            </p>
+            <p className="mt-1 text-xs text-zinc-600 dark:text-zinc-400 leading-relaxed">{lv.penjelasan}</p>
+          </div>
+        )
+      })}
+    </div>
   )
 }
 
@@ -241,9 +293,21 @@ export default function Rencana() {
           <p>
             <span className="font-semibold">Target 27 September 2026:</span> aplikasi bisa dicoba klien secara online
             (deploy hosting gratis). Task di bawah bisa <strong>disaring per jalur/level/status</strong>, dicentang
-            sebagai progress, dan tersimpan di perangkat ini. Level: 🟢 S / 🟡 M / 🔴 L. Estimasi tentatif, dikoreksi
-            setelah URS acc.
+            sebagai progress, dan tersimpan di perangkat ini. Estimasi tentatif, dikoreksi setelah URS acc.
           </p>
+        </div>
+
+        <div className="rounded-lg border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 p-4">
+          <p className="flex items-start gap-2 text-sm">
+            <Info className="w-4 h-4 mt-0.5 shrink-0 text-indigo-500" />
+            <span>
+              <span className="font-semibold">Cara membaca:</span> level di tiap task menunjukkan tingkat kesulitan
+              dan risiko — <strong>klik kartu untuk penjelasan sederhana</strong> tentang tugas itu dan arti levelnya.
+            </span>
+          </p>
+          <div className="mt-3">
+            <LevelLegend />
+          </div>
         </div>
 
         <div className="space-y-6">
