@@ -1,0 +1,1200 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>PRD — Dashboard PWS Posyandu</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = { darkMode: 'class' };
+  </script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <style>
+    html { font-family: 'Inter', system-ui, -apple-system, sans-serif; scroll-behavior: smooth; }
+    body { font-feature-settings: "cv11", "ss01"; }
+
+    /* Full-width responsive container */
+    .wrap {
+      width: 100%;
+      margin-inline: auto;
+      padding-inline: 1rem;
+      max-width: 60rem;
+    }
+    @media (min-width: 768px)  { .wrap { padding-inline: 1.5rem; max-width: 78rem; } }
+    @media (min-width: 1024px) { .wrap { max-width: 90rem; } }
+    @media (min-width: 1400px) { .wrap { max-width: 118rem; padding-inline: 2.5rem; } }
+    @media (min-width: 1800px) { .wrap { max-width: none; } }
+
+    /* Scroll-spy nav, hide horizontal scrollbar */
+    .no-scrollbar { scrollbar-width: none; -ms-overflow-style: none; }
+    .no-scrollbar::-webkit-scrollbar { display: none; }
+
+    /* Accent ring when navigating data relations */
+    .rel-hit { animation: relPulse 2.2s ease-out; }
+    @keyframes relPulse {
+      0% { box-shadow: 0 0 0 3px rgba(99,102,241,.55); }
+      70% { box-shadow: 0 0 0 3px rgba(99,102,241,.15); }
+      100% { box-shadow: 0 0 0 0 rgba(99,102,241,0); }
+    }
+
+    .task-done { opacity: .55; }
+    .task-done .task-title { text-decoration: line-through; text-decoration-color: currentColor; }
+
+    .chev { transition: transform .2s ease; }
+    .acc-body { transition: opacity .18s ease; }
+
+    @media print {
+      html { background: white !important; color: black !important; color-scheme: light; }
+      html.dark { color-scheme: light; }
+      html.dark body, html.dark * { background: white !important; color: black !important; border-color: #d4d4d8 !important; }
+      .no-print { display: none !important; }
+      .print-card { break-inside: avoid; page-break-inside: avoid; }
+      header.sticky, nav.sticky { position: static !important; backdrop-filter: none !important; }
+      main { padding-top: 0 !important; }
+      a { color: black !important; text-decoration: none !important; }
+      .acc-body { opacity: 1 !important; }
+    }
+  </style>
+</head>
+<body class="bg-zinc-50 dark:bg-zinc-950 text-zinc-900 dark:text-zinc-100 antialiased">
+
+  <header class="sticky top-0 z-30 h-12 backdrop-blur bg-zinc-50/85 dark:bg-zinc-950/85 border-b border-zinc-200 dark:border-zinc-800 no-print">
+    <div class="wrap h-12 flex items-center justify-between">
+      <span class="text-sm font-medium text-zinc-600 dark:text-zinc-400">PRD · Dashboard PWS Posyandu</span>
+      <div class="flex items-center gap-2">
+        <button id="theme-toggle" class="inline-flex items-center justify-center w-9 h-9 rounded-md border border-zinc-200 dark:border-zinc-800 hover:bg-zinc-100 dark:hover:bg-zinc-900 transition" aria-label="Toggle theme">
+          <i data-lucide="sun" class="hidden dark:inline-block w-4 h-4"></i>
+          <i data-lucide="moon" class="inline-block dark:hidden w-4 h-4"></i>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <nav class="no-print sticky top-12 z-20 border-b border-zinc-200 dark:border-zinc-800 bg-zinc-50/90 dark:bg-zinc-950/90 backdrop-blur">
+    <div class="wrap flex items-center gap-1 overflow-x-auto no-scrollbar py-2" id="toc">
+      <a href="#ringkasan"   data-spy="ringkasan"   class="nav-chip">Ringkasan</a>
+      <a href="#fitur"       data-spy="fitur"       class="nav-chip">Fitur</a>
+      <a href="#cakupan"     data-spy="cakupan"     class="nav-chip">Cakupan</a>
+      <a href="#data"        data-spy="data"        class="nav-chip">Data</a>
+      <a href="#milestone"   data-spy="milestone"   class="nav-chip">Milestone</a>
+      <a href="#rencana"     data-spy="rencana"     class="nav-chip">Rencana</a>
+      <a href="#qna"         data-spy="qna"         class="nav-chip">Q&amp;A</a>
+    </div>
+  </nav>
+
+  <main class="wrap py-10 sm:py-14 space-y-16">
+
+    <!-- DISCLAIMER -->
+    <div class="rounded-lg border border-amber-200 dark:border-amber-900/60 bg-amber-50 dark:bg-amber-950/30 p-4 text-sm text-amber-900 dark:text-amber-200">
+      <p><strong class="font-semibold">Tentang berkas ini:</strong> PRD ini beserta folder <code class="font-mono text-xs">01 Notes/milestones/</code> adalah artefak dokumentasi sementara untuk pembangunan awal aplikasi. Berkas-berkas ini bukan bagian fungsional aplikasi — kode, konfigurasi, logika runtime, pengujian, maupun proses deployment tidak boleh mengimpor, merujuk, atau bergantung pada apa pun di dalamnya. Setelah seluruh milestone awal terbangun dan dirilis, berkas-berkas ini dihapus.</p>
+    </div>
+
+    <!-- HERO / RINGKASAN -->
+    <section id="ringkasan" class="scroll-mt-28">
+      <h1 class="text-4xl sm:text-5xl font-bold tracking-tight">Dashboard PWS Posyandu</h1>
+      <p class="mt-5 text-lg sm:text-xl text-zinc-600 dark:text-zinc-400 leading-relaxed">Aplikasi web responsif untuk digitalisasi pendataan kunjungan rumah (KR) kader Posyandu di wilayah kerja Puskesmas Trajeng (4 kelurahan). Kader menginput hasil kunjungan, data otomatis tampil pada dashboard PWS kondisi kesehatan per wilayah, dan kader menerima pengingat jadwal kunjungan. Format form Kemenkes belum stabil, sehingga sistem wajib mendukung perubahan tanpa pembangunan ulang.</p>
+      <div class="mt-6 flex flex-wrap gap-2">
+        <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-indigo-50 dark:bg-indigo-950/40 border border-indigo-200 dark:border-indigo-900 text-xs font-medium text-indigo-700 dark:text-indigo-300">Update 9 Sep 2026</span>
+        <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 text-xs font-medium text-zinc-700 dark:text-zinc-300">React</span>
+        <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 text-xs font-medium text-zinc-700 dark:text-zinc-300">Express / Node.js</span>
+        <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 text-xs font-medium text-zinc-700 dark:text-zinc-300">PostgreSQL (data fleksibel)</span>
+        <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 text-xs font-medium text-zinc-700 dark:text-zinc-300">REST API</span>
+        <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 text-xs font-medium text-zinc-700 dark:text-zinc-300">Web responsif (mobile)</span>
+        <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 text-xs font-medium text-zinc-700 dark:text-zinc-300">Ekspor Excel/PDF</span>
+        <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 text-xs font-medium text-zinc-700 dark:text-zinc-300">Deploy online</span>
+      </div>
+      <p class="mt-4 text-sm text-zinc-500 dark:text-zinc-400">Koreksi 9 Sep: 8 kelompok sasaran · notifikasi v1 = in-app + email · Rencana Kerja &amp; Timeline target demo online 27 Sep 2026.</p>
+
+      <!-- Live stats (dari data task) -->
+      <div class="mt-8 grid grid-cols-2 sm:grid-cols-4 gap-3">
+        <div class="rounded-lg border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 p-4">
+          <p class="text-2xl font-bold" id="stat-tasks">—</p>
+          <p class="text-xs text-zinc-500 dark:text-zinc-400 font-medium uppercase tracking-[0.12em] mt-1">Task terencana</p>
+        </div>
+        <div class="rounded-lg border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 p-4">
+          <p class="text-2xl font-bold" id="stat-hours">—</p>
+          <p class="text-xs text-zinc-500 dark:text-zinc-400 font-medium uppercase tracking-[0.12em] mt-1">Estimasi total</p>
+        </div>
+        <div class="rounded-lg border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 p-4">
+          <p class="text-2xl font-bold">3 <span class="text-lg text-zinc-400">fasa</span></p>
+          <p class="text-xs text-zinc-500 dark:text-zinc-400 font-medium uppercase tracking-[0.12em] mt-1">10–27 Sep</p>
+        </div>
+        <div class="rounded-lg border border-indigo-200 dark:border-indigo-900 bg-indigo-50 dark:bg-indigo-950/30 p-4">
+          <p class="text-2xl font-bold text-indigo-700 dark:text-indigo-300">27 Sep</p>
+          <p class="text-xs text-indigo-600 dark:text-indigo-400 font-medium uppercase tracking-[0.12em] mt-1">Demo online</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- WHAT THE APP DOES -->
+    <section id="fitur" class="scroll-mt-28">
+      <h2 class="text-xs font-semibold uppercase tracking-[0.18em] text-zinc-500 dark:text-zinc-400 flex items-center justify-between gap-2">
+        <span class="flex items-center gap-2"><i data-lucide="sparkles" class="w-3.5 h-3.5"></i>Apa yang aplikasi lakukan</span>
+      </h2>
+      <ul class="mt-5 grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-3 list-none p-0">
+        <li class="print-card rounded-lg border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 p-4">
+          <div class="flex items-start gap-3">
+            <div class="shrink-0 mt-0.5 w-8 h-8 rounded-md bg-zinc-100 dark:bg-zinc-800 flex items-center justify-center">
+              <i data-lucide="users" class="w-4 h-4 text-zinc-700 dark:text-zinc-300"></i>
+            </div>
+            <div>
+              <p class="font-medium text-zinc-900 dark:text-zinc-100">Login &amp; peran</p>
+              <p class="mt-1 text-sm text-zinc-600 dark:text-zinc-400 leading-relaxed">Kader, pembina, kepala Puskesmas, dan admin masuk dengan hak akses berbeda (input vs baca vs kelola).</p>
+            </div>
+          </div>
+        </li>
+        <li class="print-card rounded-lg border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 p-4">
+          <div class="flex items-start gap-3">
+            <div class="shrink-0 mt-0.5 w-8 h-8 rounded-md bg-zinc-100 dark:bg-zinc-800 flex items-center justify-center">
+              <i data-lucide="file-text" class="w-4 h-4 text-zinc-700 dark:text-zinc-300"></i>
+            </div>
+            <div>
+              <p class="font-medium text-zinc-900 dark:text-zinc-100">Input kunjungan rumah digital</p>
+              <p class="mt-1 text-sm text-zinc-600 dark:text-zinc-400 leading-relaxed">Kader mengisi hasil kunjungan mengikuti struktur form resmi (data keluarga + per kelompok sasaran), termasuk menandai masalah kesehatan.</p>
+            </div>
+          </div>
+        </li>
+        <li class="print-card rounded-lg border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 p-4">
+          <div class="flex items-start gap-3">
+            <div class="shrink-0 mt-0.5 w-8 h-8 rounded-md bg-zinc-100 dark:bg-zinc-800 flex items-center justify-center">
+              <i data-lucide="wand-2" class="w-4 h-4 text-zinc-700 dark:text-zinc-300"></i>
+            </div>
+            <div>
+              <p class="font-medium text-zinc-900 dark:text-zinc-100">Form fleksibel</p>
+              <p class="mt-1 text-sm text-zinc-600 dark:text-zinc-400 leading-relaxed">Admin mengubah struktur form (tambah/edit/nonaktifkan field) tanpa menulis ulang aplikasi, mengikuti format Kemenkes yang masih berubah.</p>
+            </div>
+          </div>
+        </li>
+        <li class="print-card rounded-lg border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 p-4">
+          <div class="flex items-start gap-3">
+            <div class="shrink-0 mt-0.5 w-8 h-8 rounded-md bg-zinc-100 dark:bg-zinc-800 flex items-center justify-center">
+              <i data-lucide="eye" class="w-4 h-4 text-zinc-700 dark:text-zinc-300"></i>
+            </div>
+            <div>
+              <p class="font-medium text-zinc-900 dark:text-zinc-100">Dashboard PWS</p>
+              <p class="mt-1 text-sm text-zinc-600 dark:text-zinc-400 leading-relaxed">Penyakit/masalah kesehatan tertinggi per RT/RW/kelurahan (contoh: hipertensi tidak patuh berobat), dengan filter wilayah, kelompok sasaran, dan waktu.</p>
+            </div>
+          </div>
+        </li>
+        <li class="print-card rounded-lg border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 p-4">
+          <div class="flex items-start gap-3">
+            <div class="shrink-0 mt-0.5 w-8 h-8 rounded-md bg-zinc-100 dark:bg-zinc-800 flex items-center justify-center">
+              <i data-lucide="bell" class="w-4 h-4 text-zinc-700 dark:text-zinc-300"></i>
+            </div>
+            <div>
+              <p class="font-medium text-zinc-900 dark:text-zinc-100">Pengingat jadwal (in-app + email)</p>
+              <p class="mt-1 text-sm text-zinc-600 dark:text-zinc-400 leading-relaxed">Kader tahu kapan waktunya kunjungan rumah (rutin 1×/tahun atau khusus door-to-door) dan ketika jadwal terlewat; pengingat email otomatis (gratis) sebagai saluran kedua. WhatsApp tidak termasuk v1.</p>
+            </div>
+          </div>
+        </li>
+        <li class="print-card rounded-lg border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 p-4">
+          <div class="flex items-start gap-3">
+            <div class="shrink-0 mt-0.5 w-8 h-8 rounded-md bg-zinc-100 dark:bg-zinc-800 flex items-center justify-center">
+              <i data-lucide="download" class="w-4 h-4 text-zinc-700 dark:text-zinc-300"></i>
+            </div>
+            <div>
+              <p class="font-medium text-zinc-900 dark:text-zinc-100">Rekap &amp; ekspor</p>
+              <p class="mt-1 text-sm text-zinc-600 dark:text-zinc-400 leading-relaxed">Rekap otomatis per kelompok sasaran/wilayah menggantikan rekap manual Excel, dapat diekspor ke Excel &amp; PDF.</p>
+            </div>
+          </div>
+        </li>
+        <li class="print-card rounded-lg border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 p-4">
+          <div class="flex items-start gap-3">
+            <div class="shrink-0 mt-0.5 w-8 h-8 rounded-md bg-zinc-100 dark:bg-zinc-800 flex items-center justify-center">
+              <i data-lucide="database" class="w-4 h-4 text-zinc-700 dark:text-zinc-300"></i>
+            </div>
+            <div>
+              <p class="font-medium text-zinc-900 dark:text-zinc-100">Master data</p>
+              <p class="mt-1 text-sm text-zinc-600 dark:text-zinc-400 leading-relaxed">Admin mengelola kelurahan, posyandu, kader, dan wilayah RW/RT.</p>
+            </div>
+          </div>
+        </li>
+        <li class="print-card rounded-lg border border-dashed border-indigo-300 dark:border-indigo-700 bg-indigo-50/60 dark:bg-indigo-950/20 p-4">
+          <div class="flex items-start gap-3">
+            <div class="shrink-0 mt-0.5 w-8 h-8 rounded-md bg-indigo-100 dark:bg-indigo-900/50 flex items-center justify-center">
+              <i data-lucide="kanban" class="w-4 h-4 text-indigo-700 dark:text-indigo-300"></i>
+            </div>
+            <div>
+              <p class="font-medium text-indigo-900 dark:text-indigo-100">Task board interaktif</p>
+              <p class="mt-1 text-sm text-indigo-700 dark:text-indigo-300 leading-relaxed">Rencana kerja bisa disaring per jalur/level, progress dicentang langsung di bawah (tersimpan di perangkat ini).</p>
+            </div>
+          </div>
+        </li>
+      </ul>
+    </section>
+
+    <!-- ALREADY PROVIDED -->
+    <section id="tersedia" class="scroll-mt-28">
+      <h2 class="text-xs font-semibold uppercase tracking-[0.18em] text-zinc-500 dark:text-zinc-400 flex items-center gap-2">
+        <i data-lucide="package-check" class="w-3.5 h-3.5"></i>Sudah tersedia dari riset vault
+      </h2>
+      <ul class="mt-5 flex flex-wrap gap-2 list-none p-0">
+        <li class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 text-sm text-zinc-700 dark:text-zinc-300">
+          <i data-lucide="check" class="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400"></i>URS &amp; prioritas kebutuhan [M]/[S]
+        </li>
+        <li class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 text-sm text-zinc-700 dark:text-zinc-300">
+          <i data-lucide="check" class="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400"></i>Struktur form checklist KR (PDF 35 hlm)
+        </li>
+        <li class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 text-sm text-zinc-700 dark:text-zinc-300">
+          <i data-lucide="check" class="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400"></i>8 kelompok sasaran siklus hidup (koreksi 9 Sep)
+        </li>
+        <li class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 text-sm text-zinc-700 dark:text-zinc-300">
+          <i data-lucide="check" class="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400"></i>Alur proses kunjungan saat ini
+        </li>
+        <li class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 text-sm text-zinc-700 dark:text-zinc-300">
+          <i data-lucide="check" class="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400"></i>Konteks kebijakan ILP &amp; timeline KR
+        </li>
+        <li class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 text-sm text-zinc-700 dark:text-zinc-300">
+          <i data-lucide="check" class="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400"></i>Pemetaan stakeholder &amp; rencana 3-fasa (demo 27 Sep)
+        </li>
+      </ul>
+      <p class="mt-3 text-sm text-zinc-500 dark:text-zinc-400">Tidak ada kode atau starter template yang sudah ada — pembangunan dimulai dari nol di Milestone 1.</p>
+    </section>
+
+    <!-- OUT OF SCOPE -->
+    <section id="cakupan" class="scroll-mt-28">
+      <h2 class="text-xs font-semibold uppercase tracking-[0.18em] text-zinc-500 dark:text-zinc-400 flex items-center gap-2">
+        <i data-lucide="minus-circle" class="w-3.5 h-3.5"></i>Di luar cakupan (v1)
+      </h2>
+      <ul class="mt-5 space-y-2.5 list-none p-0">
+        <li class="flex items-start gap-3">
+          <i data-lucide="x" class="w-4 h-4 mt-1 shrink-0 text-zinc-400 dark:text-zinc-600"></i>
+          <span class="text-zinc-700 dark:text-zinc-300"><span class="font-medium">Bukan pengganti aplikasi Kemenkes</span><span class="text-zinc-500 dark:text-zinc-400"> — sistem ini alat PWS tingkat kelurahan/Puskesmas; data tidak dikirim ke server pusat/SatuSehat.</span></span>
+        </li>
+        <li class="flex items-start gap-3">
+          <i data-lucide="x" class="w-4 h-4 mt-1 shrink-0 text-zinc-400 dark:text-zinc-600"></i>
+          <span class="text-zinc-700 dark:text-zinc-300"><span class="font-medium">Tanpa diagnosis medis</span><span class="text-zinc-500 dark:text-zinc-400"> — hanya pencatatan &amp; visualisasi kondisi, bukan sistem pakar.</span></span>
+        </li>
+        <li class="flex items-start gap-3">
+          <i data-lucide="x" class="w-4 h-4 mt-1 shrink-0 text-zinc-400 dark:text-zinc-600"></i>
+          <span class="text-zinc-700 dark:text-zinc-300"><span class="font-medium">Tanpa aplikasi mobile native</span><span class="text-zinc-500 dark:text-zinc-400"> — cukup web responsif yang bisa dibuka dari HP kader.</span></span>
+        </li>
+        <li class="flex items-start gap-3">
+          <i data-lucide="x" class="w-4 h-4 mt-1 shrink-0 text-zinc-400 dark:text-zinc-600"></i>
+          <span class="text-zinc-700 dark:text-zinc-300"><span class="font-medium">Tanpa notifikasi WhatsApp di v1</span><span class="text-zinc-500 dark:text-zinc-400"> — WhatsApp dibuka sebagai pengembangan lanjutan (validasi mitra + biaya). Email reminder free-tier termasuk v1 sebagai pelengkap notifikasi in-app.</span></span>
+        </li>
+        <li class="flex items-start gap-3">
+          <i data-lucide="x" class="w-4 h-4 mt-1 shrink-0 text-zinc-400 dark:text-zinc-600"></i>
+          <span class="text-zinc-700 dark:text-zinc-300"><span class="font-medium">Tanpa analitik prediktif / machine learning</span><span class="text-zinc-500 dark:text-zinc-400"> — dashboard menggambarkan kondisi aktual, bukan peramalan.</span></span>
+        </li>
+        <li class="flex items-start gap-3">
+          <i data-lucide="x" class="w-4 h-4 mt-1 shrink-0 text-zinc-400 dark:text-zinc-600"></i>
+          <span class="text-zinc-700 dark:text-zinc-300"><span class="font-medium">Tanpa akses publik / multi-bahasa</span><span class="text-zinc-500 dark:text-zinc-400"> — seluruh pengguna harus login.</span></span>
+        </li>
+        <li class="flex items-start gap-3">
+          <i data-lucide="x" class="w-4 h-4 mt-1 shrink-0 text-zinc-400 dark:text-zinc-600"></i>
+          <span class="text-zinc-700 dark:text-zinc-300"><span class="font-medium">Data aktual 4 kelurahan menunggu izin DPMPTSP</span><span class="text-zinc-500 dark:text-zinc-400"> — demo 27 Sep memakai data dummy; data nyata masuk saat izin jadi.</span></span>
+        </li>
+      </ul>
+    </section>
+
+    <!-- DATA MODEL -->
+    <section id="data" class="scroll-mt-28">
+      <div class="flex items-center justify-between gap-3 flex-wrap">
+        <h2 class="text-xs font-semibold uppercase tracking-[0.18em] text-zinc-500 dark:text-zinc-400 flex items-center gap-2">
+          <i data-lucide="database" class="w-3.5 h-3.5"></i>Model data
+        </h2>
+        <div class="no-print flex items-center gap-2">
+          <button class="acc-all text-xs px-3 py-1.5 rounded-md border border-zinc-200 dark:border-zinc-800 hover:bg-zinc-100 dark:hover:bg-zinc-900" data-scope="#data .acc" data-state="open">Perluas semua</button>
+          <button class="acc-all text-xs px-3 py-1.5 rounded-md border border-zinc-200 dark:border-zinc-800 hover:bg-zinc-100 dark:hover:bg-zinc-900" data-scope="#data .acc" data-state="close">Sempitkan semua</button>
+        </div>
+      </div>
+      <p class="mt-3 text-sm text-zinc-500 dark:text-zinc-400">Apa yang perlu diingat aplikasi — menjadi dasar ERD saat pembangunan. Klik chip <span class="text-zinc-400">"Related to"</span> untuk berpindah antar entitas. Sumber definisi field: Field Checklist KR (11 bagian, 8 kelompok sasaran).</p>
+      <div class="mt-5 grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-3">
+
+        <article id="ent-user" class="acc print-card rounded-lg border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900">
+          <button class="acc-head w-full flex items-center gap-3 p-5 text-left">
+            <i data-lucide="box" class="w-4 h-4 text-zinc-500 dark:text-zinc-400"></i>
+            <h3 class="font-semibold text-zinc-900 dark:text-zinc-100">Pengguna &amp; Role</h3>
+            <i data-lucide="chevron-down" class="chev w-4 h-4 ml-auto text-zinc-400"></i>
+          </button>
+          <div class="acc-body px-5 pb-5">
+            <table class="mt-3 w-full text-sm">
+              <tbody class="divide-y divide-zinc-100 dark:divide-zinc-800">
+                <tr><td class="py-2 pr-4 font-mono text-xs font-medium text-zinc-700 dark:text-zinc-300 align-top whitespace-nowrap">nama</td><td class="py-2 text-zinc-600 dark:text-zinc-400 leading-relaxed">nama lengkap pengguna</td></tr>
+                <tr><td class="py-2 pr-4 font-mono text-xs font-medium text-zinc-700 dark:text-zinc-300 align-top whitespace-nowrap">peran</td><td class="py-2 text-zinc-600 dark:text-zinc-400 leading-relaxed">kader, pembina kesmas, kepala Puskesmas, admin</td></tr>
+                <tr><td class="py-2 pr-4 font-mono text-xs font-medium text-zinc-700 dark:text-zinc-300 align-top whitespace-nowrap">wilayah binaan</td><td class="py-2 text-zinc-600 dark:text-zinc-400 leading-relaxed">posyandu/kelurahan tanggung jawab (kader &amp; pembina)</td></tr>
+                <tr><td class="py-2 pr-4 font-mono text-xs font-medium text-zinc-700 dark:text-zinc-300 align-top whitespace-nowrap">kontak</td><td class="py-2 text-zinc-600 dark:text-zinc-400 leading-relaxed">No. HP &amp; email untuk koordinasi &amp; notifikasi</td></tr>
+                <tr><td class="py-2 pr-4 font-mono text-xs font-medium text-zinc-700 dark:text-zinc-300 align-top whitespace-nowrap">kredensial</td><td class="py-2 text-zinc-600 dark:text-zinc-400 leading-relaxed">akun masuk sistem (bukan pihak ketiga)</td></tr>
+              </tbody>
+            </table>
+            <p class="mt-4 text-xs text-zinc-500 dark:text-zinc-400"><span class="font-semibold uppercase tracking-[0.14em] text-[11px]">Related to</span>
+              <span class="mt-1.5 flex flex-wrap gap-1.5">
+                <button class="rel-chip" data-rel="ent-posyandu">Posyandu</button>
+                <button class="rel-chip" data-rel="ent-kelurahan">Kelurahan</button>
+                <button class="rel-chip" data-rel="ent-kunjungan">Kunjungan Rumah</button>
+                <button class="rel-chip" data-rel="ent-jadwal">Jadwal Kunjungan</button>
+              </span>
+            </p>
+          </div>
+        </article>
+
+        <article id="ent-kelurahan" class="acc print-card rounded-lg border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900">
+          <button class="acc-head w-full flex items-center gap-3 p-5 text-left">
+            <i data-lucide="box" class="w-4 h-4 text-zinc-500 dark:text-zinc-400"></i>
+            <h3 class="font-semibold text-zinc-900 dark:text-zinc-100">Kelurahan</h3>
+            <i data-lucide="chevron-down" class="chev w-4 h-4 ml-auto text-zinc-400"></i>
+          </button>
+          <div class="acc-body px-5 pb-5">
+            <table class="mt-3 w-full text-sm">
+              <tbody class="divide-y divide-zinc-100 dark:divide-zinc-800">
+                <tr><td class="py-2 pr-4 font-mono text-xs font-medium text-zinc-700 dark:text-zinc-300 align-top whitespace-nowrap">nama</td><td class="py-2 text-zinc-600 dark:text-zinc-400 leading-relaxed">Ngemplakrejo, Tambaan, Trajeng, Mayangan</td></tr>
+                <tr><td class="py-2 pr-4 font-mono text-xs font-medium text-zinc-700 dark:text-zinc-300 align-top whitespace-nowrap">wilayah kerja</td><td class="py-2 text-zinc-600 dark:text-zinc-400 leading-relaxed">Puskesmas Trajeng (4 kelurahan wajib)</td></tr>
+                <tr><td class="py-2 pr-4 font-mono text-xs font-medium text-zinc-700 dark:text-zinc-300 align-top whitespace-nowrap">data wilayah</td><td class="py-2 text-zinc-600 dark:text-zinc-400 leading-relaxed">jumlah posyandu &amp; target KK (terisi setelah data aktual)</td></tr>
+              </tbody>
+            </table>
+            <p class="mt-4 text-xs text-zinc-500 dark:text-zinc-400"><span class="font-semibold uppercase tracking-[0.14em] text-[11px]">Related to</span>
+              <span class="mt-1.5 flex flex-wrap gap-1.5">
+                <button class="rel-chip" data-rel="ent-rwrt">RW/RT</button>
+                <button class="rel-chip" data-rel="ent-posyandu">Posyandu</button>
+                <button class="rel-chip" data-rel="ent-keluarga">Keluarga</button>
+              </span>
+            </p>
+          </div>
+        </article>
+
+        <article id="ent-rwrt" class="acc print-card rounded-lg border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900">
+          <button class="acc-head w-full flex items-center gap-3 p-5 text-left">
+            <i data-lucide="box" class="w-4 h-4 text-zinc-500 dark:text-zinc-400"></i>
+            <h3 class="font-semibold text-zinc-900 dark:text-zinc-100">RW / RT</h3>
+            <i data-lucide="chevron-down" class="chev w-4 h-4 ml-auto text-zinc-400"></i>
+          </button>
+          <div class="acc-body px-5 pb-5">
+            <table class="mt-3 w-full text-sm">
+              <tbody class="divide-y divide-zinc-100 dark:divide-zinc-800">
+                <tr><td class="py-2 pr-4 font-mono text-xs font-medium text-zinc-700 dark:text-zinc-300 align-top whitespace-nowrap">nomor</td><td class="py-2 text-zinc-600 dark:text-zinc-400 leading-relaxed">nomor RW dan nomor RT</td></tr>
+                <tr><td class="py-2 pr-4 font-mono text-xs font-medium text-zinc-700 dark:text-zinc-300 align-top whitespace-nowrap">kelurahan</td><td class="py-2 text-zinc-600 dark:text-zinc-400 leading-relaxed">kelurahan tempat RW/RT berada</td></tr>
+              </tbody>
+            </table>
+            <p class="mt-4 text-xs text-zinc-500 dark:text-zinc-400"><span class="font-semibold uppercase tracking-[0.14em] text-[11px]">Related to</span>
+              <span class="mt-1.5 flex flex-wrap gap-1.5">
+                <button class="rel-chip" data-rel="ent-kelurahan">Kelurahan</button>
+                <button class="rel-chip" data-rel="ent-keluarga">Keluarga</button>
+                <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-zinc-100 dark:bg-zinc-800 text-xs text-zinc-500 dark:text-zinc-400">Dashboard PWS</span>
+              </span>
+            </p>
+          </div>
+        </article>
+
+        <article id="ent-posyandu" class="acc print-card rounded-lg border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900">
+          <button class="acc-head w-full flex items-center gap-3 p-5 text-left">
+            <i data-lucide="box" class="w-4 h-4 text-zinc-500 dark:text-zinc-400"></i>
+            <h3 class="font-semibold text-zinc-900 dark:text-zinc-100">Posyandu</h3>
+            <i data-lucide="chevron-down" class="chev w-4 h-4 ml-auto text-zinc-400"></i>
+          </button>
+          <div class="acc-body px-5 pb-5">
+            <table class="mt-3 w-full text-sm">
+              <tbody class="divide-y divide-zinc-100 dark:divide-zinc-800">
+                <tr><td class="py-2 pr-4 font-mono text-xs font-medium text-zinc-700 dark:text-zinc-300 align-top whitespace-nowrap">nama</td><td class="py-2 text-zinc-600 dark:text-zinc-400 leading-relaxed">nama posyandu</td></tr>
+                <tr><td class="py-2 pr-4 font-mono text-xs font-medium text-zinc-700 dark:text-zinc-300 align-top whitespace-nowrap">kelurahan</td><td class="py-2 text-zinc-600 dark:text-zinc-400 leading-relaxed">kelurahan tempat posyandu berada</td></tr>
+                <tr><td class="py-2 pr-4 font-mono text-xs font-medium text-zinc-700 dark:text-zinc-300 align-top whitespace-nowrap">kader</td><td class="py-2 text-zinc-600 dark:text-zinc-400 leading-relaxed">kader yang bertugas</td></tr>
+                <tr><td class="py-2 pr-4 font-mono text-xs font-medium text-zinc-700 dark:text-zinc-300 align-top whitespace-nowrap">jadwal kegiatan</td><td class="py-2 text-zinc-600 dark:text-zinc-400 leading-relaxed">jadwal posyandu (pendukung penjadwalan)</td></tr>
+              </tbody>
+            </table>
+            <p class="mt-4 text-xs text-zinc-500 dark:text-zinc-400"><span class="font-semibold uppercase tracking-[0.14em] text-[11px]">Related to</span>
+              <span class="mt-1.5 flex flex-wrap gap-1.5">
+                <button class="rel-chip" data-rel="ent-kelurahan">Kelurahan</button>
+                <button class="rel-chip" data-rel="ent-user">Pengguna (kader)</button>
+                <button class="rel-chip" data-rel="ent-jadwal">Jadwal Kunjungan</button>
+              </span>
+            </p>
+          </div>
+        </article>
+
+        <article id="ent-keluarga" class="acc print-card rounded-lg border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900">
+          <button class="acc-head w-full flex items-center gap-3 p-5 text-left">
+            <i data-lucide="box" class="w-4 h-4 text-zinc-500 dark:text-zinc-400"></i>
+            <h3 class="font-semibold text-zinc-900 dark:text-zinc-100">Keluarga (KK)</h3>
+            <i data-lucide="chevron-down" class="chev w-4 h-4 ml-auto text-zinc-400"></i>
+          </button>
+          <div class="acc-body px-5 pb-5">
+            <table class="mt-3 w-full text-sm">
+              <tbody class="divide-y divide-zinc-100 dark:divide-zinc-800">
+                <tr><td class="py-2 pr-4 font-mono text-xs font-medium text-zinc-700 dark:text-zinc-300 align-top whitespace-nowrap">identitas</td><td class="py-2 text-zinc-600 dark:text-zinc-400 leading-relaxed">nama kepala keluarga &amp; No. KK</td></tr>
+                <tr><td class="py-2 pr-4 font-mono text-xs font-medium text-zinc-700 dark:text-zinc-300 align-top whitespace-nowrap">alamat</td><td class="py-2 text-zinc-600 dark:text-zinc-400 leading-relaxed">jalan/kampung, RT, RW, kelurahan</td></tr>
+                <tr><td class="py-2 pr-4 font-mono text-xs font-medium text-zinc-700 dark:text-zinc-300 align-top whitespace-nowrap">anggota</td><td class="py-2 text-zinc-600 dark:text-zinc-400 leading-relaxed">jumlah anggota keluarga</td></tr>
+                <tr><td class="py-2 pr-4 font-mono text-xs font-medium text-zinc-700 dark:text-zinc-300 align-top whitespace-nowrap">sanitasi</td><td class="py-2 text-zinc-600 dark:text-zinc-400 leading-relaxed">jamban, air bersih, ventilasi</td></tr>
+                <tr><td class="py-2 pr-4 font-mono text-xs font-medium text-zinc-700 dark:text-zinc-300 align-top whitespace-nowrap">kesehatan</td><td class="py-2 text-zinc-600 dark:text-zinc-400 leading-relaxed">jaminan kesehatan &amp; penyakit kronis keluarga (TBC, hipertensi, DM, gangguan jiwa)</td></tr>
+              </tbody>
+            </table>
+            <p class="mt-4 text-xs text-zinc-500 dark:text-zinc-400"><span class="font-semibold uppercase tracking-[0.14em] text-[11px]">Related to</span>
+              <span class="mt-1.5 flex flex-wrap gap-1.5">
+                <button class="rel-chip" data-rel="ent-anggota">Anggota Keluarga</button>
+                <button class="rel-chip" data-rel="ent-rwrt">RW/RT</button>
+                <button class="rel-chip" data-rel="ent-kunjungan">Kunjungan Rumah</button>
+                <button class="rel-chip" data-rel="ent-jadwal">Jadwal Kunjungan</button>
+              </span>
+            </p>
+          </div>
+        </article>
+
+        <article id="ent-anggota" class="acc print-card rounded-lg border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900">
+          <button class="acc-head w-full flex items-center gap-3 p-5 text-left">
+            <i data-lucide="box" class="w-4 h-4 text-zinc-500 dark:text-zinc-400"></i>
+            <h3 class="font-semibold text-zinc-900 dark:text-zinc-100">Anggota Keluarga</h3>
+            <i data-lucide="chevron-down" class="chev w-4 h-4 ml-auto text-zinc-400"></i>
+          </button>
+          <div class="acc-body px-5 pb-5">
+            <table class="mt-3 w-full text-sm">
+              <tbody class="divide-y divide-zinc-100 dark:divide-zinc-800">
+                <tr><td class="py-2 pr-4 font-mono text-xs font-medium text-zinc-700 dark:text-zinc-300 align-top whitespace-nowrap">identitas</td><td class="py-2 text-zinc-600 dark:text-zinc-400 leading-relaxed">nama, NIK, tanggal lahir, jenis kelamin</td></tr>
+                <tr><td class="py-2 pr-4 font-mono text-xs font-medium text-zinc-700 dark:text-zinc-300 align-top whitespace-nowrap">sosial</td><td class="py-2 text-zinc-600 dark:text-zinc-400 leading-relaxed">hubungan dengan KK, status perkawinan, pendidikan, pekerjaan</td></tr>
+                <tr><td class="py-2 pr-4 font-mono text-xs font-medium text-zinc-700 dark:text-zinc-300 align-top whitespace-nowrap">kelompok sasaran</td><td class="py-2 text-zinc-600 dark:text-zinc-400 leading-relaxed">siklus hidup (8): Ibu Hamil, Bersalin/Nifas, Bayi, Balita/Apras, Usia Sekolah/Remaja, Dewasa, Lansia, TBC</td></tr>
+              </tbody>
+            </table>
+            <p class="mt-4 text-xs text-zinc-500 dark:text-zinc-400"><span class="font-semibold uppercase tracking-[0.14em] text-[11px]">Related to</span>
+              <span class="mt-1.5 flex flex-wrap gap-1.5">
+                <button class="rel-chip" data-rel="ent-keluarga">Keluarga</button>
+                <button class="rel-chip" data-rel="ent-masalah">Masalah &amp; Tindak Lanjut</button>
+                <button class="rel-chip" data-rel="ent-kunjungan">Kunjungan Rumah</button>
+              </span>
+            </p>
+          </div>
+        </article>
+
+        <article id="ent-kunjungan" class="acc print-card rounded-lg border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900">
+          <button class="acc-head w-full flex items-center gap-3 p-5 text-left">
+            <i data-lucide="box" class="w-4 h-4 text-zinc-500 dark:text-zinc-400"></i>
+            <h3 class="font-semibold text-zinc-900 dark:text-zinc-100">Kunjungan Rumah</h3>
+            <i data-lucide="chevron-down" class="chev w-4 h-4 ml-auto text-zinc-400"></i>
+          </button>
+          <div class="acc-body px-5 pb-5">
+            <table class="mt-3 w-full text-sm">
+              <tbody class="divide-y divide-zinc-100 dark:divide-zinc-800">
+                <tr><td class="py-2 pr-4 font-mono text-xs font-medium text-zinc-700 dark:text-zinc-300 align-top whitespace-nowrap">pelaksana</td><td class="py-2 text-zinc-600 dark:text-zinc-400 leading-relaxed">kader yang melaksanakan</td></tr>
+                <tr><td class="py-2 pr-4 font-mono text-xs font-medium text-zinc-700 dark:text-zinc-300 align-top whitespace-nowrap">target</td><td class="py-2 text-zinc-600 dark:text-zinc-400 leading-relaxed">keluarga yang dikunjungi &amp; tanggal kunjungan</td></tr>
+                <tr><td class="py-2 pr-4 font-mono text-xs font-medium text-zinc-700 dark:text-zinc-300 align-top whitespace-nowrap">jenis</td><td class="py-2 text-zinc-600 dark:text-zinc-400 leading-relaxed">rutin (1×/tahun seluruh KK) atau khusus (door-to-door)</td></tr>
+                <tr><td class="py-2 pr-4 font-mono text-xs font-medium text-zinc-700 dark:text-zinc-300 align-top whitespace-nowrap">data sasaran</td><td class="py-2 text-zinc-600 dark:text-zinc-400 leading-relaxed">isi per kelompok sasaran mengikuti definisi field (fleksibel)</td></tr>
+                <tr><td class="py-2 pr-4 font-mono text-xs font-medium text-zinc-700 dark:text-zinc-300 align-top whitespace-nowrap">status</td><td class="py-2 text-zinc-600 dark:text-zinc-400 leading-relaxed">dalam proses / selesai</td></tr>
+              </tbody>
+            </table>
+            <p class="mt-4 text-xs text-zinc-500 dark:text-zinc-400"><span class="font-semibold uppercase tracking-[0.14em] text-[11px]">Related to</span>
+              <span class="mt-1.5 flex flex-wrap gap-1.5">
+                <button class="rel-chip" data-rel="ent-user">Pengguna</button>
+                <button class="rel-chip" data-rel="ent-keluarga">Keluarga</button>
+                <button class="rel-chip" data-rel="ent-def-field">Definisi Field Form</button>
+                <button class="rel-chip" data-rel="ent-jadwal">Jadwal Kunjungan</button>
+              </span>
+            </p>
+          </div>
+        </article>
+
+        <article id="ent-def-field" class="acc print-card rounded-lg border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900">
+          <button class="acc-head w-full flex items-center gap-3 p-5 text-left">
+            <i data-lucide="box" class="w-4 h-4 text-zinc-500 dark:text-zinc-400"></i>
+            <h3 class="font-semibold text-zinc-900 dark:text-zinc-100">Definisi Field Form ⭐</h3>
+            <i data-lucide="chevron-down" class="chev w-4 h-4 ml-auto text-zinc-400"></i>
+          </button>
+          <div class="acc-body px-5 pb-5">
+            <table class="mt-3 w-full text-sm">
+              <tbody class="divide-y divide-zinc-100 dark:divide-zinc-800">
+                <tr><td class="py-2 pr-4 font-mono text-xs font-medium text-zinc-700 dark:text-zinc-300 align-top whitespace-nowrap">identitas</td><td class="py-2 text-zinc-600 dark:text-zinc-400 leading-relaxed">nama field, label tampil, bagian form, kelompok sasaran</td></tr>
+                <tr><td class="py-2 pr-4 font-mono text-xs font-medium text-zinc-700 dark:text-zinc-300 align-top whitespace-nowrap">tipe isian</td><td class="py-2 text-zinc-600 dark:text-zinc-400 leading-relaxed">pilihan / angka / tanggal / kotak centang / teks</td></tr>
+                <tr><td class="py-2 pr-4 font-mono text-xs font-medium text-zinc-700 dark:text-zinc-300 align-top whitespace-nowrap">aturan</td><td class="py-2 text-zinc-600 dark:text-zinc-400 leading-relaxed">wajib/opsional, urutan tampil, aktif/nonaktif</td></tr>
+              </tbody>
+            </table>
+            <p class="mt-4 text-xs text-zinc-500 dark:text-zinc-400"><span class="font-semibold uppercase tracking-[0.14em] text-[11px]">Related to</span>
+              <span class="mt-1.5 flex flex-wrap gap-1.5">
+                <button class="rel-chip" data-rel="ent-kunjungan">Kunjungan Rumah</button>
+                <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-zinc-100 dark:bg-zinc-800 text-xs text-zinc-500 dark:text-zinc-400">administrasi field menyerap perubahan format Kemenkes</span>
+              </span>
+            </p>
+          </div>
+        </article>
+
+        <article id="ent-masalah" class="acc print-card rounded-lg border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900">
+          <button class="acc-head w-full flex items-center gap-3 p-5 text-left">
+            <i data-lucide="box" class="w-4 h-4 text-zinc-500 dark:text-zinc-400"></i>
+            <h3 class="font-semibold text-zinc-900 dark:text-zinc-100">Masalah &amp; Tindak Lanjut</h3>
+            <i data-lucide="chevron-down" class="chev w-4 h-4 ml-auto text-zinc-400"></i>
+          </button>
+          <div class="acc-body px-5 pb-5">
+            <table class="mt-3 w-full text-sm">
+              <tbody class="divide-y divide-zinc-100 dark:divide-zinc-800">
+                <tr><td class="py-2 pr-4 font-mono text-xs font-medium text-zinc-700 dark:text-zinc-300 align-top whitespace-nowrap">terkait</td><td class="py-2 text-zinc-600 dark:text-zinc-400 leading-relaxed">anggota keluarga yang bermasalah</td></tr>
+                <tr><td class="py-2 pr-4 font-mono text-xs font-medium text-zinc-700 dark:text-zinc-300 align-top whitespace-nowrap">masalah</td><td class="py-2 text-zinc-600 dark:text-zinc-400 leading-relaxed">masalah kesehatan yang ditemukan</td></tr>
+                <tr><td class="py-2 pr-4 font-mono text-xs font-medium text-zinc-700 dark:text-zinc-300 align-top whitespace-nowrap">tindak lanjut</td><td class="py-2 text-zinc-600 dark:text-zinc-400 leading-relaxed">tindak lanjut yang diberikan</td></tr>
+                <tr><td class="py-2 pr-4 font-mono text-xs font-medium text-zinc-700 dark:text-zinc-300 align-top whitespace-nowrap">status</td><td class="py-2 text-zinc-600 dark:text-zinc-400 leading-relaxed">belum / selesai / dirujuk</td></tr>
+              </tbody>
+            </table>
+            <p class="mt-4 text-xs text-zinc-500 dark:text-zinc-400"><span class="font-semibold uppercase tracking-[0.14em] text-[11px]">Related to</span>
+              <span class="mt-1.5 flex flex-wrap gap-1.5">
+                <button class="rel-chip" data-rel="ent-anggota">Anggota Keluarga</button>
+                <button class="rel-chip" data-rel="ent-kunjungan">Kunjungan Rumah</button>
+              </span>
+            </p>
+          </div>
+        </article>
+
+        <article id="ent-jadwal" class="acc print-card rounded-lg border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900">
+          <button class="acc-head w-full flex items-center gap-3 p-5 text-left">
+            <i data-lucide="box" class="w-4 h-4 text-zinc-500 dark:text-zinc-400"></i>
+            <h3 class="font-semibold text-zinc-900 dark:text-zinc-100">Jadwal Kunjungan</h3>
+            <i data-lucide="chevron-down" class="chev w-4 h-4 ml-auto text-zinc-400"></i>
+          </button>
+          <div class="acc-body px-5 pb-5">
+            <table class="mt-3 w-full text-sm">
+              <tbody class="divide-y divide-zinc-100 dark:divide-zinc-800">
+                <tr><td class="py-2 pr-4 font-mono text-xs font-medium text-zinc-700 dark:text-zinc-300 align-top whitespace-nowrap">target</td><td class="py-2 text-zinc-600 dark:text-zinc-400 leading-relaxed">keluarga yang dijadwalkan</td></tr>
+                <tr><td class="py-2 pr-4 font-mono text-xs font-medium text-zinc-700 dark:text-zinc-300 align-top whitespace-nowrap">petugas</td><td class="py-2 text-zinc-600 dark:text-zinc-400 leading-relaxed">kader penanggung jawab</td></tr>
+                <tr><td class="py-2 pr-4 font-mono text-xs font-medium text-zinc-700 dark:text-zinc-300 align-top whitespace-nowrap">waktu</td><td class="py-2 text-zinc-600 dark:text-zinc-400 leading-relaxed">waktu kunjungan yang dijadwalkan</td></tr>
+                <tr><td class="py-2 pr-4 font-mono text-xs font-medium text-zinc-700 dark:text-zinc-300 align-top whitespace-nowrap">status</td><td class="py-2 text-zinc-600 dark:text-zinc-400 leading-relaxed">terjadwal / selesai / terlewat (dasar pengingat)</td></tr>
+              </tbody>
+            </table>
+            <p class="mt-4 text-xs text-zinc-500 dark:text-zinc-400"><span class="font-semibold uppercase tracking-[0.14em] text-[11px]">Related to</span>
+              <span class="mt-1.5 flex flex-wrap gap-1.5">
+                <button class="rel-chip" data-rel="ent-keluarga">Keluarga</button>
+                <button class="rel-chip" data-rel="ent-user">Pengguna (kader)</button>
+                <button class="rel-chip" data-rel="ent-posyandu">Posyandu</button>
+                <button class="rel-chip" data-rel="ent-kunjungan">Kunjungan Rumah</button>
+              </span>
+            </p>
+          </div>
+        </article>
+
+      </div>
+    </section>
+
+    <!-- MILESTONES -->
+    <section id="milestone" class="scroll-mt-28">
+      <div class="flex items-center justify-between gap-3 flex-wrap">
+        <h2 class="text-xs font-semibold uppercase tracking-[0.18em] text-zinc-500 dark:text-zinc-400 flex items-center gap-2">
+          <i data-lucide="route" class="w-3.5 h-3.5"></i>Milestones
+        </h2>
+        <div class="no-print flex items-center gap-2">
+          <button class="acc-all text-xs px-3 py-1.5 rounded-md border border-zinc-200 dark:border-zinc-800 hover:bg-zinc-100 dark:hover:bg-zinc-900" data-scope="#milestone .acc" data-state="open">Perluas semua</button>
+          <button class="acc-all text-xs px-3 py-1.5 rounded-md border border-zinc-200 dark:border-zinc-800 hover:bg-zinc-100 dark:hover:bg-zinc-900" data-scope="#milestone .acc" data-state="close">Sempitkan semua</button>
+        </div>
+      </div>
+      <div class="mt-5 space-y-5">
+
+        <article data-acc="ms-1" class="acc print-card rounded-lg border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 overflow-hidden">
+          <button class="acc-head w-full flex items-center gap-3 p-5 text-left border-b border-zinc-100 dark:border-zinc-800">
+            <span class="shrink-0 w-8 h-8 rounded-full bg-zinc-900 dark:bg-zinc-100 text-zinc-50 dark:text-zinc-900 flex items-center justify-center text-sm font-semibold">1</span>
+            <h3 class="font-semibold text-lg text-zinc-900 dark:text-zinc-100">Fondasi, Autentikasi &amp; Master Data</h3>
+            <i data-lucide="chevron-down" class="chev w-4 h-4 ml-auto text-zinc-400"></i>
+          </button>
+          <div class="acc-body p-5">
+            <p class="text-zinc-600 dark:text-zinc-400 leading-relaxed">Kerangka aplikasi yang bisa diakses pengguna dengan peran berbeda, plus master data wilayah/posyandu/kader dan definisi field form sebagai landasan milestone berikutnya.</p>
+            <div class="mt-5 grid grid-cols-1 md:grid-cols-2 gap-5">
+              <div>
+                <h4 class="text-[11px] font-semibold uppercase tracking-[0.16em] text-zinc-500 dark:text-zinc-400 flex items-center gap-1.5">
+                  <i data-lucide="check-circle-2" class="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400"></i>Yang dibangun
+                </h4>
+                <ul class="mt-3 space-y-2 text-sm text-zinc-700 dark:text-zinc-300 list-none p-0">
+                  <li class="flex items-start gap-2"><i data-lucide="check" class="w-3.5 h-3.5 mt-0.5 shrink-0 text-emerald-600 dark:text-emerald-400"></i><span>Proyek berjalan (React + Express/Node + PostgreSQL) yang terbuka di browser</span></li>
+                  <li class="flex items-start gap-2"><i data-lucide="check" class="w-3.5 h-3.5 mt-0.5 shrink-0 text-emerald-600 dark:text-emerald-400"></i><span>Login untuk 4 peran dengan hak akses berbeda</span></li>
+                  <li class="flex items-start gap-2"><i data-lucide="check" class="w-3.5 h-3.5 mt-0.5 shrink-0 text-emerald-600 dark:text-emerald-400"></i><span>Master data: kelurahan, RW/RT, posyandu, pengguna/kader</span></li>
+                  <li class="flex items-start gap-2"><i data-lucide="check" class="w-3.5 h-3.5 mt-0.5 shrink-0 text-emerald-600 dark:text-emerald-400"></i><span>Pengelolaan definisi field form (fondasi fleksibilitas)</span></li>
+                  <li class="flex items-start gap-2"><i data-lucide="check" class="w-3.5 h-3.5 mt-0.5 shrink-0 text-emerald-600 dark:text-emerald-400"></i><span>Profil &amp; manajemen akun dasar</span></li>
+                </ul>
+              </div>
+              <div>
+                <h4 class="text-[11px] font-semibold uppercase tracking-[0.16em] text-zinc-500 dark:text-zinc-400 flex items-center gap-1.5">
+                  <i data-lucide="x-circle" class="w-3.5 h-3.5 text-zinc-400 dark:text-zinc-500"></i>Bukan bagian milestone ini
+                </h4>
+                <ul class="mt-3 space-y-2 text-sm text-zinc-500 dark:text-zinc-400 list-none p-0">
+                  <li class="flex items-start gap-2"><i data-lucide="minus" class="w-3.5 h-3.5 mt-0.5 shrink-0"></i><span>Form isian kunjungan rumah (M2)</span></li>
+                  <li class="flex items-start gap-2"><i data-lucide="minus" class="w-3.5 h-3.5 mt-0.5 shrink-0"></i><span>Dashboard visualisasi (M3)</span></li>
+                  <li class="flex items-start gap-2"><i data-lucide="minus" class="w-3.5 h-3.5 mt-0.5 shrink-0"></i><span>Notifikasi &amp; pengingat (M4)</span></li>
+                  <li class="flex items-start gap-2"><i data-lucide="minus" class="w-3.5 h-3.5 mt-0.5 shrink-0"></i><span>Ekspor rekap (M4)</span></li>
+                </ul>
+              </div>
+            </div>
+            <div class="mt-5 rounded-md border-l-4 border-emerald-500 bg-emerald-50 dark:bg-emerald-950/30 p-4 text-sm text-emerald-900 dark:text-emerald-200">
+              <p class="flex items-start gap-2"><i data-lucide="flag" class="w-4 h-4 mt-0.5 shrink-0"></i><span><span class="font-semibold">Selesai ketika:</span> Admin bisa login, membuat kelurahan/posyandu/kader, mendefinisikan struktur field form, dan pengguna lain login sesuai perannya tanpa kendala.</span></p>
+            </div>
+          </div>
+        </article>
+
+        <article data-acc="ms-2" class="acc print-card rounded-lg border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 overflow-hidden">
+          <button class="acc-head w-full flex items-center gap-3 p-5 text-left border-b border-zinc-100 dark:border-zinc-800">
+            <span class="shrink-0 w-8 h-8 rounded-full bg-zinc-900 dark:bg-zinc-100 text-zinc-50 dark:text-zinc-900 flex items-center justify-center text-sm font-semibold">2</span>
+            <h3 class="font-semibold text-lg text-zinc-900 dark:text-zinc-100">Input Data Kunjungan Rumah (Fleksibel)</h3>
+            <i data-lucide="chevron-down" class="chev w-4 h-4 ml-auto text-zinc-400"></i>
+          </button>
+          <div class="acc-body p-5">
+            <p class="text-zinc-600 dark:text-zinc-400 leading-relaxed">Kader menginput hasil kunjungan rumah digital mengikuti struktur form resmi yang didefinisikan admin. Milestone paling berisiko karena format form Kemenkes belum stabil.</p>
+            <div class="mt-5 grid grid-cols-1 md:grid-cols-2 gap-5">
+              <div>
+                <h4 class="text-[11px] font-semibold uppercase tracking-[0.16em] text-zinc-500 dark:text-zinc-400 flex items-center gap-1.5">
+                  <i data-lucide="check-circle-2" class="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400"></i>Yang dibangun
+                </h4>
+                <ul class="mt-3 space-y-2 text-sm text-zinc-700 dark:text-zinc-300 list-none p-0">
+                  <li class="flex items-start gap-2"><i data-lucide="check" class="w-3.5 h-3.5 mt-0.5 shrink-0 text-emerald-600 dark:text-emerald-400"></i><span>Form input yang isiannya mengikuti definisi field admin (data keluarga + kelompok sasaran)</span></li>
+                  <li class="flex items-start gap-2"><i data-lucide="check" class="w-3.5 h-3.5 mt-0.5 shrink-0 text-emerald-600 dark:text-emerald-400"></i><span>Alur kader: pilih jadwal/keluarga → isi data → simpan</span></li>
+                  <li class="flex items-start gap-2"><i data-lucide="check" class="w-3.5 h-3.5 mt-0.5 shrink-0 text-emerald-600 dark:text-emerald-400"></i><span>Tambah anggota &amp; menandai masalah kesehatan + tindak lanjut</span></li>
+                  <li class="flex items-start gap-2"><i data-lucide="check" class="w-3.5 h-3.5 mt-0.5 shrink-0 text-emerald-600 dark:text-emerald-400"></i><span>Validasi wajib/opsional sesuai definisi field</span></li>
+                  <li class="flex items-start gap-2"><i data-lucide="check" class="w-3.5 h-3.5 mt-0.5 shrink-0 text-emerald-600 dark:text-emerald-400"></i><span>Pencarian &amp; daftar kunjungan milik kader</span></li>
+                </ul>
+              </div>
+              <div>
+                <h4 class="text-[11px] font-semibold uppercase tracking-[0.16em] text-zinc-500 dark:text-zinc-400 flex items-center gap-1.5">
+                  <i data-lucide="x-circle" class="w-3.5 h-3.5 text-zinc-400 dark:text-zinc-500"></i>Bukan bagian milestone ini
+                </h4>
+                <ul class="mt-3 space-y-2 text-sm text-zinc-500 dark:text-zinc-400 list-none p-0">
+                  <li class="flex items-start gap-2"><i data-lucide="minus" class="w-3.5 h-3.5 mt-0.5 shrink-0"></i><span>Dashboard visualisasi (M3)</span></li>
+                  <li class="flex items-start gap-2"><i data-lucide="minus" class="w-3.5 h-3.5 mt-0.5 shrink-0"></i><span>Notifikasi &amp; pengingat (M4)</span></li>
+                  <li class="flex items-start gap-2"><i data-lucide="minus" class="w-3.5 h-3.5 mt-0.5 shrink-0"></i><span>Rekap &amp; ekspor (M4)</span></li>
+                </ul>
+              </div>
+            </div>
+            <div class="mt-5 rounded-md border-l-4 border-emerald-500 bg-emerald-50 dark:bg-emerald-950/30 p-4 text-sm text-emerald-900 dark:text-emerald-200">
+              <p class="flex items-start gap-2"><i data-lucide="flag" class="w-4 h-4 mt-0.5 shrink-0"></i><span><span class="font-semibold">Selesai ketika:</span> Kader di lapangan (dari HP) bisa membuat kunjungan baru, data tersimpan, dan isian mengikuti definisi admin — mengubah definisi field tidak memerlukan perubahan kode.</span></p>
+            </div>
+          </div>
+        </article>
+
+        <article data-acc="ms-3" class="acc print-card rounded-lg border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 overflow-hidden">
+          <button class="acc-head w-full flex items-center gap-3 p-5 text-left border-b border-zinc-100 dark:border-zinc-800">
+            <span class="shrink-0 w-8 h-8 rounded-full bg-zinc-900 dark:bg-zinc-100 text-zinc-50 dark:text-zinc-900 flex items-center justify-center text-sm font-semibold">3</span>
+            <h3 class="font-semibold text-lg text-zinc-900 dark:text-zinc-100">Dashboard PWS</h3>
+            <i data-lucide="chevron-down" class="chev w-4 h-4 ml-auto text-zinc-400"></i>
+          </button>
+          <div class="acc-body p-5">
+            <p class="text-zinc-600 dark:text-zinc-400 leading-relaxed">Pembina dan kepala Puskesmas melihat kondisi kesehatan per wilayah — inti kebutuhan "penyakit tertinggi per RT/RW" dari wawancara.</p>
+            <div class="mt-5 grid grid-cols-1 md:grid-cols-2 gap-5">
+              <div>
+                <h4 class="text-[11px] font-semibold uppercase tracking-[0.16em] text-zinc-500 dark:text-zinc-400 flex items-center gap-1.5">
+                  <i data-lucide="check-circle-2" class="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400"></i>Yang dibangun
+                </h4>
+                <ul class="mt-3 space-y-2 text-sm text-zinc-700 dark:text-zinc-300 list-none p-0">
+                  <li class="flex items-start gap-2"><i data-lucide="check" class="w-3.5 h-3.5 mt-0.5 shrink-0 text-emerald-600 dark:text-emerald-400"></i><span>Halaman dashboard: ringkasan kondisi per kelurahan</span></li>
+                  <li class="flex items-start gap-2"><i data-lucide="check" class="w-3.5 h-3.5 mt-0.5 shrink-0 text-emerald-600 dark:text-emerald-400"></i><span>Visualisasi masalah kesehatan tertinggi per RT/RW/kelurahan</span></li>
+                  <li class="flex items-start gap-2"><i data-lucide="check" class="w-3.5 h-3.5 mt-0.5 shrink-0 text-emerald-600 dark:text-emerald-400"></i><span>Filter wilayah, kelompok sasaran, periode waktu</span></li>
+                  <li class="flex items-start gap-2"><i data-lucide="check" class="w-3.5 h-3.5 mt-0.5 shrink-0 text-emerald-600 dark:text-emerald-400"></i><span>Drill-down kelurahan → RW → RT</span></li>
+                  <li class="flex items-start gap-2"><i data-lucide="check" class="w-3.5 h-3.5 mt-0.5 shrink-0 text-emerald-600 dark:text-emerald-400"></i><span>Kuota akses per peran: kader hanya wilayahnya; pembina/kapus 4 kelurahan</span></li>
+                </ul>
+              </div>
+              <div>
+                <h4 class="text-[11px] font-semibold uppercase tracking-[0.16em] text-zinc-500 dark:text-zinc-400 flex items-center gap-1.5">
+                  <i data-lucide="x-circle" class="w-3.5 h-3.5 text-zinc-400 dark:text-zinc-500"></i>Bukan bagian milestone ini
+                </h4>
+                <ul class="mt-3 space-y-2 text-sm text-zinc-500 dark:text-zinc-400 list-none p-0">
+                  <li class="flex items-start gap-2"><i data-lucide="minus" class="w-3.5 h-3.5 mt-0.5 shrink-0"></i><span>Notifikasi &amp; pengingat (M4)</span></li>
+                  <li class="flex items-start gap-2"><i data-lucide="minus" class="w-3.5 h-3.5 mt-0.5 shrink-0"></i><span>Rekap &amp; ekspor (M4)</span></li>
+                  <li class="flex items-start gap-2"><i data-lucide="minus" class="w-3.5 h-3.5 mt-0.5 shrink-0"></i><span>Analitik prediktif</span></li>
+                  <li class="flex items-start gap-2"><i data-lucide="minus" class="w-3.5 h-3.5 mt-0.5 shrink-0"></i><span>Data aktual nyata (pakai contoh sampai izin DPMPTSP)</span></li>
+                </ul>
+              </div>
+            </div>
+            <div class="mt-5 rounded-md border-l-4 border-emerald-500 bg-emerald-50 dark:bg-emerald-950/30 p-4 text-sm text-emerald-900 dark:text-emerald-200">
+              <p class="flex items-start gap-2"><i data-lucide="flag" class="w-4 h-4 mt-0.5 shrink-0"></i><span><span class="font-semibold">Selesai ketika:</span> Pembina bisa memfilter dashboard dan langsung melihat urutan masalah kesehatan per wilayah dari data yang diinput kader.</span></p>
+            </div>
+          </div>
+        </article>
+
+        <article data-acc="ms-4" class="acc print-card rounded-lg border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 overflow-hidden">
+          <button class="acc-head w-full flex items-center gap-3 p-5 text-left border-b border-zinc-100 dark:border-zinc-800">
+            <span class="shrink-0 w-8 h-8 rounded-full bg-zinc-900 dark:bg-zinc-100 text-zinc-50 dark:text-zinc-900 flex items-center justify-center text-sm font-semibold">4</span>
+            <h3 class="font-semibold text-lg text-zinc-900 dark:text-zinc-100">Notifikasi, Rekap &amp; Uji Lapangan</h3>
+            <i data-lucide="chevron-down" class="chev w-4 h-4 ml-auto text-zinc-400"></i>
+          </button>
+          <div class="acc-body p-5">
+            <p class="text-zinc-600 dark:text-zinc-400 leading-relaxed">Melengkapi siklus kerja: rekap otomatis + ekspor menggantikan rekap manual, pengingat jadwal kader, dan penyempurnaan untuk uji lapangan/penyerahan.</p>
+            <div class="mt-5 grid grid-cols-1 md:grid-cols-2 gap-5">
+              <div>
+                <h4 class="text-[11px] font-semibold uppercase tracking-[0.16em] text-zinc-500 dark:text-zinc-400 flex items-center gap-1.5">
+                  <i data-lucide="check-circle-2" class="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400"></i>Yang dibangun
+                </h4>
+                <ul class="mt-3 space-y-2 text-sm text-zinc-700 dark:text-zinc-300 list-none p-0">
+                  <li class="flex items-start gap-2"><i data-lucide="check" class="w-3.5 h-3.5 mt-0.5 shrink-0 text-emerald-600 dark:text-emerald-400"></i><span>Pengingat jadwal kunjungan untuk kader: in-app + email otomatis free-tier</span></li>
+                  <li class="flex items-start gap-2"><i data-lucide="check" class="w-3.5 h-3.5 mt-0.5 shrink-0 text-emerald-600 dark:text-emerald-400"></i><span>Status jadwal: terjadwal / selesai / terlewat</span></li>
+                  <li class="flex items-start gap-2"><i data-lucide="check" class="w-3.5 h-3.5 mt-0.5 shrink-0 text-emerald-600 dark:text-emerald-400"></i><span>Rekap otomatis per kelompok sasaran &amp; per wilayah</span></li>
+                  <li class="flex items-start gap-2"><i data-lucide="check" class="w-3.5 h-3.5 mt-0.5 shrink-0 text-emerald-600 dark:text-emerald-400"></i><span>Ekspor rekap ke Excel &amp; PDF</span></li>
+                  <li class="flex items-start gap-2"><i data-lucide="check" class="w-3.5 h-3.5 mt-0.5 shrink-0 text-emerald-600 dark:text-emerald-400"></i><span>Penyempurnaan penggunaan HP (hasil uji kader)</span></li>
+                  <li class="flex items-start gap-2"><i data-lucide="check" class="w-3.5 h-3.5 mt-0.5 shrink-0 text-emerald-600 dark:text-emerald-400"></i><span>Panduan penggunaan singkat + dokumentasi handover</span></li>
+                </ul>
+              </div>
+              <div>
+                <h4 class="text-[11px] font-semibold uppercase tracking-[0.16em] text-zinc-500 dark:text-zinc-400 flex items-center gap-1.5">
+                  <i data-lucide="x-circle" class="w-3.5 h-3.5 text-zinc-400 dark:text-zinc-500"></i>Bukan bagian milestone ini
+                </h4>
+                <ul class="mt-3 space-y-2 text-sm text-zinc-500 dark:text-zinc-400 list-none p-0">
+                  <li class="flex items-start gap-2"><i data-lucide="minus" class="w-3.5 h-3.5 mt-0.5 shrink-0"></i><span>Notifikasi WhatsApp (lanjutan, butuh validasi mitra &amp; biaya)</span></li>
+                  <li class="flex items-start gap-2"><i data-lucide="minus" class="w-3.5 h-3.5 mt-0.5 shrink-0"></i><span>Aplikasi mobile native</span></li>
+                  <li class="flex items-start gap-2"><i data-lucide="minus" class="w-3.5 h-3.5 mt-0.5 shrink-0"></i><span>Integrasi ke server pusat Kemenkes</span></li>
+                </ul>
+              </div>
+            </div>
+            <div class="mt-5 rounded-md border-l-4 border-emerald-500 bg-emerald-50 dark:bg-emerald-950/30 p-4 text-sm text-emerald-900 dark:text-emerald-200">
+              <p class="flex items-start gap-2"><i data-lucide="flag" class="w-4 h-4 mt-0.5 shrink-0"></i><span><span class="font-semibold">Selesai ketika:</span> Kader bisa melihat &amp; menandai jadwalnya, pembina bisa mengekspor rekap, dan aplikasi stabil dipakai dari ponsel pada uji lapangan, ditutup dengan dokumen handover.</span></p>
+            </div>
+          </div>
+        </article>
+
+      </div>
+    </section>
+
+    <!-- WORK PLAN & TIMELINE (interactive) -->
+    <section id="rencana" class="scroll-mt-28">
+      <div class="flex items-center justify-between gap-3 flex-wrap">
+        <h2 class="text-xs font-semibold uppercase tracking-[0.18em] text-zinc-500 dark:text-zinc-400 flex items-center gap-2">
+          <i data-lucide="kanban" class="w-3.5 h-3.5"></i>Rencana Kerja &amp; Timeline
+        </h2>
+        <div class="no-print flex items-center gap-2">
+          <button id="acc-open"   class="text-xs px-3 py-1.5 rounded-md border border-zinc-200 dark:border-zinc-800 hover:bg-zinc-100 dark:hover:bg-zinc-900">Perluas semua</button>
+          <button id="acc-close"  class="text-xs px-3 py-1.5 rounded-md border border-zinc-200 dark:border-zinc-800 hover:bg-zinc-100 dark:hover:bg-zinc-900">Sempitkan semua</button>
+          <button id="done-clear" class="text-xs px-3 py-1.5 rounded-md border border-rose-200 dark:border-rose-900 text-rose-600 dark:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-950/30">Bersihkan centang</button>
+        </div>
+      </div>
+      <div class="mt-3 rounded-lg border border-indigo-200 dark:border-indigo-900 bg-indigo-50 dark:bg-indigo-950/30 p-4 text-sm text-indigo-900 dark:text-indigo-200 flex items-start gap-2">
+        <i data-lucide="mouse-pointer-click" class="w-4 h-4 mt-0.5 shrink-0"></i>
+        <p><span class="font-semibold">Target 27 September 2026:</span> aplikasi bisa dicoba klien secara online (deploy hosting gratis). Task di bawah bisa <strong>disaring per jalur/level/status</strong>, dicentang sebagai progress, dan tersimpan di perangkat ini. Level: 🟢 S / 🟡 M / 🔴 L. Estimasi tentatif, dikoreksi setelah URS acc.</p>
+      </div>
+
+      <div id="fasa-boards" class="mt-6 space-y-6"></div>
+
+      <div class="mt-6 space-y-2.5 text-sm">
+        <p class="flex items-start gap-3"><i data-lucide="alert-triangle" class="w-4 h-4 mt-0.5 shrink-0 text-amber-500"></i><span class="text-zinc-700 dark:text-zinc-300">Data real 4 kelurahan menunggu izin DPMPTSP → demo memakai <strong>data dummy</strong>; data nyata disuntik setelah izin jadi.</span></p>
+        <p class="flex items-start gap-3"><i data-lucide="alert-triangle" class="w-4 h-4 mt-0.5 shrink-0 text-amber-500"></i><span class="text-zinc-700 dark:text-zinc-300">Format form Kemenkes belum stabil → seluruh rancangan bergantung pada <strong>definisi field</strong> (tidak boleh hard-code).</span></p>
+        <p class="flex items-start gap-3"><i data-lucide="alert-triangle" class="w-4 h-4 mt-0.5 shrink-0 text-amber-500"></i><span class="text-zinc-700 dark:text-zinc-300">Notifikasi (B8–C6) &amp; rekap/ekspor (B9–C7) bersifat <strong>bonus</strong> bila waktu Fasa III menipis; prioritas demo: D1–D3.</span></p>
+        <p class="flex items-start gap-3"><i data-lucide="book-open" class="w-4 h-4 mt-0.5 shrink-0 text-zinc-400 dark:text-zinc-600"></i><span class="text-zinc-700 dark:text-zinc-300">L-01 <em>Logbook</em> Asah/Dicoding per individu berjalan di sela-sela (bukan task bersama).</span></p>
+      </div>
+    </section>
+
+    <!-- OPEN QUESTIONS -->
+    <section id="qna" class="scroll-mt-28">
+      <h2 class="text-xs font-semibold uppercase tracking-[0.18em] text-zinc-500 dark:text-zinc-400 flex items-center gap-2">
+        <i data-lucide="circle-help" class="w-3.5 h-3.5"></i>Pertanyaan terbuka (validasi mitra)
+      </h2>
+      <ul class="mt-5 list-none p-0 space-y-2.5 text-sm text-zinc-700 dark:text-zinc-300">
+        <li class="flex items-start gap-3"><span class="mt-1.5 w-3.5 h-3.5 shrink-0 rounded-sm border border-zinc-300 dark:border-zinc-700"></span><span>Bentuk notifikasi final — v1 = in-app + email; konfirmasi saluran yang benar-benar dipakai kader (WhatsApp/email/app) serta kepada siapa dan trigger-nya.</span></li>
+        <li class="flex items-start gap-3"><span class="mt-1.5 w-3.5 h-3.5 shrink-0 rounded-sm border border-zinc-300 dark:border-zinc-700"></span><span>Rencana demo 27 Sep 2026 — konfirmasi kesediaan mitra (Bu Dian / Kepala Puskesmas) menerima demo online, bisa dari HP/PC.</span></li>
+        <li class="flex items-start gap-3"><span class="mt-1.5 w-3.5 h-3.5 shrink-0 rounded-sm border border-zinc-300 dark:border-zinc-700"></span><span>Data individu vs agregat — tampilkan per orang atau cukup per wilayah (privasi).</span></li>
+        <li class="flex items-start gap-3"><span class="mt-1.5 w-3.5 h-3.5 shrink-0 rounded-sm border border-zinc-300 dark:border-zinc-700"></span><span>Batasan akses data — siapa boleh melihat data apa (kader, pembina, kepala Puskesmas, admin).</span></li>
+        <li class="flex items-start gap-3"><span class="mt-1.5 w-3.5 h-3.5 shrink-0 rounded-sm border border-zinc-300 dark:border-zinc-700"></span><span>Tren waktu — perlu perbandingan data antar tahun?</span></li>
+        <li class="flex items-start gap-3"><span class="mt-1.5 w-3.5 h-3.5 shrink-0 rounded-sm border border-zinc-300 dark:border-zinc-700"></span><span>Jumlah pasti posyandu &amp; target KK per kelurahan (dari Bu Dian setelah DPMPTSP).</span></li>
+        <li class="flex items-start gap-3"><span class="mt-1.5 w-3.5 h-3.5 shrink-0 rounded-sm border border-zinc-300 dark:border-zinc-700"></span><span>Operator harian sistem setelah handover.</span></li>
+      </ul>
+    </section>
+
+    <footer class="pt-8 border-t border-zinc-200 dark:border-zinc-800 text-xs text-zinc-500 dark:text-zinc-400">
+      Dibuat dengan <span class="font-medium">bm-prd-creator</span> · update 9 Sep 2026 (interaktif + full-width responsive). Centang progress &amp; lipatan kartu tersimpan otomatis di perangkat ini. Buka <code class="font-mono">01 Notes/milestones/1-foundation-auth-masterdata/prompt.md</code> untuk mulai membangun.
+    </footer>
+  </main>
+
+  <!-- Back to top -->
+  <button id="to-top" class="no-print hidden fixed bottom-5 right-5 z-30 w-10 h-10 rounded-full bg-zinc-900 dark:bg-zinc-100 text-zinc-50 dark:text-zinc-900 shadow-lg flex items-center justify-center" aria-label="Kembali ke atas">
+    <i data-lucide="chevron-up" class="w-5 h-5"></i>
+  </button>
+
+  <script>
+    (function () {
+      'use strict';
+
+      /* ---------- helpers ---------- */
+      var $ = function (sel, ctx) { return (ctx || document).querySelector(sel); };
+      var $$ = function (sel, ctx) { return Array.prototype.slice.call((ctx || document).querySelectorAll(sel)); };
+      var $id = function (id) { return document.getElementById(id); };
+
+      /* ---------- theme ---------- */
+      var htmlEl = document.documentElement;
+      var storedTheme = localStorage.getItem('prd-theme');
+      var prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+      var initial = storedTheme || (prefersDark ? 'dark' : 'light');
+      if (initial === 'dark') htmlEl.classList.add('dark');
+      var themeBtn = $id('theme-toggle');
+      if (themeBtn) themeBtn.addEventListener('click', function () {
+        var isDark = htmlEl.classList.toggle('dark');
+        localStorage.setItem('prd-theme', isDark ? 'dark' : 'light');
+      });
+
+      /* ---------- task data ---------- */
+      var FASAS = {
+        1: { romawi: 'I',   judul: 'Fondasi',                          tanggal: '10–14 Sep', gate: 'Gate 14: login + master data jalan' },
+        2: { romawi: 'II',  judul: 'Inti',                             tanggal: '15–21 Sep', gate: 'Gate 21: kader input → dashboard tampil' },
+        3: { romawi: 'III', judul: 'Finalisasi, Deploy &amp; Demo',    tanggal: '22–27 Sep', gate: 'Demo online 27 Sep' }
+      };
+      var JALUR = {
+        A: { label: 'Data &amp; Desain', icon: 'layers',   text: 'text-emerald-600 dark:text-emerald-400', top: 'border-t-emerald-300 dark:border-t-emerald-800',     chip: 'bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-300 border-emerald-200 dark:border-emerald-900' },
+        B: { label: 'Backend',          icon: 'server',   text: 'text-sky-600 dark:text-sky-400',          top: 'border-t-sky-300 dark:border-t-sky-800',          chip: 'bg-sky-50 dark:bg-sky-950/40 text-sky-700 dark:text-sky-300 border-sky-200 dark:border-sky-900' },
+        C: { label: 'Frontend',         icon: 'layout',   text: 'text-violet-600 dark:text-violet-400',    top: 'border-t-violet-300 dark:border-t-violet-800',     chip: 'bg-violet-50 dark:bg-violet-950/40 text-violet-700 dark:text-violet-300 border-violet-200 dark:border-violet-900' },
+        D: { label: 'Demo &amp; Packing', icon: 'rocket', text: 'text-amber-600 dark:text-amber-400',      top: 'border-t-amber-300 dark:border-t-amber-800',       chip: 'bg-amber-50 dark:bg-amber-950/40 text-amber-700 dark:text-amber-300 border-amber-200 dark:border-amber-900' }
+      };
+      var LEVEL = {
+        S: { icon: '🟢', cls: 'bg-emerald-100 dark:bg-emerald-900/40 text-emerald-800 dark:text-emerald-200' },
+        M: { icon: '🟡', cls: 'bg-amber-100 dark:bg-amber-900/40 text-amber-800 dark:text-amber-200' },
+        L: { icon: '🔴', cls: 'bg-rose-100 dark:bg-rose-900/40 text-rose-800 dark:text-rose-200' }
+      };
+
+      var TASKS = [
+        { id: 'B1', fasa: 1, jalur: 'B', nama: 'Scaffold repo client+server, env, ESLint, script migrate/seed', level: 'M', jam: 6,  dep: [] },
+        { id: 'B2', fasa: 1, jalur: 'B', nama: 'Skema DB + migration (dari Field Checklist)', level: 'L', jam: 12, dep: ['B1'] },
+        { id: 'B3', fasa: 1, jalur: 'B', nama: 'Auth & role (4 peran) + middleware', level: 'M', jam: 10, dep: ['B1'] },
+        { id: 'B4', fasa: 1, jalur: 'B', nama: 'API CRUD master data (kelurahan, RW/RT, posyandu, kader)', level: 'M', jam: 10, dep: ['B3'] },
+        { id: 'C1', fasa: 1, jalur: 'C', nama: 'Scaffold React + routing + layout + guard peran', level: 'M', jam: 8,  dep: [] },
+        { id: 'C2', fasa: 1, jalur: 'C', nama: 'Halaman login', level: 'S', jam: 5, dep: ['C1'] },
+        { id: 'C3', fasa: 1, jalur: 'C', nama: 'Halaman master data + definisi field (admin)', level: 'M', jam: 10, dep: ['C1', 'B4'] },
+        { id: 'A1', fasa: 1, jalur: 'A', nama: 'Seed definisi field 8 kelompok sasaran (dari ekstraksi)', level: 'L', jam: 10, dep: [] },
+        { id: 'A2', fasa: 1, jalur: 'A', nama: 'Dummy data 4 kelurahan (KK, anggota, kunjungan)', level: 'S', jam: 6, dep: ['A1'] },
+        { id: 'A3', fasa: 1, jalur: 'A', nama: 'Wireframe & user flow mobile-first', level: 'S', jam: 8, dep: [] },
+
+        { id: 'B5', fasa: 2, jalur: 'B', nama: 'API definisi field (CRUD, urutan, aktif/wajib)', level: 'L', jam: 10, dep: ['B4'] },
+        { id: 'B6', fasa: 2, jalur: 'B', nama: 'API kunjungan KR (keluarga+anggota+sasaran+masalah)', level: 'L', jam: 14, dep: ['B5'] },
+        { id: 'B7', fasa: 2, jalur: 'B', nama: 'API dashboard agregat per RT/RW/kelurahan + filter', level: 'L', jam: 14, dep: ['B6'] },
+        { id: 'C4', fasa: 2, jalur: 'C', nama: 'Form input KR dinamis (render dari definisi field, mobile)', level: 'L', jam: 16, dep: ['B5', 'B6'] },
+        { id: 'C5', fasa: 2, jalur: 'C', nama: 'Dashboard PWS (visualisasi, filter, drill-down)', level: 'L', jam: 14, dep: ['B7'] },
+        { id: 'A4', fasa: 2, jalur: 'A', nama: 'Uji isi field dengan dummy + kasus demo kader', level: 'S', jam: 4, dep: ['A2', 'C4'] },
+
+        { id: 'B8', fasa: 3, jalur: 'B', nama: 'API notifikasi/pengingat jadwal + email (free-tier)', level: 'M', jam: 12, dep: ['B6'] },
+        { id: 'B9', fasa: 3, jalur: 'B', nama: 'API rekap & ekspor', level: 'M', jam: 8, dep: ['B6'] },
+        { id: 'C6', fasa: 3, jalur: 'C', nama: 'Notifikasi in-app + daftar jadwal kader', level: 'M', jam: 8, dep: ['B8'] },
+        { id: 'C7', fasa: 3, jalur: 'C', nama: 'Rekap & ekspor Excel/PDF', level: 'S', jam: 6, dep: ['B9'] },
+        { id: 'C8', fasa: 3, jalur: 'C', nama: 'Polish mobile, loading/error, aksesibilitas', level: 'M', jam: 8, dep: ['C4', 'C5'] },
+        { id: 'D1', fasa: 3, jalur: 'D', nama: 'Deploy online: Vercel (frontend) + backend (Render/Railway) + Supabase (PostgreSQL)', level: 'M', jam: 6, dep: ['B/C inti'] },
+        { id: 'D2', fasa: 3, jalur: 'D', nama: 'Akun demo 4 peran + data placeholder', level: 'S', jam: 2, dep: ['D1'] },
+        { id: 'D3', fasa: 3, jalur: 'D', nama: 'Script demo 15 menit + uji dari HP client', level: 'S', jam: 3, dep: ['D2'] },
+        { id: 'D4', fasa: 3, jalur: 'D', nama: 'Dokumentasi ringkas + draft handover', level: 'S', jam: 4, dep: [] }
+      ];
+
+      var taskIds = {};
+      TASKS.forEach(function (t) { taskIds[t.id] = true; });
+
+      /* ---------- done state (localStorage) ---------- */
+      var getDone = function () {
+        try { return JSON.parse(localStorage.getItem('prd-done') || '[]'); } catch (e) { return []; }
+      };
+      var saveDone = function (arr) { localStorage.setItem('prd-done', JSON.stringify(arr)); };
+      var toggleDone = function (id) {
+        var arr = getDone();
+        var i = arr.indexOf(id);
+        if (i >= 0) arr.splice(i, 1); else arr.push(id);
+        saveDone(arr);
+      };
+
+      /* ---------- hero live stats ---------- */
+      $id('stat-tasks').textContent = TASKS.length;
+      $id('stat-hours').textContent = '±' + TASKS.reduce(function (s, t) { return s + t.jam; }, 0) + ' jam';
+
+      /* ---------- filter state per fasa ---------- */
+      var filters = { 1: { jalur: 'all', level: 'all', status: 'all' },
+                      2: { jalur: 'all', level: 'all', status: 'all' },
+                      3: { jalur: 'all', level: 'all', status: 'all' } };
+
+      function filterChipsHtml(group, kind, opts, current) {
+        var html = '';
+        opts.forEach(function (o) {
+          var active = o.value === current;
+          var cls = active
+            ? 'bg-zinc-900 dark:bg-zinc-100 text-zinc-50 dark:text-zinc-900 border-zinc-900 dark:border-zinc-100'
+            : 'bg-white dark:bg-zinc-900 text-zinc-600 dark:text-zinc-400 border-zinc-200 dark:border-zinc-800 hover:border-zinc-400';
+          html += '<button type="button" class="fil-chip inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full border text-xs font-medium transition ' + cls + '" data-fasa="' + group + '" data-kind="' + kind + '" data-value="' + o.value + '">' + o.label + '</button>';
+        });
+        return html;
+      }
+
+      function matchesFilter(t, f) {
+        if (f.jalur !== 'all' && t.jalur !== f.jalur) return false;
+        if (f.level !== 'all' && t.level !== f.level) return false;
+        var done = getDone().indexOf(t.id) >= 0;
+        if (f.status === 'todo' && done) return false;
+        if (f.status === 'done' && !done) return false;
+        return true;
+      }
+
+      function depChips(dep) {
+        if (!dep || !dep.length) return '<span class="text-zinc-400">—</span>';
+        return dep.map(function (d) {
+          if (taskIds[d]) {
+            return '<span class="inline-flex items-center px-2 py-0.5 rounded-md bg-zinc-100 dark:bg-zinc-800 font-mono text-[11px] text-zinc-600 dark:text-zinc-400">' + d + '</span>';
+          }
+          return '<span class="inline-flex items-center px-2 py-0.5 rounded-md bg-zinc-100 dark:bg-zinc-800 text-[11px] text-zinc-600 dark:text-zinc-400">' + d + '</span>';
+        }).join('');
+      }
+
+      function cardHtml(t) {
+        var j = JALUR[t.jalur];
+        var lv = LEVEL[t.level];
+        var done = getDone().indexOf(t.id) >= 0;
+        var joined = depChips(t.dep);
+        return '<article class="task-card rounded-lg border border-zinc-200 dark:border-zinc-800 border-t-2 bg-white dark:bg-zinc-900 p-4 ' + j.top + (done ? ' task-done' : '') + '" data-id="' + t.id + '">' +
+          '<div class="flex items-start gap-2.5">' +
+            '<span class="shrink-0 inline-flex items-center justify-center w-9 h-9 rounded-md border ' + j.chip + ' font-mono text-xs font-bold">' + t.id + '</span>' +
+            '<div class="min-w-0 flex-1">' +
+              '<p class="task-title text-sm font-medium text-zinc-900 dark:text-zinc-100 leading-snug">' + t.nama + '</p>' +
+              '<p class="mt-1 text-xs text-zinc-500 dark:text-zinc-400 inline-flex items-center gap-1.5"><i data-lucide="' + j.icon + '" class="w-3.5 h-3.5 ' + j.text + '"></i>' + j.label + '</p>' +
+            '</div>' +
+            '<input type="checkbox" class="task-check mt-0.5 w-5 h-5 cursor-pointer accent-emerald-600" data-id="' + t.id + '"' + (done ? ' checked' : '') + ' aria-label="Tandai ' + t.id + ' selesai">' +
+          '</div>' +
+          '<div class="mt-3 flex flex-wrap items-center gap-1.5 text-xs">' +
+            '<span class="inline-flex items-center gap-1 px-2 py-1 rounded-full ' + lv.cls + ' font-medium">' + lv.icon + ' ' + t.level + '</span>' +
+            '<span class="inline-flex items-center gap-1 px-2 py-1 rounded-full bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-400"><i data-lucide="clock" class="w-3 h-3"></i>' + t.jam + ' jam</span>' +
+          '</div>' +
+          '<div class="mt-3 pt-3 border-t border-zinc-100 dark:border-zinc-800 flex items-center gap-1.5 flex-wrap text-xs text-zinc-500 dark:text-zinc-400">' +
+            '<span class="font-medium uppercase tracking-[0.12em] text-[10px]">Depends</span>' + joined +
+          '</div>' +
+        '</article>';
+      }
+
+      function fasaCardHtml(f) {
+        var meta = FASAS[f];
+        var fTasks = TASKS.filter(function (t) { return t.fasa === f; });
+        var totalJam = fTasks.reduce(function (s, t) { return s + t.jam; }, 0);
+        var doneArr = getDone();
+        var doneCount = fTasks.filter(function (t) { return doneArr.indexOf(t.id) >= 0; }).length;
+        var pct = fTasks.length ? Math.round(doneCount / fTasks.length * 100) : 0;
+        var flt = filters[f];
+        var shown = fTasks.filter(function (t) { return matchesFilter(t, flt); });
+
+        var html =
+          '<article class="acc print-card rounded-lg border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 overflow-hidden" data-acc="fasa-' + f + '">' +
+            '<header class="acc-head w-full flex items-center gap-3 p-5 text-left border-b border-zinc-100 dark:border-zinc-800">' +
+              '<span class="shrink-0 w-8 h-8 rounded-full bg-indigo-600 dark:bg-indigo-400 text-white dark:text-zinc-900 flex items-center justify-center text-sm font-semibold">' + meta.romawi + '</span>' +
+              '<div class="min-w-0">' +
+                '<h3 class="font-semibold text-lg text-zinc-900 dark:text-zinc-100">' + meta.judul + '</h3>' +
+                '<p class="text-xs text-zinc-500 dark:text-zinc-400 mt-0.5">' + meta.tanggal + ' · ' + meta.gate + '</p>' +
+              '</div>' +
+              '<i data-lucide="chevron-down" class="chev w-4 h-4 ml-auto text-zinc-400"></i>' +
+            '</header>' +
+          '<div class="acc-body p-5 space-y-4">' +
+            '<div class="grid grid-cols-1 sm:grid-cols-3 gap-3">' +
+              '<div class="rounded-lg bg-zinc-50 dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 p-3">' +
+                '<p class="text-xs text-zinc-500 dark:text-zinc-400">Task</p>' +
+                '<p class="text-lg font-bold text-zinc-900 dark:text-zinc-100">' + fTasks.length + ' task · ±' + totalJam + ' jam</p>' +
+              '</div>' +
+              '<div class="rounded-lg bg-zinc-50 dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 p-3 sm:col-span-2">' +
+                '<p class="text-xs text-zinc-500 dark:text-zinc-400 mb-1.5 flex items-center justify-between"><span>Progress</span><span id="done-label-' + f + '">' + doneCount + '/' + fTasks.length + ' selesai · ' + pct + '%</span></p>' +
+                '<div class="h-2 rounded-full bg-zinc-200 dark:bg-zinc-800 overflow-hidden">' +
+                  '<div id="prog-fill-' + f + '" class="h-full rounded-full bg-emerald-500 transition-all duration-300" style="width:' + pct + '%"></div>' +
+                '</div>' +
+              '</div>' +
+            '</div>' +
+            '<div class="flex flex-wrap items-center gap-1.5">' +
+              filterChipsHtml(f, 'jalur', [
+                { value: 'all', label: 'Semua jalur' },
+                { value: 'A', label: '🅰 Data' }, { value: 'B', label: '🅱 Backend' },
+                { value: 'C', label: '🅲 Frontend' }, { value: 'D', label: '🅳 Demo' }
+              ], flt.jalur) +
+              filterChipsHtml(f, 'level', [
+                { value: 'all', label: 'Semua level' },
+                { value: 'S', label: '🟢 S' }, { value: 'M', label: '🟡 M' }, { value: 'L', label: '🔴 L' }
+              ], flt.level) +
+              filterChipsHtml(f, 'status', [
+                { value: 'all', label: 'Semua status' },
+                { value: 'todo', label: 'Belum' }, { value: 'done', label: 'Selesai' }
+              ], flt.status) +
+              '<span class="ml-auto text-xs text-zinc-500 dark:text-zinc-400" id="cnt-' + f + '">Menampilkan ' + shown.length + '/' + fTasks.length + '</span>' +
+            '</div>' +
+            '<div id="grid-' + f + '" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-3">' +
+              shown.map(cardHtml).join('') +
+            '</div>' +
+          '</div>' +
+        '</article>';
+        return html;
+      }
+
+      function renderBoards() {
+        var boards = $id('fasa-boards');
+        boards.innerHTML = [1, 2, 3].map(fasaCardHtml).join('');
+        hydrateAcc(boards);
+        if (window.lucide) window.lucide.createIcons();
+      }
+
+      function refreshFasa(f) {
+        var fTasks = TASKS.filter(function (t) { return t.fasa === f; });
+        var doneArr = getDone();
+        var doneCount = fTasks.filter(function (t) { return doneArr.indexOf(t.id) >= 0; }).length;
+        var pct = fTasks.length ? Math.round(doneCount / fTasks.length * 100) : 0;
+        var lbl = $id('done-label-' + f); if (lbl) lbl.textContent = doneCount + '/' + fTasks.length + ' selesai · ' + pct + '%';
+        var fill = $id('prog-fill-' + f); if (fill) fill.style.width = pct + '%';
+        var flt = filters[f];
+        var shown = fTasks.filter(function (t) { return matchesFilter(t, flt); });
+        var grid = $id('grid-' + f); if (grid) grid.innerHTML = shown.map(cardHtml).join('');
+        var cnt = $id('cnt-' + f); if (cnt) cnt.textContent = 'Menampilkan ' + shown.length + '/' + fTasks.length;
+        $$( '.fil-chip', $id('fasa-boards')).forEach(function (chip) {
+          var active = filters[chip.getAttribute('data-fasa')][chip.getAttribute('data-kind')] === chip.getAttribute('data-value');
+          chip.className = 'fil-chip inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full border text-xs font-medium transition ' +
+            (active ? 'bg-zinc-900 dark:bg-zinc-100 text-zinc-50 dark:text-zinc-900 border-zinc-900 dark:border-zinc-100'
+                    : 'bg-white dark:bg-zinc-900 text-zinc-600 dark:text-zinc-400 border-zinc-200 dark:border-zinc-800 hover:border-zinc-400');
+        });
+        if (window.lucide) window.lucide.createIcons();
+        pruneAcc();
+      }
+
+      /* ---------- accordion ---------- */
+      var getAcc = function () {
+        try { return JSON.parse(localStorage.getItem('prd-acc') || '{}'); } catch (e) { return {}; }
+      };
+      var saveAcc = function (o) { localStorage.setItem('prd-acc', JSON.stringify(o)); };
+
+      function setCardState(card, open) {
+        var body = $('.acc-body', card);
+        var chev = $('.chev', card);
+        if (!body) return;
+        if (open) {
+          body.classList.remove('hidden');
+          if (chev) chev.classList.remove('rotate-180');
+        } else {
+          body.classList.add('hidden');
+          if (chev) chev.classList.add('rotate-180');
+        }
+        var key = card.getAttribute('data-acc');
+        if (key) {
+          var o = getAcc();
+          if (open) delete o[key]; else o[key] = 1;
+          saveAcc(o);
+        }
+      }
+
+      function hydrateAcc(scope) {
+        var acc = getAcc();
+        $$('.acc', scope || document).forEach(function (card) {
+          var key = card.getAttribute('data-acc');
+          setCardState(card, !(key && acc[key]));
+        });
+      }
+
+      function pruneAcc() {
+        /* remove stored keys that no longer exist in DOM */
+        var o = getAcc();
+        var alive = {};
+        $$('.acc').forEach(function (c) { var k = c.getAttribute('data-acc'); if (k) alive[k] = true; });
+        var changed = false;
+        Object.keys(o).forEach(function (k) { if (!alive[k]) { delete o[k]; changed = true; } });
+        if (changed) saveAcc(o);
+      }
+
+      function setAllState(scopeSel, open) {
+        $$(scopeSel).forEach(function (card) { setCardState(card, open); });
+      }
+
+      /* ---------- event delegation ---------- */
+      document.addEventListener('click', function (e) {
+        var t = e.target;
+
+        var head = t.closest ? t.closest('.acc-head') : null;
+        if (head) {
+          var card = head.closest('.acc');
+          if (card) setCardState(card, $('.acc-body', card).classList.contains('hidden'));
+          return;
+        }
+
+        var chip = t.closest ? t.closest('.fil-chip') : null;
+        if (chip) {
+          var f = parseInt(chip.getAttribute('data-fasa'), 10);
+          filters[f][chip.getAttribute('data-kind')] = chip.getAttribute('data-value');
+          refreshFasa(f);
+          return;
+        }
+
+        var rel = t.closest ? t.closest('.rel-chip') : null;
+        if (rel) {
+          e.preventDefault();
+          var anchor = rel.getAttribute('data-rel');
+          var el = $id(anchor);
+          if (el) {
+            el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            el.classList.remove('rel-hit');
+            void el.offsetWidth;
+            el.classList.add('rel-hit');
+            setTimeout(function () { el.classList.remove('rel-hit'); }, 2300);
+          }
+          return;
+        }
+
+        var accAll = t.closest ? t.closest('.acc-all') : null;
+        if (accAll) {
+          var scopeSel = accAll.getAttribute('data-scope');
+          var state = accAll.getAttribute('data-state');
+          setAllState(scopeSel, state === 'open');
+          return;
+        }
+
+        if (t.closest && t.closest('#acc-open')) { setAllState('#rencana .acc', true); return; }
+        if (t.closest && t.closest('#acc-close')) { setAllState('#rencana .acc', false); return; }
+
+        if (t.closest && t.closest('#done-clear')) {
+          if (window.confirm('Bersihkan semua centang progress task?')) {
+            saveDone([]);
+            [1, 2, 3].forEach(refreshFasa);
+          }
+          return;
+        }
+
+        var nav = t.closest ? t.closest('.nav-chip') : null;
+        if (nav) {
+          var spy = nav.getAttribute('data-spy');
+          $$('.nav-chip').forEach(function (c) { c.classList.remove('nav-active'); });
+          nav.classList.add('nav-active');
+          var targets = { ringkasan: 'ringkasan', fitur: 'fitur', cakupan: 'cakupan', data: 'data', milestone: 'milestone', rencana: 'rencana', qna: 'qna' };
+          var el = $id(targets[spy]);
+          if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          return;
+        }
+      });
+
+      document.addEventListener('change', function (e) {
+        var cb = e.target;
+        if (cb.classList && cb.classList.contains('task-check')) {
+          toggleDone(cb.getAttribute('data-id'));
+          var card = cb.closest('.task-card');
+          if (card) card.classList.toggle('task-done', cb.checked);
+          var fasa = parseInt(cb.closest('.acc').getAttribute('data-acc').replace('fasa-', ''), 10);
+          refreshFasa(fasa);
+        }
+      });
+
+      /* ---------- scroll-spy ---------- */
+      var navChips = Array.prototype.slice.call(document.querySelectorAll('.nav-chip'));
+      var spyTargets = ['ringkasan', 'fitur', 'cakupan', 'data', 'milestone', 'rencana', 'qna']
+        .map(function (id) { return $id(id); }).filter(Boolean);
+
+      function setActive(id) {
+        navChips.forEach(function (c) { c.classList.toggle('nav-active', c.getAttribute('data-spy') === id); });
+      }
+
+      if ('IntersectionObserver' in window) {
+        var spyObs = new IntersectionObserver(function (entries) {
+          entries.forEach(function (en) {
+            if (en.isIntersecting) setActive(en.target.id);
+          });
+        }, { rootMargin: '-35% 0px -55% 0px' });
+        spyTargets.forEach(function (el) { spyObs.observe(el); });
+      }
+
+      /* ---------- back to top ---------- */
+      var toTop = $id('to-top');
+      window.addEventListener('scroll', function () {
+        var on = window.scrollY > 600;
+        toTop.classList.toggle('hidden', !on);
+        toTop.classList.toggle('flex', on);
+      });
+      toTop.addEventListener('click', function () { window.scrollTo({ top: 0, behavior: 'smooth' }); });
+
+      /* ---------- nav chip base style ---------- */
+      var chipBase = 'nav-chip inline-flex items-center gap-1 whitespace-nowrap px-3 py-1.5 rounded-md text-xs font-medium border ';
+      var chipOn  = 'bg-white dark:bg-zinc-900 border-zinc-200 dark:border-zinc-800 text-zinc-900 dark:text-zinc-100 shadow-sm';
+      var chipOff = 'border-transparent text-zinc-500 dark:text-zinc-400 hover:text-zinc-800 dark:hover:text-zinc-200';
+      navChips.forEach(function (c) { c.className = chipBase + chipOff; });
+      function flushNav() {
+        navChips.forEach(function (c) {
+          var on = c.classList.contains('nav-active');
+          c.className = chipBase + (on ? chipOn : chipOff);
+        });
+      }
+      /* re-apply active on load if any */
+      navChips.forEach(function (c) {
+        if (c.classList.contains('nav-active')) return;
+      });
+      /* intercept spy updates to use flushNav styling */
+      var _setActive = setActive;
+      setActive = function (id) {
+        navChips.forEach(function (c) { c.classList.toggle('nav-active', c.getAttribute('data-spy') === id); });
+        flushNav();
+      };
+      _setActive('');
+      flushNav();
+
+      /* ---------- init ---------- */
+      renderBoards();
+      hydrateAcc(document);
+      pruneAcc();
+      if (window.lucide) window.lucide.createIcons();
+    })();
+  </script>
+</body>
+</html>
