@@ -1,0 +1,693 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>PRD — Dashboard PWS Posyandu</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = { darkMode: 'class' };
+  </script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <style>
+    html { font-family: 'Inter', system-ui, -apple-system, sans-serif; }
+    body { font-feature-settings: "cv11", "ss01"; }
+    @media print {
+      html { background: white !important; color: black !important; color-scheme: light; }
+      html.dark { color-scheme: light; }
+      html.dark body, html.dark * { background: white !important; color: black !important; border-color: #d4d4d8 !important; }
+      .no-print { display: none !important; }
+      .print-card { break-inside: avoid; page-break-inside: avoid; }
+      header.sticky { position: static !important; backdrop-filter: none !important; }
+      main { padding-top: 0 !important; }
+      a { color: black !important; text-decoration: none !important; }
+    }
+  </style>
+</head>
+<body class="bg-zinc-50 dark:bg-zinc-950 text-zinc-900 dark:text-zinc-100 antialiased">
+  <header class="sticky top-0 z-10 backdrop-blur bg-zinc-50/80 dark:bg-zinc-950/80 border-b border-zinc-200 dark:border-zinc-800">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 py-3 flex items-center justify-between">
+      <span class="text-sm font-medium text-zinc-500 dark:text-zinc-400">PRD · Dashboard PWS Posyandu</span>
+      <button id="theme-toggle" class="no-print inline-flex items-center justify-center w-9 h-9 rounded-md border border-zinc-200 dark:border-zinc-800 hover:bg-zinc-100 dark:hover:bg-zinc-900 transition" aria-label="Toggle theme">
+        <i data-lucide="sun" class="hidden dark:inline-block w-4 h-4"></i>
+        <i data-lucide="moon" class="inline-block dark:hidden w-4 h-4"></i>
+      </button>
+    </div>
+  </header>
+
+  <main class="max-w-4xl mx-auto px-4 sm:px-6 py-10 sm:py-14 space-y-14">
+
+    <!-- DISCLAIMER -->
+    <div class="rounded-lg border border-amber-200 dark:border-amber-900/60 bg-amber-50 dark:bg-amber-950/30 p-4 text-sm text-amber-900 dark:text-amber-200">
+      <p><strong class="font-semibold">Tentang berkas ini:</strong> PRD ini beserta folder <code class="font-mono text-xs">01 Notes/milestones/</code> adalah artefak dokumentasi sementara untuk pembangunan awal aplikasi. Berkas-berkas ini bukan bagian fungsional aplikasi — kode, konfigurasi, logika runtime, pengujian, maupun proses deployment tidak boleh mengimpor, merujuk, atau bergantung pada apa pun di dalamnya. Setelah seluruh milestone awal terbangun dan dirilis, berkas-berkas ini dihapus.</p>
+    </div>
+
+    <!-- HERO -->
+    <section>
+      <h1 class="text-4xl sm:text-5xl font-bold tracking-tight">Dashboard PWS Posyandu</h1>
+      <p class="mt-5 text-lg sm:text-xl text-zinc-600 dark:text-zinc-400 leading-relaxed">Aplikasi web responsif untuk digitalisasi pendataan kunjungan rumah (KR) kader Posyandu di wilayah kerja Puskesmas Trajeng (4 kelurahan). Kader menginput hasil kunjungan, data otomatis tampil pada dashboard PWS kondisi kesehatan per wilayah, dan kader menerima pengingat jadwal kunjungan. Format form Kemenkes belum stabil, sehingga sistem wajib mendukung perubahan tanpa pembangunan ulang.</p>
+      <div class="mt-6 flex flex-wrap gap-2">
+        <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-indigo-50 dark:bg-indigo-950/40 border border-indigo-200 dark:border-indigo-900 text-xs font-medium text-indigo-700 dark:text-indigo-300">Update 9 Sep 2026</span>
+        <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 text-xs font-medium text-zinc-700 dark:text-zinc-300">React</span>
+        <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 text-xs font-medium text-zinc-700 dark:text-zinc-300">Express / Node.js</span>
+        <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 text-xs font-medium text-zinc-700 dark:text-zinc-300">PostgreSQL (data fleksibel)</span>
+        <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 text-xs font-medium text-zinc-700 dark:text-zinc-300">REST API</span>
+        <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 text-xs font-medium text-zinc-700 dark:text-zinc-300">Web responsif (mobile)</span>
+        <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 text-xs font-medium text-zinc-700 dark:text-zinc-300">Ekspor Excel/PDF</span>
+        <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 text-xs font-medium text-zinc-700 dark:text-zinc-300">Deploy online</span>
+      </div>
+      <p class="mt-4 text-sm text-zinc-500 dark:text-zinc-400">Koreksi 9 Sep: 8 kelompok sasaran · notifikasi v1 = in-app + email · Rencana Kerja &amp; Timeline target demo online 27 Sep 2026.</p>
+    </section>
+
+    <!-- WHAT THE APP DOES -->
+    <section>
+      <h2 class="text-xs font-semibold uppercase tracking-[0.18em] text-zinc-500 dark:text-zinc-400 flex items-center gap-2">
+        <i data-lucide="sparkles" class="w-3.5 h-3.5"></i>Apa yang aplikasi lakukan
+      </h2>
+      <ul class="mt-5 grid grid-cols-1 sm:grid-cols-2 gap-3 list-none p-0">
+        <li class="print-card rounded-lg border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 p-4">
+          <div class="flex items-start gap-3">
+            <div class="shrink-0 mt-0.5 w-8 h-8 rounded-md bg-zinc-100 dark:bg-zinc-800 flex items-center justify-center">
+              <i data-lucide="users" class="w-4 h-4 text-zinc-700 dark:text-zinc-300"></i>
+            </div>
+            <div>
+              <p class="font-medium text-zinc-900 dark:text-zinc-100">Login &amp; peran</p>
+              <p class="mt-1 text-sm text-zinc-600 dark:text-zinc-400 leading-relaxed">Kader, pembina, kepala Puskesmas, dan admin masuk dengan hak akses berbeda (input vs baca vs kelola).</p>
+            </div>
+          </div>
+        </li>
+        <li class="print-card rounded-lg border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 p-4">
+          <div class="flex items-start gap-3">
+            <div class="shrink-0 mt-0.5 w-8 h-8 rounded-md bg-zinc-100 dark:bg-zinc-800 flex items-center justify-center">
+              <i data-lucide="file-text" class="w-4 h-4 text-zinc-700 dark:text-zinc-300"></i>
+            </div>
+            <div>
+              <p class="font-medium text-zinc-900 dark:text-zinc-100">Input kunjungan rumah digital</p>
+              <p class="mt-1 text-sm text-zinc-600 dark:text-zinc-400 leading-relaxed">Kader mengisi hasil kunjungan mengikuti struktur form resmi (data keluarga + per kelompok sasaran), termasuk menandai masalah kesehatan.</p>
+            </div>
+          </div>
+        </li>
+        <li class="print-card rounded-lg border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 p-4">
+          <div class="flex items-start gap-3">
+            <div class="shrink-0 mt-0.5 w-8 h-8 rounded-md bg-zinc-100 dark:bg-zinc-800 flex items-center justify-center">
+              <i data-lucide="wand-2" class="w-4 h-4 text-zinc-700 dark:text-zinc-300"></i>
+            </div>
+            <div>
+              <p class="font-medium text-zinc-900 dark:text-zinc-100">Form fleksibel</p>
+              <p class="mt-1 text-sm text-zinc-600 dark:text-zinc-400 leading-relaxed">Admin mengubah struktur form (tambah/edit/nonaktifkan field) tanpa menulis ulang aplikasi, mengikuti format Kemenkes yang masih berubah.</p>
+            </div>
+          </div>
+        </li>
+        <li class="print-card rounded-lg border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 p-4">
+          <div class="flex items-start gap-3">
+            <div class="shrink-0 mt-0.5 w-8 h-8 rounded-md bg-zinc-100 dark:bg-zinc-800 flex items-center justify-center">
+              <i data-lucide="eye" class="w-4 h-4 text-zinc-700 dark:text-zinc-300"></i>
+            </div>
+            <div>
+              <p class="font-medium text-zinc-900 dark:text-zinc-100">Dashboard PWS</p>
+              <p class="mt-1 text-sm text-zinc-600 dark:text-zinc-400 leading-relaxed">Penyakit/masalah kesehatan tertinggi per RT/RW/kelurahan (contoh: hipertensi tidak patuh berobat), dengan filter wilayah, kelompok sasaran, dan waktu.</p>
+            </div>
+          </div>
+        </li>
+        <li class="print-card rounded-lg border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 p-4">
+          <div class="flex items-start gap-3">
+            <div class="shrink-0 mt-0.5 w-8 h-8 rounded-md bg-zinc-100 dark:bg-zinc-800 flex items-center justify-center">
+              <i data-lucide="bell" class="w-4 h-4 text-zinc-700 dark:text-zinc-300"></i>
+            </div>
+            <div>
+              <p class="font-medium text-zinc-900 dark:text-zinc-100">Pengingat jadwal (in-app + email)</p>
+              <p class="mt-1 text-sm text-zinc-600 dark:text-zinc-400 leading-relaxed">Kader tahu kapan waktunya kunjungan rumah (rutin 1×/tahun atau khusus door-to-door) dan ketika jadwal terlewat; pengingat email otomatis (gratis) sebagai saluran kedua. WhatsApp tidak termasuk v1.</p>
+            </div>
+          </div>
+        </li>
+        <li class="print-card rounded-lg border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 p-4">
+          <div class="flex items-start gap-3">
+            <div class="shrink-0 mt-0.5 w-8 h-8 rounded-md bg-zinc-100 dark:bg-zinc-800 flex items-center justify-center">
+              <i data-lucide="download" class="w-4 h-4 text-zinc-700 dark:text-zinc-300"></i>
+            </div>
+            <div>
+              <p class="font-medium text-zinc-900 dark:text-zinc-100">Rekap &amp; ekspor</p>
+              <p class="mt-1 text-sm text-zinc-600 dark:text-zinc-400 leading-relaxed">Rekap otomatis per kelompok sasaran/wilayah menggantikan rekap manual Excel, dapat diekspor ke Excel &amp; PDF.</p>
+            </div>
+          </div>
+        </li>
+        <li class="print-card rounded-lg border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 p-4">
+          <div class="flex items-start gap-3">
+            <div class="shrink-0 mt-0.5 w-8 h-8 rounded-md bg-zinc-100 dark:bg-zinc-800 flex items-center justify-center">
+              <i data-lucide="database" class="w-4 h-4 text-zinc-700 dark:text-zinc-300"></i>
+            </div>
+            <div>
+              <p class="font-medium text-zinc-900 dark:text-zinc-100">Master data</p>
+              <p class="mt-1 text-sm text-zinc-600 dark:text-zinc-400 leading-relaxed">Admin mengelola kelurahan, posyandu, kader, dan wilayah RW/RT.</p>
+            </div>
+          </div>
+        </li>
+      </ul>
+    </section>
+
+    <!-- ALREADY PROVIDED -->
+    <section>
+      <h2 class="text-xs font-semibold uppercase tracking-[0.18em] text-zinc-500 dark:text-zinc-400 flex items-center gap-2">
+        <i data-lucide="package-check" class="w-3.5 h-3.5"></i>Sudah tersedia dari riset vault
+      </h2>
+      <ul class="mt-5 flex flex-wrap gap-2 list-none p-0">
+        <li class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 text-sm text-zinc-700 dark:text-zinc-300">
+          <i data-lucide="check" class="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400"></i>URS &amp; prioritas kebutuhan [M]/[S]
+        </li>
+        <li class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 text-sm text-zinc-700 dark:text-zinc-300">
+          <i data-lucide="check" class="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400"></i>Struktur form checklist KR (PDF 35 hlm)
+        </li>
+        <li class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 text-sm text-zinc-700 dark:text-zinc-300">
+          <i data-lucide="check" class="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400"></i>8 kelompok sasaran siklus hidup (koreksi 9 Sep)
+        </li>
+        <li class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 text-sm text-zinc-700 dark:text-zinc-300">
+          <i data-lucide="check" class="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400"></i>Alur proses kunjungan saat ini
+        </li>
+        <li class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 text-sm text-zinc-700 dark:text-zinc-300">
+          <i data-lucide="check" class="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400"></i>Konteks kebijakan ILP &amp; timeline KR
+        </li>
+        <li class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 text-sm text-zinc-700 dark:text-zinc-300">
+          <i data-lucide="check" class="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400"></i>Pemetaan stakeholder &amp; rencana 3-fasa (demo 27 Sep)
+        </li>
+      </ul>
+      <p class="mt-3 text-sm text-zinc-500 dark:text-zinc-400">Tidak ada kode atau starter template yang sudah ada — pembangunan dimulai dari nol di Milestone 1.</p>
+    </section>
+
+    <!-- OUT OF SCOPE -->
+    <section>
+      <h2 class="text-xs font-semibold uppercase tracking-[0.18em] text-zinc-500 dark:text-zinc-400 flex items-center gap-2">
+        <i data-lucide="minus-circle" class="w-3.5 h-3.5"></i>Di luar cakupan (v1)
+      </h2>
+      <ul class="mt-5 space-y-2.5 list-none p-0">
+        <li class="flex items-start gap-3">
+          <i data-lucide="x" class="w-4 h-4 mt-1 shrink-0 text-zinc-400 dark:text-zinc-600"></i>
+          <span class="text-zinc-700 dark:text-zinc-300"><span class="font-medium">Bukan pengganti aplikasi Kemenkes</span><span class="text-zinc-500 dark:text-zinc-400"> — sistem ini alat PWS tingkat kelurahan/Puskesmas; data tidak dikirim ke server pusat/SatuSehat.</span></span>
+        </li>
+        <li class="flex items-start gap-3">
+          <i data-lucide="x" class="w-4 h-4 mt-1 shrink-0 text-zinc-400 dark:text-zinc-600"></i>
+          <span class="text-zinc-700 dark:text-zinc-300"><span class="font-medium">Tanpa diagnosis medis</span><span class="text-zinc-500 dark:text-zinc-400"> — hanya pencatatan &amp; visualisasi kondisi, bukan sistem pakar.</span></span>
+        </li>
+        <li class="flex items-start gap-3">
+          <i data-lucide="x" class="w-4 h-4 mt-1 shrink-0 text-zinc-400 dark:text-zinc-600"></i>
+          <span class="text-zinc-700 dark:text-zinc-300"><span class="font-medium">Tanpa aplikasi mobile native</span><span class="text-zinc-500 dark:text-zinc-400"> — cukup web responsif yang bisa dibuka dari HP kader.</span></span>
+        </li>
+        <li class="flex items-start gap-3">
+          <i data-lucide="x" class="w-4 h-4 mt-1 shrink-0 text-zinc-400 dark:text-zinc-600"></i>
+          <span class="text-zinc-700 dark:text-zinc-300"><span class="font-medium">Tanpa notifikasi WhatsApp di v1</span><span class="text-zinc-500 dark:text-zinc-400"> — WhatsApp dibuka sebagai pengembangan lanjutan (validasi mitra + biaya). Email reminder free-tier termasuk v1 sebagai pelengkap notifikasi in-app.</span></span>
+        </li>
+        <li class="flex items-start gap-3">
+          <i data-lucide="x" class="w-4 h-4 mt-1 shrink-0 text-zinc-400 dark:text-zinc-600"></i>
+          <span class="text-zinc-700 dark:text-zinc-300"><span class="font-medium">Tanpa analitik prediktif / machine learning</span><span class="text-zinc-500 dark:text-zinc-400"> — dashboard menggambarkan kondisi aktual, bukan peramalan.</span></span>
+        </li>
+        <li class="flex items-start gap-3">
+          <i data-lucide="x" class="w-4 h-4 mt-1 shrink-0 text-zinc-400 dark:text-zinc-600"></i>
+          <span class="text-zinc-700 dark:text-zinc-300"><span class="font-medium">Tanpa akses publik / multi-bahasa</span><span class="text-zinc-500 dark:text-zinc-400"> — seluruh pengguna harus login.</span></span>
+        </li>
+        <li class="flex items-start gap-3">
+          <i data-lucide="x" class="w-4 h-4 mt-1 shrink-0 text-zinc-400 dark:text-zinc-600"></i>
+          <span class="text-zinc-700 dark:text-zinc-300"><span class="font-medium">Data aktual 4 kelurahan menunggu izin DPMPTSP</span><span class="text-zinc-500 dark:text-zinc-400"> — demo 27 Sep memakai data dummy; data nyata masuk saat izin jadi.</span></span>
+        </li>
+      </ul>
+    </section>
+
+    <!-- DATA MODEL -->
+    <section>
+      <h2 class="text-xs font-semibold uppercase tracking-[0.18em] text-zinc-500 dark:text-zinc-400 flex items-center gap-2">
+        <i data-lucide="database" class="w-3.5 h-3.5"></i>Model data
+      </h2>
+      <p class="mt-3 text-sm text-zinc-500 dark:text-zinc-400">Apa yang perlu diingat aplikasi — menjadi dasar ERD saat pembangunan. Sumber definisi field: Field Checklist KR (11 bagian, 8 kelompok sasaran).</p>
+      <div class="mt-5 grid grid-cols-1 sm:grid-cols-2 gap-3">
+        <div class="print-card rounded-lg border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 p-5">
+          <div class="flex items-center gap-2">
+            <i data-lucide="box" class="w-4 h-4 text-zinc-500 dark:text-zinc-400"></i>
+            <h3 class="font-semibold text-zinc-900 dark:text-zinc-100">Pengguna &amp; Role</h3>
+          </div>
+          <table class="mt-4 w-full text-sm">
+            <tbody class="divide-y divide-zinc-100 dark:divide-zinc-800">
+              <tr><td class="py-2 pr-4 font-mono text-xs font-medium text-zinc-700 dark:text-zinc-300 align-top whitespace-nowrap">nama</td><td class="py-2 text-zinc-600 dark:text-zinc-400 leading-relaxed">nama lengkap pengguna</td></tr>
+              <tr><td class="py-2 pr-4 font-mono text-xs font-medium text-zinc-700 dark:text-zinc-300 align-top whitespace-nowrap">peran</td><td class="py-2 text-zinc-600 dark:text-zinc-400 leading-relaxed">kader, pembina kesmas, kepala Puskesmas, admin</td></tr>
+              <tr><td class="py-2 pr-4 font-mono text-xs font-medium text-zinc-700 dark:text-zinc-300 align-top whitespace-nowrap">wilayah binaan</td><td class="py-2 text-zinc-600 dark:text-zinc-400 leading-relaxed">posyandu/kelurahan tanggung jawab (kader &amp; pembina)</td></tr>
+              <tr><td class="py-2 pr-4 font-mono text-xs font-medium text-zinc-700 dark:text-zinc-300 align-top whitespace-nowrap">kontak</td><td class="py-2 text-zinc-600 dark:text-zinc-400 leading-relaxed">No. HP &amp; email untuk koordinasi &amp; notifikasi</td></tr>
+              <tr><td class="py-2 pr-4 font-mono text-xs font-medium text-zinc-700 dark:text-zinc-300 align-top whitespace-nowrap">kredensial</td><td class="py-2 text-zinc-600 dark:text-zinc-400 leading-relaxed">akun masuk sistem (bukan pihak ketiga)</td></tr>
+            </tbody>
+          </table>
+          <p class="mt-4 text-xs text-zinc-500 dark:text-zinc-400"><span class="font-semibold uppercase tracking-[0.14em] text-[11px]">Related to</span> · Posyandu, Kelurahan, Kunjungan Rumah, Jadwal Kunjungan</p>
+        </div>
+        <div class="print-card rounded-lg border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 p-5">
+          <div class="flex items-center gap-2">
+            <i data-lucide="box" class="w-4 h-4 text-zinc-500 dark:text-zinc-400"></i>
+            <h3 class="font-semibold text-zinc-900 dark:text-zinc-100">Kelurahan</h3>
+          </div>
+          <table class="mt-4 w-full text-sm">
+            <tbody class="divide-y divide-zinc-100 dark:divide-zinc-800">
+              <tr><td class="py-2 pr-4 font-mono text-xs font-medium text-zinc-700 dark:text-zinc-300 align-top whitespace-nowrap">nama</td><td class="py-2 text-zinc-600 dark:text-zinc-400 leading-relaxed">Ngemplakrejo, Tambaan, Trajeng, Mayangan</td></tr>
+              <tr><td class="py-2 pr-4 font-mono text-xs font-medium text-zinc-700 dark:text-zinc-300 align-top whitespace-nowrap">wilayah kerja</td><td class="py-2 text-zinc-600 dark:text-zinc-400 leading-relaxed">Puskesmas Trajeng (4 kelurahan wajib)</td></tr>
+              <tr><td class="py-2 pr-4 font-mono text-xs font-medium text-zinc-700 dark:text-zinc-300 align-top whitespace-nowrap">data wilayah</td><td class="py-2 text-zinc-600 dark:text-zinc-400 leading-relaxed">jumlah posyandu &amp; target KK (terisi setelah data aktual)</td></tr>
+            </tbody>
+          </table>
+          <p class="mt-4 text-xs text-zinc-500 dark:text-zinc-400"><span class="font-semibold uppercase tracking-[0.14em] text-[11px]">Related to</span> · RW/RT, Posyandu, Keluarga</p>
+        </div>
+        <div class="print-card rounded-lg border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 p-5">
+          <div class="flex items-center gap-2">
+            <i data-lucide="box" class="w-4 h-4 text-zinc-500 dark:text-zinc-400"></i>
+            <h3 class="font-semibold text-zinc-900 dark:text-zinc-100">RW / RT</h3>
+          </div>
+          <table class="mt-4 w-full text-sm">
+            <tbody class="divide-y divide-zinc-100 dark:divide-zinc-800">
+              <tr><td class="py-2 pr-4 font-mono text-xs font-medium text-zinc-700 dark:text-zinc-300 align-top whitespace-nowrap">nomor</td><td class="py-2 text-zinc-600 dark:text-zinc-400 leading-relaxed">nomor RW dan nomor RT</td></tr>
+              <tr><td class="py-2 pr-4 font-mono text-xs font-medium text-zinc-700 dark:text-zinc-300 align-top whitespace-nowrap">kelurahan</td><td class="py-2 text-zinc-600 dark:text-zinc-400 leading-relaxed">kelurahan tempat RW/RT berada</td></tr>
+            </tbody>
+          </table>
+          <p class="mt-4 text-xs text-zinc-500 dark:text-zinc-400"><span class="font-semibold uppercase tracking-[0.14em] text-[11px]">Related to</span> · Kelurahan, Keluarga (alamat), Dashboard PWS</p>
+        </div>
+        <div class="print-card rounded-lg border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 p-5">
+          <div class="flex items-center gap-2">
+            <i data-lucide="box" class="w-4 h-4 text-zinc-500 dark:text-zinc-400"></i>
+            <h3 class="font-semibold text-zinc-900 dark:text-zinc-100">Posyandu</h3>
+          </div>
+          <table class="mt-4 w-full text-sm">
+            <tbody class="divide-y divide-zinc-100 dark:divide-zinc-800">
+              <tr><td class="py-2 pr-4 font-mono text-xs font-medium text-zinc-700 dark:text-zinc-300 align-top whitespace-nowrap">nama</td><td class="py-2 text-zinc-600 dark:text-zinc-400 leading-relaxed">nama posyandu</td></tr>
+              <tr><td class="py-2 pr-4 font-mono text-xs font-medium text-zinc-700 dark:text-zinc-300 align-top whitespace-nowrap">kelurahan</td><td class="py-2 text-zinc-600 dark:text-zinc-400 leading-relaxed">kelurahan tempat posyandu berada</td></tr>
+              <tr><td class="py-2 pr-4 font-mono text-xs font-medium text-zinc-700 dark:text-zinc-300 align-top whitespace-nowrap">kader</td><td class="py-2 text-zinc-600 dark:text-zinc-400 leading-relaxed">kader yang bertugas</td></tr>
+              <tr><td class="py-2 pr-4 font-mono text-xs font-medium text-zinc-700 dark:text-zinc-300 align-top whitespace-nowrap">jadwal kegiatan</td><td class="py-2 text-zinc-600 dark:text-zinc-400 leading-relaxed">jadwal posyandu (pendukung penjadwalan)</td></tr>
+            </tbody>
+          </table>
+          <p class="mt-4 text-xs text-zinc-500 dark:text-zinc-400"><span class="font-semibold uppercase tracking-[0.14em] text-[11px]">Related to</span> · Kelurahan, Pengguna (kader), Jadwal Kunjungan</p>
+        </div>
+        <div class="print-card rounded-lg border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 p-5">
+          <div class="flex items-center gap-2">
+            <i data-lucide="box" class="w-4 h-4 text-zinc-500 dark:text-zinc-400"></i>
+            <h3 class="font-semibold text-zinc-900 dark:text-zinc-100">Keluarga (KK)</h3>
+          </div>
+          <table class="mt-4 w-full text-sm">
+            <tbody class="divide-y divide-zinc-100 dark:divide-zinc-800">
+              <tr><td class="py-2 pr-4 font-mono text-xs font-medium text-zinc-700 dark:text-zinc-300 align-top whitespace-nowrap">identitas</td><td class="py-2 text-zinc-600 dark:text-zinc-400 leading-relaxed">nama kepala keluarga &amp; No. KK</td></tr>
+              <tr><td class="py-2 pr-4 font-mono text-xs font-medium text-zinc-700 dark:text-zinc-300 align-top whitespace-nowrap">alamat</td><td class="py-2 text-zinc-600 dark:text-zinc-400 leading-relaxed">jalan/kampung, RT, RW, kelurahan</td></tr>
+              <tr><td class="py-2 pr-4 font-mono text-xs font-medium text-zinc-700 dark:text-zinc-300 align-top whitespace-nowrap">anggota</td><td class="py-2 text-zinc-600 dark:text-zinc-400 leading-relaxed">jumlah anggota keluarga</td></tr>
+              <tr><td class="py-2 pr-4 font-mono text-xs font-medium text-zinc-700 dark:text-zinc-300 align-top whitespace-nowrap">sanitasi</td><td class="py-2 text-zinc-600 dark:text-zinc-400 leading-relaxed">jamban, air bersih, ventilasi</td></tr>
+              <tr><td class="py-2 pr-4 font-mono text-xs font-medium text-zinc-700 dark:text-zinc-300 align-top whitespace-nowrap">kesehatan</td><td class="py-2 text-zinc-600 dark:text-zinc-400 leading-relaxed">jaminan kesehatan &amp; penyakit kronis keluarga (TBC, hipertensi, DM, gangguan jiwa)</td></tr>
+            </tbody>
+          </table>
+          <p class="mt-4 text-xs text-zinc-500 dark:text-zinc-400"><span class="font-semibold uppercase tracking-[0.14em] text-[11px]">Related to</span> · Anggota Keluarga, RW/RT, Kunjungan Rumah, Jadwal Kunjungan</p>
+        </div>
+        <div class="print-card rounded-lg border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 p-5">
+          <div class="flex items-center gap-2">
+            <i data-lucide="box" class="w-4 h-4 text-zinc-500 dark:text-zinc-400"></i>
+            <h3 class="font-semibold text-zinc-900 dark:text-zinc-100">Anggota Keluarga</h3>
+          </div>
+          <table class="mt-4 w-full text-sm">
+            <tbody class="divide-y divide-zinc-100 dark:divide-zinc-800">
+              <tr><td class="py-2 pr-4 font-mono text-xs font-medium text-zinc-700 dark:text-zinc-300 align-top whitespace-nowrap">identitas</td><td class="py-2 text-zinc-600 dark:text-zinc-400 leading-relaxed">nama, NIK, tanggal lahir, jenis kelamin</td></tr>
+              <tr><td class="py-2 pr-4 font-mono text-xs font-medium text-zinc-700 dark:text-zinc-300 align-top whitespace-nowrap">sosial</td><td class="py-2 text-zinc-600 dark:text-zinc-400 leading-relaxed">hubungan dengan KK, status perkawinan, pendidikan, pekerjaan</td></tr>
+              <tr><td class="py-2 pr-4 font-mono text-xs font-medium text-zinc-700 dark:text-zinc-300 align-top whitespace-nowrap">kelompok sasaran</td><td class="py-2 text-zinc-600 dark:text-zinc-400 leading-relaxed">siklus hidup (8): Ibu Hamil, Bersalin/Nifas, Bayi, Balita/Apras, Usia Sekolah/Remaja, Dewasa, Lansia, TBC</td></tr>
+            </tbody>
+          </table>
+          <p class="mt-4 text-xs text-zinc-500 dark:text-zinc-400"><span class="font-semibold uppercase tracking-[0.14em] text-[11px]">Related to</span> · Keluarga, Masalah &amp; Tindak Lanjut, Kunjungan Rumah</p>
+        </div>
+        <div class="print-card rounded-lg border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 p-5">
+          <div class="flex items-center gap-2">
+            <i data-lucide="box" class="w-4 h-4 text-zinc-500 dark:text-zinc-400"></i>
+            <h3 class="font-semibold text-zinc-900 dark:text-zinc-100">Kunjungan Rumah</h3>
+          </div>
+          <table class="mt-4 w-full text-sm">
+            <tbody class="divide-y divide-zinc-100 dark:divide-zinc-800">
+              <tr><td class="py-2 pr-4 font-mono text-xs font-medium text-zinc-700 dark:text-zinc-300 align-top whitespace-nowrap">pelaksana</td><td class="py-2 text-zinc-600 dark:text-zinc-400 leading-relaxed">kader yang melaksanakan</td></tr>
+              <tr><td class="py-2 pr-4 font-mono text-xs font-medium text-zinc-700 dark:text-zinc-300 align-top whitespace-nowrap">target</td><td class="py-2 text-zinc-600 dark:text-zinc-400 leading-relaxed">keluarga yang dikunjungi &amp; tanggal kunjungan</td></tr>
+              <tr><td class="py-2 pr-4 font-mono text-xs font-medium text-zinc-700 dark:text-zinc-300 align-top whitespace-nowrap">jenis</td><td class="py-2 text-zinc-600 dark:text-zinc-400 leading-relaxed">rutin (1×/tahun seluruh KK) atau khusus (door-to-door)</td></tr>
+              <tr><td class="py-2 pr-4 font-mono text-xs font-medium text-zinc-700 dark:text-zinc-300 align-top whitespace-nowrap">data sasaran</td><td class="py-2 text-zinc-600 dark:text-zinc-400 leading-relaxed">isi per kelompok sasaran mengikuti definisi field (fleksibel)</td></tr>
+              <tr><td class="py-2 pr-4 font-mono text-xs font-medium text-zinc-700 dark:text-zinc-300 align-top whitespace-nowrap">status</td><td class="py-2 text-zinc-600 dark:text-zinc-400 leading-relaxed">dalam proses / selesai</td></tr>
+            </tbody>
+          </table>
+          <p class="mt-4 text-xs text-zinc-500 dark:text-zinc-400"><span class="font-semibold uppercase tracking-[0.14em] text-[11px]">Related to</span> · Pengguna, Keluarga, Definisi Field Form, Jadwal Kunjungan</p>
+        </div>
+        <div class="print-card rounded-lg border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 p-5">
+          <div class="flex items-center gap-2">
+            <i data-lucide="box" class="w-4 h-4 text-zinc-500 dark:text-zinc-400"></i>
+            <h3 class="font-semibold text-zinc-900 dark:text-zinc-100">Definisi Field Form ⭐</h3>
+          </div>
+          <table class="mt-4 w-full text-sm">
+            <tbody class="divide-y divide-zinc-100 dark:divide-zinc-800">
+              <tr><td class="py-2 pr-4 font-mono text-xs font-medium text-zinc-700 dark:text-zinc-300 align-top whitespace-nowrap">identitas</td><td class="py-2 text-zinc-600 dark:text-zinc-400 leading-relaxed">nama field, label tampil, bagian form, kelompok sasaran</td></tr>
+              <tr><td class="py-2 pr-4 font-mono text-xs font-medium text-zinc-700 dark:text-zinc-300 align-top whitespace-nowrap">tipe isian</td><td class="py-2 text-zinc-600 dark:text-zinc-400 leading-relaxed">pilihan / angka / tanggal / kotak centang / teks</td></tr>
+              <tr><td class="py-2 pr-4 font-mono text-xs font-medium text-zinc-700 dark:text-zinc-300 align-top whitespace-nowrap">aturan</td><td class="py-2 text-zinc-600 dark:text-zinc-400 leading-relaxed">wajib/opsional, urutan tampil, aktif/nonaktif</td></tr>
+            </tbody>
+          </table>
+          <p class="mt-4 text-xs text-zinc-500 dark:text-zinc-400"><span class="font-semibold uppercase tracking-[0.14em] text-[11px]">Related to</span> · Kunjungan Rumah — administrasi field inilah yang menyerap perubahan format Kemenkes</p>
+        </div>
+        <div class="print-card rounded-lg border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 p-5">
+          <div class="flex items-center gap-2">
+            <i data-lucide="box" class="w-4 h-4 text-zinc-500 dark:text-zinc-400"></i>
+            <h3 class="font-semibold text-zinc-900 dark:text-zinc-100">Masalah &amp; Tindak Lanjut</h3>
+          </div>
+          <table class="mt-4 w-full text-sm">
+            <tbody class="divide-y divide-zinc-100 dark:divide-zinc-800">
+              <tr><td class="py-2 pr-4 font-mono text-xs font-medium text-zinc-700 dark:text-zinc-300 align-top whitespace-nowrap">terkait</td><td class="py-2 text-zinc-600 dark:text-zinc-400 leading-relaxed">anggota keluarga yang bermasalah</td></tr>
+              <tr><td class="py-2 pr-4 font-mono text-xs font-medium text-zinc-700 dark:text-zinc-300 align-top whitespace-nowrap">masalah</td><td class="py-2 text-zinc-600 dark:text-zinc-400 leading-relaxed">masalah kesehatan yang ditemukan</td></tr>
+              <tr><td class="py-2 pr-4 font-mono text-xs font-medium text-zinc-700 dark:text-zinc-300 align-top whitespace-nowrap">tindak lanjut</td><td class="py-2 text-zinc-600 dark:text-zinc-400 leading-relaxed">tindak lanjut yang diberikan</td></tr>
+              <tr><td class="py-2 pr-4 font-mono text-xs font-medium text-zinc-700 dark:text-zinc-300 align-top whitespace-nowrap">status</td><td class="py-2 text-zinc-600 dark:text-zinc-400 leading-relaxed">belum / selesai / dirujuk</td></tr>
+            </tbody>
+          </table>
+          <p class="mt-4 text-xs text-zinc-500 dark:text-zinc-400"><span class="font-semibold uppercase tracking-[0.14em] text-[11px]">Related to</span> · Anggota Keluarga, Kunjungan Rumah</p>
+        </div>
+        <div class="print-card rounded-lg border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 p-5">
+          <div class="flex items-center gap-2">
+            <i data-lucide="box" class="w-4 h-4 text-zinc-500 dark:text-zinc-400"></i>
+            <h3 class="font-semibold text-zinc-900 dark:text-zinc-100">Jadwal Kunjungan</h3>
+          </div>
+          <table class="mt-4 w-full text-sm">
+            <tbody class="divide-y divide-zinc-100 dark:divide-zinc-800">
+              <tr><td class="py-2 pr-4 font-mono text-xs font-medium text-zinc-700 dark:text-zinc-300 align-top whitespace-nowrap">target</td><td class="py-2 text-zinc-600 dark:text-zinc-400 leading-relaxed">keluarga yang dijadwalkan</td></tr>
+              <tr><td class="py-2 pr-4 font-mono text-xs font-medium text-zinc-700 dark:text-zinc-300 align-top whitespace-nowrap">petugas</td><td class="py-2 text-zinc-600 dark:text-zinc-400 leading-relaxed">kader penanggung jawab</td></tr>
+              <tr><td class="py-2 pr-4 font-mono text-xs font-medium text-zinc-700 dark:text-zinc-300 align-top whitespace-nowrap">waktu</td><td class="py-2 text-zinc-600 dark:text-zinc-400 leading-relaxed">waktu kunjungan yang dijadwalkan</td></tr>
+              <tr><td class="py-2 pr-4 font-mono text-xs font-medium text-zinc-700 dark:text-zinc-300 align-top whitespace-nowrap">status</td><td class="py-2 text-zinc-600 dark:text-zinc-400 leading-relaxed">terjadwal / selesai / terlewat (dasar pengingat)</td></tr>
+            </tbody>
+          </table>
+          <p class="mt-4 text-xs text-zinc-500 dark:text-zinc-400"><span class="font-semibold uppercase tracking-[0.14em] text-[11px]">Related to</span> · Keluarga, Pengguna (kader), Posyandu, Kunjungan Rumah</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- MILESTONES -->
+    <section>
+      <h2 class="text-xs font-semibold uppercase tracking-[0.18em] text-zinc-500 dark:text-zinc-400 flex items-center gap-2">
+        <i data-lucide="route" class="w-3.5 h-3.5"></i>Milestones
+      </h2>
+      <div class="mt-5 space-y-5">
+
+        <article class="print-card rounded-lg border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 overflow-hidden">
+          <header class="flex items-center gap-3 p-5 border-b border-zinc-100 dark:border-zinc-800">
+            <span class="shrink-0 w-8 h-8 rounded-full bg-zinc-900 dark:bg-zinc-100 text-zinc-50 dark:text-zinc-900 flex items-center justify-center text-sm font-semibold">1</span>
+            <h3 class="font-semibold text-lg text-zinc-900 dark:text-zinc-100">Fondasi, Autentikasi &amp; Master Data</h3>
+          </header>
+          <div class="p-5">
+            <p class="text-zinc-600 dark:text-zinc-400 leading-relaxed">Kerangka aplikasi yang bisa diakses pengguna dengan peran berbeda, plus master data wilayah/posyandu/kader dan definisi field form sebagai landasan milestone berikutnya.</p>
+            <div class="mt-5 grid grid-cols-1 md:grid-cols-2 gap-5">
+              <div>
+                <h4 class="text-[11px] font-semibold uppercase tracking-[0.16em] text-zinc-500 dark:text-zinc-400 flex items-center gap-1.5">
+                  <i data-lucide="check-circle-2" class="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400"></i>Yang dibangun
+                </h4>
+                <ul class="mt-3 space-y-2 text-sm text-zinc-700 dark:text-zinc-300 list-none p-0">
+                  <li class="flex items-start gap-2"><i data-lucide="check" class="w-3.5 h-3.5 mt-0.5 shrink-0 text-emerald-600 dark:text-emerald-400"></i><span>Proyek berjalan (React + Express/Node + PostgreSQL) yang terbuka di browser</span></li>
+                  <li class="flex items-start gap-2"><i data-lucide="check" class="w-3.5 h-3.5 mt-0.5 shrink-0 text-emerald-600 dark:text-emerald-400"></i><span>Login untuk 4 peran dengan hak akses berbeda</span></li>
+                  <li class="flex items-start gap-2"><i data-lucide="check" class="w-3.5 h-3.5 mt-0.5 shrink-0 text-emerald-600 dark:text-emerald-400"></i><span>Master data: kelurahan, RW/RT, posyandu, pengguna/kader</span></li>
+                  <li class="flex items-start gap-2"><i data-lucide="check" class="w-3.5 h-3.5 mt-0.5 shrink-0 text-emerald-600 dark:text-emerald-400"></i><span>Pengelolaan definisi field form (fondasi fleksibilitas)</span></li>
+                  <li class="flex items-start gap-2"><i data-lucide="check" class="w-3.5 h-3.5 mt-0.5 shrink-0 text-emerald-600 dark:text-emerald-400"></i><span>Profil &amp; manajemen akun dasar</span></li>
+                </ul>
+              </div>
+              <div>
+                <h4 class="text-[11px] font-semibold uppercase tracking-[0.16em] text-zinc-500 dark:text-zinc-400 flex items-center gap-1.5">
+                  <i data-lucide="x-circle" class="w-3.5 h-3.5 text-zinc-400 dark:text-zinc-500"></i>Bukan bagian milestone ini
+                </h4>
+                <ul class="mt-3 space-y-2 text-sm text-zinc-500 dark:text-zinc-400 list-none p-0">
+                  <li class="flex items-start gap-2"><i data-lucide="minus" class="w-3.5 h-3.5 mt-0.5 shrink-0"></i><span>Form isian kunjungan rumah (M2)</span></li>
+                  <li class="flex items-start gap-2"><i data-lucide="minus" class="w-3.5 h-3.5 mt-0.5 shrink-0"></i><span>Dashboard visualisasi (M3)</span></li>
+                  <li class="flex items-start gap-2"><i data-lucide="minus" class="w-3.5 h-3.5 mt-0.5 shrink-0"></i><span>Notifikasi &amp; pengingat (M4)</span></li>
+                  <li class="flex items-start gap-2"><i data-lucide="minus" class="w-3.5 h-3.5 mt-0.5 shrink-0"></i><span>Ekspor rekap (M4)</span></li>
+                </ul>
+              </div>
+            </div>
+            <div class="mt-5 rounded-md border-l-4 border-emerald-500 bg-emerald-50 dark:bg-emerald-950/30 p-4 text-sm text-emerald-900 dark:text-emerald-200">
+              <p class="flex items-start gap-2"><i data-lucide="flag" class="w-4 h-4 mt-0.5 shrink-0"></i><span><span class="font-semibold">Selesai ketika:</span> Admin bisa login, membuat kelurahan/posyandu/kader, mendefinisikan struktur field form, dan pengguna lain login sesuai perannya tanpa kendala.</span></p>
+            </div>
+          </div>
+        </article>
+
+        <article class="print-card rounded-lg border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 overflow-hidden">
+          <header class="flex items-center gap-3 p-5 border-b border-zinc-100 dark:border-zinc-800">
+            <span class="shrink-0 w-8 h-8 rounded-full bg-zinc-900 dark:bg-zinc-100 text-zinc-50 dark:text-zinc-900 flex items-center justify-center text-sm font-semibold">2</span>
+            <h3 class="font-semibold text-lg text-zinc-900 dark:text-zinc-100">Input Data Kunjungan Rumah (Fleksibel)</h3>
+          </header>
+          <div class="p-5">
+            <p class="text-zinc-600 dark:text-zinc-400 leading-relaxed">Kader menginput hasil kunjungan rumah digital mengikuti struktur form resmi yang didefinisikan admin. Milestone paling berisiko karena format form Kemenkes belum stabil.</p>
+            <div class="mt-5 grid grid-cols-1 md:grid-cols-2 gap-5">
+              <div>
+                <h4 class="text-[11px] font-semibold uppercase tracking-[0.16em] text-zinc-500 dark:text-zinc-400 flex items-center gap-1.5">
+                  <i data-lucide="check-circle-2" class="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400"></i>Yang dibangun
+                </h4>
+                <ul class="mt-3 space-y-2 text-sm text-zinc-700 dark:text-zinc-300 list-none p-0">
+                  <li class="flex items-start gap-2"><i data-lucide="check" class="w-3.5 h-3.5 mt-0.5 shrink-0 text-emerald-600 dark:text-emerald-400"></i><span>Form input yang isiannya mengikuti definisi field admin (data keluarga + kelompok sasaran)</span></li>
+                  <li class="flex items-start gap-2"><i data-lucide="check" class="w-3.5 h-3.5 mt-0.5 shrink-0 text-emerald-600 dark:text-emerald-400"></i><span>Alur kader: pilih jadwal/keluarga → isi data → simpan</span></li>
+                  <li class="flex items-start gap-2"><i data-lucide="check" class="w-3.5 h-3.5 mt-0.5 shrink-0 text-emerald-600 dark:text-emerald-400"></i><span>Tambah anggota &amp; menandai masalah kesehatan + tindak lanjut</span></li>
+                  <li class="flex items-start gap-2"><i data-lucide="check" class="w-3.5 h-3.5 mt-0.5 shrink-0 text-emerald-600 dark:text-emerald-400"></i><span>Validasi wajib/opsional sesuai definisi field</span></li>
+                  <li class="flex items-start gap-2"><i data-lucide="check" class="w-3.5 h-3.5 mt-0.5 shrink-0 text-emerald-600 dark:text-emerald-400"></i><span>Pencarian &amp; daftar kunjungan milik kader</span></li>
+                </ul>
+              </div>
+              <div>
+                <h4 class="text-[11px] font-semibold uppercase tracking-[0.16em] text-zinc-500 dark:text-zinc-400 flex items-center gap-1.5">
+                  <i data-lucide="x-circle" class="w-3.5 h-3.5 text-zinc-400 dark:text-zinc-500"></i>Bukan bagian milestone ini
+                </h4>
+                <ul class="mt-3 space-y-2 text-sm text-zinc-500 dark:text-zinc-400 list-none p-0">
+                  <li class="flex items-start gap-2"><i data-lucide="minus" class="w-3.5 h-3.5 mt-0.5 shrink-0"></i><span>Dashboard visualisasi (M3)</span></li>
+                  <li class="flex items-start gap-2"><i data-lucide="minus" class="w-3.5 h-3.5 mt-0.5 shrink-0"></i><span>Notifikasi &amp; pengingat (M4)</span></li>
+                  <li class="flex items-start gap-2"><i data-lucide="minus" class="w-3.5 h-3.5 mt-0.5 shrink-0"></i><span>Rekap &amp; ekspor (M4)</span></li>
+                </ul>
+              </div>
+            </div>
+            <div class="mt-5 rounded-md border-l-4 border-emerald-500 bg-emerald-50 dark:bg-emerald-950/30 p-4 text-sm text-emerald-900 dark:text-emerald-200">
+              <p class="flex items-start gap-2"><i data-lucide="flag" class="w-4 h-4 mt-0.5 shrink-0"></i><span><span class="font-semibold">Selesai ketika:</span> Kader di lapangan (dari HP) bisa membuat kunjungan baru, data tersimpan, dan isian mengikuti definisi admin — mengubah definisi field tidak memerlukan perubahan kode.</span></p>
+            </div>
+          </div>
+        </article>
+
+        <article class="print-card rounded-lg border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 overflow-hidden">
+          <header class="flex items-center gap-3 p-5 border-b border-zinc-100 dark:border-zinc-800">
+            <span class="shrink-0 w-8 h-8 rounded-full bg-zinc-900 dark:bg-zinc-100 text-zinc-50 dark:text-zinc-900 flex items-center justify-center text-sm font-semibold">3</span>
+            <h3 class="font-semibold text-lg text-zinc-900 dark:text-zinc-100">Dashboard PWS</h3>
+          </header>
+          <div class="p-5">
+            <p class="text-zinc-600 dark:text-zinc-400 leading-relaxed">Pembina dan kepala Puskesmas melihat kondisi kesehatan per wilayah — inti kebutuhan "penyakit tertinggi per RT/RW" dari wawancara.</p>
+            <div class="mt-5 grid grid-cols-1 md:grid-cols-2 gap-5">
+              <div>
+                <h4 class="text-[11px] font-semibold uppercase tracking-[0.16em] text-zinc-500 dark:text-zinc-400 flex items-center gap-1.5">
+                  <i data-lucide="check-circle-2" class="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400"></i>Yang dibangun
+                </h4>
+                <ul class="mt-3 space-y-2 text-sm text-zinc-700 dark:text-zinc-300 list-none p-0">
+                  <li class="flex items-start gap-2"><i data-lucide="check" class="w-3.5 h-3.5 mt-0.5 shrink-0 text-emerald-600 dark:text-emerald-400"></i><span>Halaman dashboard: ringkasan kondisi per kelurahan</span></li>
+                  <li class="flex items-start gap-2"><i data-lucide="check" class="w-3.5 h-3.5 mt-0.5 shrink-0 text-emerald-600 dark:text-emerald-400"></i><span>Visualisasi masalah kesehatan tertinggi per RT/RW/kelurahan</span></li>
+                  <li class="flex items-start gap-2"><i data-lucide="check" class="w-3.5 h-3.5 mt-0.5 shrink-0 text-emerald-600 dark:text-emerald-400"></i><span>Filter wilayah, kelompok sasaran, periode waktu</span></li>
+                  <li class="flex items-start gap-2"><i data-lucide="check" class="w-3.5 h-3.5 mt-0.5 shrink-0 text-emerald-600 dark:text-emerald-400"></i><span>Drill-down kelurahan → RW → RT</span></li>
+                  <li class="flex items-start gap-2"><i data-lucide="check" class="w-3.5 h-3.5 mt-0.5 shrink-0 text-emerald-600 dark:text-emerald-400"></i><span>Kuota akses per peran: kader hanya wilayahnya; pembina/kapus 4 kelurahan</span></li>
+                </ul>
+              </div>
+              <div>
+                <h4 class="text-[11px] font-semibold uppercase tracking-[0.16em] text-zinc-500 dark:text-zinc-400 flex items-center gap-1.5">
+                  <i data-lucide="x-circle" class="w-3.5 h-3.5 text-zinc-400 dark:text-zinc-500"></i>Bukan bagian milestone ini
+                </h4>
+                <ul class="mt-3 space-y-2 text-sm text-zinc-500 dark:text-zinc-400 list-none p-0">
+                  <li class="flex items-start gap-2"><i data-lucide="minus" class="w-3.5 h-3.5 mt-0.5 shrink-0"></i><span>Notifikasi &amp; pengingat (M4)</span></li>
+                  <li class="flex items-start gap-2"><i data-lucide="minus" class="w-3.5 h-3.5 mt-0.5 shrink-0"></i><span>Rekap &amp; ekspor (M4)</span></li>
+                  <li class="flex items-start gap-2"><i data-lucide="minus" class="w-3.5 h-3.5 mt-0.5 shrink-0"></i><span>Analitik prediktif</span></li>
+                  <li class="flex items-start gap-2"><i data-lucide="minus" class="w-3.5 h-3.5 mt-0.5 shrink-0"></i><span>Data aktual nyata (pakai contoh sampai izin DPMPTSP)</span></li>
+                </ul>
+              </div>
+            </div>
+            <div class="mt-5 rounded-md border-l-4 border-emerald-500 bg-emerald-50 dark:bg-emerald-950/30 p-4 text-sm text-emerald-900 dark:text-emerald-200">
+              <p class="flex items-start gap-2"><i data-lucide="flag" class="w-4 h-4 mt-0.5 shrink-0"></i><span><span class="font-semibold">Selesai ketika:</span> Pembina bisa memfilter dashboard dan langsung melihat urutan masalah kesehatan per wilayah dari data yang diinput kader.</span></p>
+            </div>
+          </div>
+        </article>
+
+        <article class="print-card rounded-lg border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 overflow-hidden">
+          <header class="flex items-center gap-3 p-5 border-b border-zinc-100 dark:border-zinc-800">
+            <span class="shrink-0 w-8 h-8 rounded-full bg-zinc-900 dark:bg-zinc-100 text-zinc-50 dark:text-zinc-900 flex items-center justify-center text-sm font-semibold">4</span>
+            <h3 class="font-semibold text-lg text-zinc-900 dark:text-zinc-100">Notifikasi, Rekap &amp; Uji Lapangan</h3>
+          </header>
+          <div class="p-5">
+            <p class="text-zinc-600 dark:text-zinc-400 leading-relaxed">Melengkapi siklus kerja: rekap otomatis + ekspor menggantikan rekap manual, pengingat jadwal kader, dan penyempurnaan untuk uji lapangan/penyerahan.</p>
+            <div class="mt-5 grid grid-cols-1 md:grid-cols-2 gap-5">
+              <div>
+                <h4 class="text-[11px] font-semibold uppercase tracking-[0.16em] text-zinc-500 dark:text-zinc-400 flex items-center gap-1.5">
+                  <i data-lucide="check-circle-2" class="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400"></i>Yang dibangun
+                </h4>
+                <ul class="mt-3 space-y-2 text-sm text-zinc-700 dark:text-zinc-300 list-none p-0">
+                  <li class="flex items-start gap-2"><i data-lucide="check" class="w-3.5 h-3.5 mt-0.5 shrink-0 text-emerald-600 dark:text-emerald-400"></i><span>Pengingat jadwal kunjungan untuk kader: in-app + email otomatis free-tier</span></li>
+                  <li class="flex items-start gap-2"><i data-lucide="check" class="w-3.5 h-3.5 mt-0.5 shrink-0 text-emerald-600 dark:text-emerald-400"></i><span>Status jadwal: terjadwal / selesai / terlewat</span></li>
+                  <li class="flex items-start gap-2"><i data-lucide="check" class="w-3.5 h-3.5 mt-0.5 shrink-0 text-emerald-600 dark:text-emerald-400"></i><span>Rekap otomatis per kelompok sasaran &amp; per wilayah</span></li>
+                  <li class="flex items-start gap-2"><i data-lucide="check" class="w-3.5 h-3.5 mt-0.5 shrink-0 text-emerald-600 dark:text-emerald-400"></i><span>Ekspor rekap ke Excel &amp; PDF</span></li>
+                  <li class="flex items-start gap-2"><i data-lucide="check" class="w-3.5 h-3.5 mt-0.5 shrink-0 text-emerald-600 dark:text-emerald-400"></i><span>Penyempurnaan penggunaan HP (hasil uji kader)</span></li>
+                  <li class="flex items-start gap-2"><i data-lucide="check" class="w-3.5 h-3.5 mt-0.5 shrink-0 text-emerald-600 dark:text-emerald-400"></i><span>Panduan penggunaan singkat + dokumentasi handover</span></li>
+                </ul>
+              </div>
+              <div>
+                <h4 class="text-[11px] font-semibold uppercase tracking-[0.16em] text-zinc-500 dark:text-zinc-400 flex items-center gap-1.5">
+                  <i data-lucide="x-circle" class="w-3.5 h-3.5 text-zinc-400 dark:text-zinc-500"></i>Bukan bagian milestone ini
+                </h4>
+                <ul class="mt-3 space-y-2 text-sm text-zinc-500 dark:text-zinc-400 list-none p-0">
+                  <li class="flex items-start gap-2"><i data-lucide="minus" class="w-3.5 h-3.5 mt-0.5 shrink-0"></i><span>Notifikasi WhatsApp (lanjutan, butuh validasi mitra &amp; biaya)</span></li>
+                  <li class="flex items-start gap-2"><i data-lucide="minus" class="w-3.5 h-3.5 mt-0.5 shrink-0"></i><span>Aplikasi mobile native</span></li>
+                  <li class="flex items-start gap-2"><i data-lucide="minus" class="w-3.5 h-3.5 mt-0.5 shrink-0"></i><span>Integrasi ke server pusat Kemenkes</span></li>
+                </ul>
+              </div>
+            </div>
+            <div class="mt-5 rounded-md border-l-4 border-emerald-500 bg-emerald-50 dark:bg-emerald-950/30 p-4 text-sm text-emerald-900 dark:text-emerald-200">
+              <p class="flex items-start gap-2"><i data-lucide="flag" class="w-4 h-4 mt-0.5 shrink-0"></i><span><span class="font-semibold">Selesai ketika:</span> Kader bisa melihat &amp; menandai jadwalnya, pembina bisa mengekspor rekap, dan aplikasi stabil dipakai dari ponsel pada uji lapangan, ditutup dengan dokumen handover.</span></p>
+            </div>
+          </div>
+        </article>
+
+      </div>
+    </section>
+
+    <!-- WORK PLAN & TIMELINE -->
+    <section>
+      <h2 class="text-xs font-semibold uppercase tracking-[0.18em] text-zinc-500 dark:text-zinc-400 flex items-center gap-2">
+        <i data-lucide="kanban" class="w-3.5 h-3.5"></i>Rencana Kerja &amp; Timeline
+      </h2>
+      <div class="mt-3 rounded-lg border border-indigo-200 dark:border-indigo-900 bg-indigo-50 dark:bg-indigo-950/30 p-4 text-sm text-indigo-900 dark:text-indigo-200">
+        <p><span class="font-semibold">Target 27 September 2026:</span> aplikasi bisa dicoba klien secara online (deploy hosting gratis). Rencana kerja paralel tim 3 orang berbasis task — colek sendiri, tanpa posisi tetap. Level: 🟢 S / 🟡 M / 🔴 L. Estimasi tentatif, dikoreksi setelah URS acc. Detail harian di task board <code class="font-mono text-xs">Rencana Kegiatan September 2026</code>.</p>
+      </div>
+
+      <div class="mt-6 space-y-6">
+        <article class="print-card rounded-lg border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 overflow-hidden">
+          <header class="flex items-center justify-between gap-3 p-5 border-b border-zinc-100 dark:border-zinc-800">
+            <div class="flex items-center gap-3">
+              <span class="shrink-0 w-8 h-8 rounded-full bg-indigo-600 dark:bg-indigo-400 text-white dark:text-zinc-900 flex items-center justify-center text-sm font-semibold">I</span>
+              <h3 class="font-semibold text-lg text-zinc-900 dark:text-zinc-100">Fondasi</h3>
+            </div>
+            <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-indigo-50 dark:bg-indigo-950/40 border border-indigo-200 dark:border-indigo-900 text-xs font-medium text-indigo-700 dark:text-indigo-300">10–14 Sep · Gate: login + master data</span>
+          </header>
+          <div class="p-5 overflow-x-auto">
+            <table class="w-full text-sm min-w-[640px]">
+              <thead>
+                <tr class="text-left text-[11px] font-semibold uppercase tracking-[0.14em] text-zinc-500 dark:text-zinc-400 border-b border-zinc-100 dark:border-zinc-800">
+                  <th class="py-2 pr-3 font-semibold">Task</th>
+                  <th class="py-2 pr-3 font-semibold">Deliverable</th>
+                  <th class="py-2 pr-3 font-semibold">Level</th>
+                  <th class="py-2 pr-3 font-semibold">Est</th>
+                  <th class="py-2 pr-3 font-semibold">Depends</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-zinc-100 dark:divide-zinc-800 text-zinc-700 dark:text-zinc-300">
+                <tr><td class="py-2.5 pr-3 font-mono text-xs font-semibold text-indigo-600 dark:text-indigo-400 align-top">B1</td><td class="py-2.5 pr-3 align-top">Scaffold repo client+server, env, ESLint, script migrate/seed</td><td class="py-2.5 pr-3 align-top"><span class="inline-flex px-1.5 py-0.5 rounded bg-amber-100 dark:bg-amber-900/40 text-amber-800 dark:text-amber-200 text-xs font-medium">🟡 M</span></td><td class="py-2.5 pr-3 align-top whitespace-nowrap">6 jam</td><td class="py-2.5 pr-3 align-top text-zinc-400">—</td></tr>
+                <tr><td class="py-2.5 pr-3 font-mono text-xs font-semibold text-indigo-600 dark:text-indigo-400 align-top">B2</td><td class="py-2.5 pr-3 align-top">Skema DB + migration (dari Field Checklist)</td><td class="py-2.5 pr-3 align-top"><span class="inline-flex px-1.5 py-0.5 rounded bg-rose-100 dark:bg-rose-900/40 text-rose-800 dark:text-rose-200 text-xs font-medium">🔴 L</span></td><td class="py-2.5 pr-3 align-top whitespace-nowrap">12 jam</td><td class="py-2.5 pr-3 align-top text-zinc-400">B1</td></tr>
+                <tr><td class="py-2.5 pr-3 font-mono text-xs font-semibold text-indigo-600 dark:text-indigo-400 align-top">B3</td><td class="py-2.5 pr-3 align-top">Auth &amp; role (4 peran) + middleware</td><td class="py-2.5 pr-3 align-top"><span class="inline-flex px-1.5 py-0.5 rounded bg-amber-100 dark:bg-amber-900/40 text-amber-800 dark:text-amber-200 text-xs font-medium">🟡 M</span></td><td class="py-2.5 pr-3 align-top whitespace-nowrap">10 jam</td><td class="py-2.5 pr-3 align-top text-zinc-400">B1</td></tr>
+                <tr><td class="py-2.5 pr-3 font-mono text-xs font-semibold text-indigo-600 dark:text-indigo-400 align-top">B4</td><td class="py-2.5 pr-3 align-top">API CRUD master data (kelurahan, RW/RT, posyandu, kader)</td><td class="py-2.5 pr-3 align-top"><span class="inline-flex px-1.5 py-0.5 rounded bg-amber-100 dark:bg-amber-900/40 text-amber-800 dark:text-amber-200 text-xs font-medium">🟡 M</span></td><td class="py-2.5 pr-3 align-top whitespace-nowrap">10 jam</td><td class="py-2.5 pr-3 align-top text-zinc-400">B3</td></tr>
+                <tr><td class="py-2.5 pr-3 font-mono text-xs font-semibold text-indigo-600 dark:text-indigo-400 align-top">C1</td><td class="py-2.5 pr-3 align-top">Scaffold React + routing + layout + guard peran</td><td class="py-2.5 pr-3 align-top"><span class="inline-flex px-1.5 py-0.5 rounded bg-amber-100 dark:bg-amber-900/40 text-amber-800 dark:text-amber-200 text-xs font-medium">🟡 M</span></td><td class="py-2.5 pr-3 align-top whitespace-nowrap">8 jam</td><td class="py-2.5 pr-3 align-top text-zinc-400">—</td></tr>
+                <tr><td class="py-2.5 pr-3 font-mono text-xs font-semibold text-indigo-600 dark:text-indigo-400 align-top">C2</td><td class="py-2.5 pr-3 align-top">Halaman login</td><td class="py-2.5 pr-3 align-top"><span class="inline-flex px-1.5 py-0.5 rounded bg-emerald-100 dark:bg-emerald-900/40 text-emerald-800 dark:text-emerald-200 text-xs font-medium">🟢 S</span></td><td class="py-2.5 pr-3 align-top whitespace-nowrap">5 jam</td><td class="py-2.5 pr-3 align-top text-zinc-400">C1</td></tr>
+                <tr><td class="py-2.5 pr-3 font-mono text-xs font-semibold text-indigo-600 dark:text-indigo-400 align-top">C3</td><td class="py-2.5 pr-3 align-top">Halaman master data + definisi field (admin)</td><td class="py-2.5 pr-3 align-top"><span class="inline-flex px-1.5 py-0.5 rounded bg-amber-100 dark:bg-amber-900/40 text-amber-800 dark:text-amber-200 text-xs font-medium">🟡 M</span></td><td class="py-2.5 pr-3 align-top whitespace-nowrap">10 jam</td><td class="py-2.5 pr-3 align-top text-zinc-400">C1, B4</td></tr>
+                <tr><td class="py-2.5 pr-3 font-mono text-xs font-semibold text-indigo-600 dark:text-indigo-400 align-top">A1</td><td class="py-2.5 pr-3 align-top">Seed definisi field 8 kelompok sasaran (dari ekstraksi)</td><td class="py-2.5 pr-3 align-top"><span class="inline-flex px-1.5 py-0.5 rounded bg-rose-100 dark:bg-rose-900/40 text-rose-800 dark:text-rose-200 text-xs font-medium">🔴 L</span></td><td class="py-2.5 pr-3 align-top whitespace-nowrap">10 jam</td><td class="py-2.5 pr-3 align-top text-zinc-400">—</td></tr>
+                <tr><td class="py-2.5 pr-3 font-mono text-xs font-semibold text-indigo-600 dark:text-indigo-400 align-top">A2</td><td class="py-2.5 pr-3 align-top">Dummy data 4 kelurahan (KK, anggota, kunjungan)</td><td class="py-2.5 pr-3 align-top"><span class="inline-flex px-1.5 py-0.5 rounded bg-emerald-100 dark:bg-emerald-900/40 text-emerald-800 dark:text-emerald-200 text-xs font-medium">🟢 S</span></td><td class="py-2.5 pr-3 align-top whitespace-nowrap">6 jam</td><td class="py-2.5 pr-3 align-top text-zinc-400">A1</td></tr>
+                <tr><td class="py-2.5 pr-3 font-mono text-xs font-semibold text-indigo-600 dark:text-indigo-400 align-top">A3</td><td class="py-2.5 pr-3 align-top">Wireframe &amp; user flow mobile-first</td><td class="py-2.5 pr-3 align-top"><span class="inline-flex px-1.5 py-0.5 rounded bg-emerald-100 dark:bg-emerald-900/40 text-emerald-800 dark:text-emerald-200 text-xs font-medium">🟢 S</span></td><td class="py-2.5 pr-3 align-top whitespace-nowrap">8 jam</td><td class="py-2.5 pr-3 align-top text-zinc-400">—</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </article>
+
+        <article class="print-card rounded-lg border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 overflow-hidden">
+          <header class="flex items-center justify-between gap-3 p-5 border-b border-zinc-100 dark:border-zinc-800">
+            <div class="flex items-center gap-3">
+              <span class="shrink-0 w-8 h-8 rounded-full bg-indigo-600 dark:bg-indigo-400 text-white dark:text-zinc-900 flex items-center justify-center text-sm font-semibold">II</span>
+              <h3 class="font-semibold text-lg text-zinc-900 dark:text-zinc-100">Inti</h3>
+            </div>
+            <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-indigo-50 dark:bg-indigo-950/40 border border-indigo-200 dark:border-indigo-900 text-xs font-medium text-indigo-700 dark:text-indigo-300">15–21 Sep · Gate: kader input → dashboard tampil</span>
+          </header>
+          <div class="p-5 overflow-x-auto">
+            <table class="w-full text-sm min-w-[640px]">
+              <thead>
+                <tr class="text-left text-[11px] font-semibold uppercase tracking-[0.14em] text-zinc-500 dark:text-zinc-400 border-b border-zinc-100 dark:border-zinc-800">
+                  <th class="py-2 pr-3 font-semibold">Task</th>
+                  <th class="py-2 pr-3 font-semibold">Deliverable</th>
+                  <th class="py-2 pr-3 font-semibold">Level</th>
+                  <th class="py-2 pr-3 font-semibold">Est</th>
+                  <th class="py-2 pr-3 font-semibold">Depends</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-zinc-100 dark:divide-zinc-800 text-zinc-700 dark:text-zinc-300">
+                <tr><td class="py-2.5 pr-3 font-mono text-xs font-semibold text-indigo-600 dark:text-indigo-400 align-top">B5</td><td class="py-2.5 pr-3 align-top">API definisi field (CRUD, urutan, aktif/wajib)</td><td class="py-2.5 pr-3 align-top"><span class="inline-flex px-1.5 py-0.5 rounded bg-rose-100 dark:bg-rose-900/40 text-rose-800 dark:text-rose-200 text-xs font-medium">🔴 L</span></td><td class="py-2.5 pr-3 align-top whitespace-nowrap">10 jam</td><td class="py-2.5 pr-3 align-top text-zinc-400">B4</td></tr>
+                <tr><td class="py-2.5 pr-3 font-mono text-xs font-semibold text-indigo-600 dark:text-indigo-400 align-top">B6</td><td class="py-2.5 pr-3 align-top">API kunjungan KR (keluarga+anggota+sasaran+masalah)</td><td class="py-2.5 pr-3 align-top"><span class="inline-flex px-1.5 py-0.5 rounded bg-rose-100 dark:bg-rose-900/40 text-rose-800 dark:text-rose-200 text-xs font-medium">🔴 L</span></td><td class="py-2.5 pr-3 align-top whitespace-nowrap">14 jam</td><td class="py-2.5 pr-3 align-top text-zinc-400">B5</td></tr>
+                <tr><td class="py-2.5 pr-3 font-mono text-xs font-semibold text-indigo-600 dark:text-indigo-400 align-top">B7</td><td class="py-2.5 pr-3 align-top">API dashboard agregat per RT/RW/kelurahan + filter</td><td class="py-2.5 pr-3 align-top"><span class="inline-flex px-1.5 py-0.5 rounded bg-rose-100 dark:bg-rose-900/40 text-rose-800 dark:text-rose-200 text-xs font-medium">🔴 L</span></td><td class="py-2.5 pr-3 align-top whitespace-nowrap">14 jam</td><td class="py-2.5 pr-3 align-top text-zinc-400">B6</td></tr>
+                <tr><td class="py-2.5 pr-3 font-mono text-xs font-semibold text-indigo-600 dark:text-indigo-400 align-top">C4</td><td class="py-2.5 pr-3 align-top">Form input KR dinamis (render dari definisi field, mobile)</td><td class="py-2.5 pr-3 align-top"><span class="inline-flex px-1.5 py-0.5 rounded bg-rose-100 dark:bg-rose-900/40 text-rose-800 dark:text-rose-200 text-xs font-medium">🔴 L</span></td><td class="py-2.5 pr-3 align-top whitespace-nowrap">16 jam</td><td class="py-2.5 pr-3 align-top text-zinc-400">B5, B6</td></tr>
+                <tr><td class="py-2.5 pr-3 font-mono text-xs font-semibold text-indigo-600 dark:text-indigo-400 align-top">C5</td><td class="py-2.5 pr-3 align-top">Dashboard PWS (visualisasi, filter, drill-down)</td><td class="py-2.5 pr-3 align-top"><span class="inline-flex px-1.5 py-0.5 rounded bg-rose-100 dark:bg-rose-900/40 text-rose-800 dark:text-rose-200 text-xs font-medium">🔴 L</span></td><td class="py-2.5 pr-3 align-top whitespace-nowrap">14 jam</td><td class="py-2.5 pr-3 align-top text-zinc-400">B7</td></tr>
+                <tr><td class="py-2.5 pr-3 font-mono text-xs font-semibold text-indigo-600 dark:text-indigo-400 align-top">A4</td><td class="py-2.5 pr-3 align-top">Uji isi field dengan dummy + kasus demo kader</td><td class="py-2.5 pr-3 align-top"><span class="inline-flex px-1.5 py-0.5 rounded bg-emerald-100 dark:bg-emerald-900/40 text-emerald-800 dark:text-emerald-200 text-xs font-medium">🟢 S</span></td><td class="py-2.5 pr-3 align-top whitespace-nowrap">4 jam</td><td class="py-2.5 pr-3 align-top text-zinc-400">A2, C4</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </article>
+
+        <article class="print-card rounded-lg border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 overflow-hidden">
+          <header class="flex items-center justify-between gap-3 p-5 border-b border-zinc-100 dark:border-zinc-800">
+            <div class="flex items-center gap-3">
+              <span class="shrink-0 w-8 h-8 rounded-full bg-indigo-600 dark:bg-indigo-400 text-white dark:text-zinc-900 flex items-center justify-center text-sm font-semibold">III</span>
+              <h3 class="font-semibold text-lg text-zinc-900 dark:text-zinc-100">Finalisasi, Deploy &amp; Demo</h3>
+            </div>
+            <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-indigo-50 dark:bg-indigo-950/40 border border-indigo-200 dark:border-indigo-900 text-xs font-medium text-indigo-700 dark:text-indigo-300">22–27 Sep · Demo online 27 Sep</span>
+          </header>
+          <div class="p-5 overflow-x-auto">
+            <table class="w-full text-sm min-w-[640px]">
+              <thead>
+                <tr class="text-left text-[11px] font-semibold uppercase tracking-[0.14em] text-zinc-500 dark:text-zinc-400 border-b border-zinc-100 dark:border-zinc-800">
+                  <th class="py-2 pr-3 font-semibold">Task</th>
+                  <th class="py-2 pr-3 font-semibold">Deliverable</th>
+                  <th class="py-2 pr-3 font-semibold">Level</th>
+                  <th class="py-2 pr-3 font-semibold">Est</th>
+                  <th class="py-2 pr-3 font-semibold">Depends</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-zinc-100 dark:divide-zinc-800 text-zinc-700 dark:text-zinc-300">
+                <tr><td class="py-2.5 pr-3 font-mono text-xs font-semibold text-indigo-600 dark:text-indigo-400 align-top">B8</td><td class="py-2.5 pr-3 align-top">API notifikasi/pengingat jadwal + email (free-tier)</td><td class="py-2.5 pr-3 align-top"><span class="inline-flex px-1.5 py-0.5 rounded bg-amber-100 dark:bg-amber-900/40 text-amber-800 dark:text-amber-200 text-xs font-medium">🟡 M</span></td><td class="py-2.5 pr-3 align-top whitespace-nowrap">12 jam</td><td class="py-2.5 pr-3 align-top text-zinc-400">B6</td></tr>
+                <tr><td class="py-2.5 pr-3 font-mono text-xs font-semibold text-indigo-600 dark:text-indigo-400 align-top">B9</td><td class="py-2.5 pr-3 align-top">API rekap &amp; ekspor</td><td class="py-2.5 pr-3 align-top"><span class="inline-flex px-1.5 py-0.5 rounded bg-amber-100 dark:bg-amber-900/40 text-amber-800 dark:text-amber-200 text-xs font-medium">🟡 M</span></td><td class="py-2.5 pr-3 align-top whitespace-nowrap">8 jam</td><td class="py-2.5 pr-3 align-top text-zinc-400">B6</td></tr>
+                <tr><td class="py-2.5 pr-3 font-mono text-xs font-semibold text-indigo-600 dark:text-indigo-400 align-top">C6</td><td class="py-2.5 pr-3 align-top">Notifikasi in-app + daftar jadwal kader</td><td class="py-2.5 pr-3 align-top"><span class="inline-flex px-1.5 py-0.5 rounded bg-amber-100 dark:bg-amber-900/40 text-amber-800 dark:text-amber-200 text-xs font-medium">🟡 M</span></td><td class="py-2.5 pr-3 align-top whitespace-nowrap">8 jam</td><td class="py-2.5 pr-3 align-top text-zinc-400">B8</td></tr>
+                <tr><td class="py-2.5 pr-3 font-mono text-xs font-semibold text-indigo-600 dark:text-indigo-400 align-top">C7</td><td class="py-2.5 pr-3 align-top">Rekap &amp; ekspor Excel/PDF</td><td class="py-2.5 pr-3 align-top"><span class="inline-flex px-1.5 py-0.5 rounded bg-emerald-100 dark:bg-emerald-900/40 text-emerald-800 dark:text-emerald-200 text-xs font-medium">🟢 S</span></td><td class="py-2.5 pr-3 align-top whitespace-nowrap">6 jam</td><td class="py-2.5 pr-3 align-top text-zinc-400">B9</td></tr>
+                <tr><td class="py-2.5 pr-3 font-mono text-xs font-semibold text-indigo-600 dark:text-indigo-400 align-top">C8</td><td class="py-2.5 pr-3 align-top">Polish mobile, loading/error, aksesibilitas</td><td class="py-2.5 pr-3 align-top"><span class="inline-flex px-1.5 py-0.5 rounded bg-amber-100 dark:bg-amber-900/40 text-amber-800 dark:text-amber-200 text-xs font-medium">🟡 M</span></td><td class="py-2.5 pr-3 align-top whitespace-nowrap">8 jam</td><td class="py-2.5 pr-3 align-top text-zinc-400">C4, C5</td></tr>
+                <tr><td class="py-2.5 pr-3 font-mono text-xs font-semibold text-indigo-600 dark:text-indigo-400 align-top">D1</td><td class="py-2.5 pr-3 align-top">Deploy online: Vercel (frontend) + backend (Render/Railway) + Supabase (PostgreSQL)</td><td class="py-2.5 pr-3 align-top"><span class="inline-flex px-1.5 py-0.5 rounded bg-amber-100 dark:bg-amber-900/40 text-amber-800 dark:text-amber-200 text-xs font-medium">🟡 M</span></td><td class="py-2.5 pr-3 align-top whitespace-nowrap">6 jam</td><td class="py-2.5 pr-3 align-top text-zinc-400">inti B/C</td></tr>
+                <tr><td class="py-2.5 pr-3 font-mono text-xs font-semibold text-indigo-600 dark:text-indigo-400 align-top">D2</td><td class="py-2.5 pr-3 align-top">Akun demo 4 peran + data placeholder</td><td class="py-2.5 pr-3 align-top"><span class="inline-flex px-1.5 py-0.5 rounded bg-emerald-100 dark:bg-emerald-900/40 text-emerald-800 dark:text-emerald-200 text-xs font-medium">🟢 S</span></td><td class="py-2.5 pr-3 align-top whitespace-nowrap">2 jam</td><td class="py-2.5 pr-3 align-top text-zinc-400">D1</td></tr>
+                <tr><td class="py-2.5 pr-3 font-mono text-xs font-semibold text-indigo-600 dark:text-indigo-400 align-top">D3</td><td class="py-2.5 pr-3 align-top">Script demo 15 menit + uji dari HP client</td><td class="py-2.5 pr-3 align-top"><span class="inline-flex px-1.5 py-0.5 rounded bg-emerald-100 dark:bg-emerald-900/40 text-emerald-800 dark:text-emerald-200 text-xs font-medium">🟢 S</span></td><td class="py-2.5 pr-3 align-top whitespace-nowrap">3 jam</td><td class="py-2.5 pr-3 align-top text-zinc-400">D2</td></tr>
+                <tr><td class="py-2.5 pr-3 font-mono text-xs font-semibold text-indigo-600 dark:text-indigo-400 align-top">D4</td><td class="py-2.5 pr-3 align-top">Dokumentasi ringkas + draft handover</td><td class="py-2.5 pr-3 align-top"><span class="inline-flex px-1.5 py-0.5 rounded bg-emerald-100 dark:bg-emerald-900/40 text-emerald-800 dark:text-emerald-200 text-xs font-medium">🟢 S</span></td><td class="py-2.5 pr-3 align-top whitespace-nowrap">4 jam</td><td class="py-2.5 pr-3 align-top text-zinc-400">—</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </article>
+      </div>
+
+      <div class="mt-5 space-y-2.5 text-sm">
+        <p class="flex items-start gap-3"><i data-lucide="alert-triangle" class="w-4 h-4 mt-0.5 shrink-0 text-amber-500"></i><span class="text-zinc-700 dark:text-zinc-300">Data real 4 kelurahan menunggu izin DPMPTSP → demo memakai <strong>data dummy</strong>; data nyata disuntik setelah izin jadi.</span></p>
+        <p class="flex items-start gap-3"><i data-lucide="alert-triangle" class="w-4 h-4 mt-0.5 shrink-0 text-amber-500"></i><span class="text-zinc-700 dark:text-zinc-300">Format form Kemenkes belum stabil → seluruh rancangan bergantung pada <strong>definisi field</strong> (tidak boleh hard-code).</span></p>
+        <p class="flex items-start gap-3"><i data-lucide="alert-triangle" class="w-4 h-4 mt-0.5 shrink-0 text-amber-500"></i><span class="text-zinc-700 dark:text-zinc-300">Notifikasi (B8–C6) &amp; rekap/ekspor (B9–C7) bersifat <strong>bonus</strong> bila waktu Fasa III menipis; prioritas demo: D1–D3.</span></p>
+        <p class="flex items-start gap-3"><i data-lucide="book-open" class="w-4 h-4 mt-0.5 shrink-0 text-zinc-400 dark:text-zinc-600"></i><span class="text-zinc-700 dark:text-zinc-300">L-01 <em>Logbook</em> Asah/Dicoding per individu berjalan di sela-sela (bukan task bersama).</span></p>
+      </div>
+    </section>
+
+    <!-- OPEN QUESTIONS -->
+    <section>
+      <h2 class="text-xs font-semibold uppercase tracking-[0.18em] text-zinc-500 dark:text-zinc-400 flex items-center gap-2">
+        <i data-lucide="circle-help" class="w-3.5 h-3.5"></i>Pertanyaan terbuka (validasi mitra)
+      </h2>
+      <ul class="mt-5 list-none p-0 space-y-2.5 text-sm text-zinc-700 dark:text-zinc-300">
+        <li class="flex items-start gap-3"><span class="mt-1.5 w-3.5 h-3.5 shrink-0 rounded-sm border border-zinc-300 dark:border-zinc-700"></span><span>Bentuk notifikasi final — v1 = in-app + email; konfirmasi saluran yang benar-benar dipakai kader (WhatsApp/email/app) serta kepada siapa dan trigger-nya.</span></li>
+        <li class="flex items-start gap-3"><span class="mt-1.5 w-3.5 h-3.5 shrink-0 rounded-sm border border-zinc-300 dark:border-zinc-700"></span><span>Rencana demo 27 Sep 2026 — konfirmasi kesediaan mitra (Bu Dian / Kepala Puskesmas) menerima demo online, bisa dari HP/PC.</span></li>
+        <li class="flex items-start gap-3"><span class="mt-1.5 w-3.5 h-3.5 shrink-0 rounded-sm border border-zinc-300 dark:border-zinc-700"></span><span>Data individu vs agregat — tampilkan per orang atau cukup per wilayah (privasi).</span></li>
+        <li class="flex items-start gap-3"><span class="mt-1.5 w-3.5 h-3.5 shrink-0 rounded-sm border border-zinc-300 dark:border-zinc-700"></span><span>Batasan akses data — siapa boleh melihat data apa (kader, pembina, kepala Puskesmas, admin).</span></li>
+        <li class="flex items-start gap-3"><span class="mt-1.5 w-3.5 h-3.5 shrink-0 rounded-sm border border-zinc-300 dark:border-zinc-700"></span><span>Tren waktu — perlu perbandingan data antar tahun?</span></li>
+        <li class="flex items-start gap-3"><span class="mt-1.5 w-3.5 h-3.5 shrink-0 rounded-sm border border-zinc-300 dark:border-zinc-700"></span><span>Jumlah pasti posyandu &amp; target KK per kelurahan (dari Bu Dian setelah DPMPTSP).</span></li>
+        <li class="flex items-start gap-3"><span class="mt-1.5 w-3.5 h-3.5 shrink-0 rounded-sm border border-zinc-300 dark:border-zinc-700"></span><span>Operator harian sistem setelah handover.</span></li>
+      </ul>
+    </section>
+
+    <footer class="pt-8 border-t border-zinc-200 dark:border-zinc-800 text-xs text-zinc-500 dark:text-zinc-400">
+      Dibuat dengan <span class="font-medium">bm-prd-creator</span> · update 9 Sep 2026 — koreksi 8 kelompok sasaran, notifikasi v1 in-app + email, Rencana Kerja &amp; Timeline target demo online 27 Sep. Buka <code class="font-mono">01 Notes/milestones/1-foundation-auth-masterdata/prompt.md</code> untuk mulai membangun.
+    </footer>
+  </main>
+
+  <script>
+    (function () {
+      var html = document.documentElement;
+      var stored = localStorage.getItem('prd-theme');
+      var prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+      var initial = stored ? stored : (prefersDark ? 'dark' : 'light');
+      if (initial === 'dark') html.classList.add('dark');
+      var btn = document.getElementById('theme-toggle');
+      if (btn) {
+        btn.addEventListener('click', function () {
+          var isDark = html.classList.toggle('dark');
+          localStorage.setItem('prd-theme', isDark ? 'dark' : 'light');
+        });
+      }
+      if (window.lucide) window.lucide.createIcons();
+    })();
+  </script>
+</body>
+</html>
