@@ -9,6 +9,7 @@ const DESKRIPSI = {
   fitur: 'Apa saja yang bisa dilakukan aplikasi, dan bahan riset yang sudah tersedia.',
   cakupan: 'Hal-hal yang sengaja tidak dikerjakan di v1, supaya harapan tetap realistis.',
   data: 'Data yang perlu diingat aplikasi — dasar rancangan basis data (10 entitas).',
+  workflow: 'Alur di dalam aplikasi: 6 workflow + User Journey per role + skenario Gherkin (Mermaid, online only).',
   milestone: 'Jalan pembangunan bertahap M1–M4 dan definisi "selesai" untuk tiap tahap.',
   rencana: 'Rencana kerja 3 fasa sampai demo online 27 Sep, dengan task interaktif.',
   qna: 'Pertanyaan yang masih perlu dikonfirmasi ke mitra (Bu Dian dkk.).',
@@ -33,7 +34,7 @@ export default function Home() {
 
         <div className="flex flex-wrap gap-2">
           <span className="inline-flex items-center px-2.5 py-1 rounded-full bg-indigo-50 dark:bg-indigo-950/40 border border-indigo-200 dark:border-indigo-900 text-xs font-medium text-indigo-700 dark:text-indigo-300">
-            Update 9 Sep 2026
+            Update 10 Sep 2026
           </span>
           {TAG_TEKNOLOGI.map((t) => (
             <span
@@ -100,7 +101,7 @@ export default function Home() {
         <p className="mt-3 text-zinc-600 dark:text-zinc-400 leading-relaxed text-sm sm:text-base">
           Dokumen ini dipisah jadi beberapa halaman agar mudah dibaca. Mulai dari <strong>Sekilas</strong> untuk gambaran
           besar, lalu telusuri <strong>Fitur</strong> (apa yang dibuat), <strong>Cakupan</strong> (apa yang tidak dibuat),{' '}
-          <strong>Data</strong> (informasi yang disimpan), <strong>Milestone</strong> (tahap pembangunan), dan{' '}
+          <strong>Data</strong> (informasi yang disimpan), <strong>Workflow</strong> (alur aplikasi + Gherkin), <strong>Milestone</strong> (tahap pembangunan), dan{' '}
           <strong>Rencana Kerja</strong> (progres tim sampai demo 27 September 2026).
         </p>
       </section>

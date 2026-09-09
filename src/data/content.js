@@ -9,7 +9,7 @@ export const TEKS_HERO = {
   deskripsi:
     'Aplikasi web responsif untuk digitalisasi pendataan kunjungan rumah (KR) kader Posyandu di wilayah kerja Puskesmas Trajeng (4 kelurahan). Kader menginput hasil kunjungan, data otomatis tampil pada dashboard PWS kondisi kesehatan per wilayah, dan kader menerima pengingat jadwal kunjungan. Format form Kemenkes belum stabil, sehingga sistem wajib mendukung perubahan tanpa pembangunan ulang.',
   koreksi:
-    'Koreksi 9 Sep: 8 kelompok sasaran · notifikasi v1 = in-app + email · Rencana Kerja & Timeline target demo online 27 Sep 2026.',
+    'Koreksi 10 Sep: Workflow Aplikasi (6 alur Mermaid + Gherkin, online only) · 8 kelompok sasaran · notifikasi v1 = in-app + email · target demo 27 Sep 2026.',
 }
 
 export const TAG_TEKNOLOGI = ['React', 'Express / Node.js', 'PostgreSQL (data fleksibel)', 'REST API', 'Web responsif (mobile)', 'Ekspor Excel/PDF', 'Deploy online']
@@ -39,6 +39,7 @@ export const TERSEDIA = [
   'Alur proses kunjungan saat ini',
   'Konteks kebijakan ILP & timeline KR',
   'Pemetaan stakeholder & rencana 3-fasa (demo 27 Sep)',
+  'Workflow Aplikasi 6 alur (Mermaid) + User Journey per role + Gherkin (online only, 10 Sep)',
 ]
 export const CATATAN_TERSEDIA = 'Tidak ada kode atau starter template yang sudah ada — pembangunan dimulai dari nol di Milestone 1.'
 
@@ -49,6 +50,7 @@ export const OUT_OF_SCOPE = [
   { judul: 'Tanpa notifikasi WhatsApp di v1', teks: 'WhatsApp dibuka sebagai pengembangan lanjutan (validasi mitra + biaya). Email reminder free-tier termasuk v1 sebagai pelengkap notifikasi in-app.' },
   { judul: 'Tanpa analitik prediktif / machine learning', teks: 'dashboard menggambarkan kondisi aktual, bukan peramalan.' },
   { judul: 'Tanpa akses publik / multi-bahasa', teks: 'seluruh pengguna harus login.' },
+  { judul: 'Tanpa mode offline/draft di v1', teks: 'asumsi online only (10 Sep); kader harus online saat input, error jaringan = retry tanpa antrian offline.' },
   { judul: 'Data aktual 4 kelurahan menunggu izin DPMPTSP', teks: 'demo 27 Sep memakai data dummy; data nyata masuk saat izin jadi.' },
 ]
 

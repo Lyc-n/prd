@@ -1,5 +1,5 @@
 import { NavLink } from 'react-router-dom'
-import { LayoutDashboard, Sparkles, MinusCircle, Database, Route, Kanban, CircleHelp, Download } from 'lucide-react'
+import { LayoutDashboard, Sparkles, MinusCircle, Database, Route, Kanban, CircleHelp, Download, Workflow } from 'lucide-react'
 import ThemeToggle from './ThemeToggle'
 
 export const NAV_ITEMS = [
@@ -7,6 +7,7 @@ export const NAV_ITEMS = [
   { to: '/fitur', label: 'Fitur', icon: Sparkles, end: false },
   { to: '/cakupan', label: 'Cakupan', icon: MinusCircle, end: false },
   { to: '/data', label: 'Data', icon: Database, end: false },
+  { to: '/workflow', label: 'Workflow', icon: Workflow, end: false },
   { to: '/milestone', label: 'Milestone', icon: Route, end: false },
   { to: '/rencana', label: 'Rencana Kerja', icon: Kanban, end: false },
   { to: '/qna', label: 'Tanya Jawab', icon: CircleHelp, end: false },

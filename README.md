@@ -11,13 +11,14 @@ Repositori ini berisi **versi web interaktif dari Product Requirements Document 
 | `PRD - Dashboard PWS Posyandu.md` | Sumber PRD (markdown) — konten acuan utama |
 | `src/` | Aplikasi React (Vite) — halaman interaktif PRD |
 | `public/PRD - Dashboard PWS Posyandu.md` | Salinan markdown untuk tombol "Unduh PRD" di aplikasi |
+| `docs/workflows/` | Mirror workflow Mermaid (6 alur + matriks) — sinkron dari `01 Notes/workflows/` vault |
 | `legacy/index.html` | Versi HTML statis lama (arsip) |
 | `vercel.json` | Konfigurasi deploy Vercel (SPA rewrite) |
 
 ## Tech stack
 
 - **React 19** + **Vite 8**
-- **React Router** — 7 halaman: Sekilas, Fitur, Cakupan, Data, Milestone, Rencana Kerja, Tanya Jawab
+- **React Router** — 8 halaman: Sekilas, Fitur, Cakupan, Data, Workflow, Milestone, Rencana Kerja, Tanya Jawab
 - **Tailwind CSS 4** (dark mode via kelas `dark`)
 - **lucide-react** — ikon
 
@@ -52,4 +53,4 @@ Progress task dapat dilacak langsung pada halaman *Rencana Kerja*.
 
 ## Kontribusi konten
 
-Konten halaman disusun ulang dari `PRD - Dashboard PWS Posyandu.md` ke `src/data/` (struktur terpusat di `content.js` dan `tasks.js`). Jika konten markdown berubah, perbarui salinan di `public/` agar tombol "Unduh PRD" tetap sesuai.
+Konten halaman disusun ulang dari `PRD - Dashboard PWS Posyandu.md` ke `src/data/` (struktur terpusat di `content.js`, `tasks.js`, `workflows.js`). Jika konten markdown berubah, perbarui salinan di `public/` agar tombol "Unduh PRD" tetap sesuai. Workflow di `docs/workflows/` wajib sinkron dengan `01 Notes/workflows/` vault (copy 1:1).

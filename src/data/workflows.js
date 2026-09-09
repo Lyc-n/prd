@@ -1,0 +1,107 @@
+export const WORKFLOWS = [
+  {
+    id: 'W-A',
+    kode: 'W-A',
+    judul: 'Auth & Guard',
+    peran: 'Semua Role',
+    file: 'W-A-auth.md',
+    ringkas: 'Login 4 peran → guard → redirect per role → profil/logout. Session expiry kembali ke login.',
+    journey: 'Masuk → Login (4 peran) → Guard peran → Redirect (Kader→Jadwal, Pembina/Kepala→Dashboard, Admin→Master) → Profil/Logout. Session expiry → kembali ke Login.',
+    gherkin: [
+      'Given akun Kader aktif dengan posyandu Ngemplakrejo\nWhen input kredensial benar\nThen redirect ke /jadwal dan guard izinkan /kunjungan/* miliknya',
+      'Given login sebagai Kader\nWhen buka /admin/master-kelurahan\nThen 403 + toast "Tidak berhak" dan redirect ke /jadwal',
+      'Given token kedaluwarsa saat buka /dashboard\nWhen guard cek auth\nThen redirect ke /login dengan pesan "Sesi habis"',
+    ],
+  },
+  {
+    id: 'W-B',
+    kode: 'W-B',
+    judul: 'Master Data & Definisi Field Fleksibel',
+    peran: 'Admin',
+    file: 'W-B-master-field.md',
+    ringkas: 'Kelola Kelurahan→RW/RT→Posyandu→Kader→Definisi Field 8 sasaran (tipe/wajib/urutan/aktif).',
+    journey: 'Kelola Kelurahan → RW/RT → Posyandu → Kader → Definisi Field per 8 sasaran (Ibu Hamil, Bersalin & Nifas, Bayi 0–6, Balita 6–71, Sekolah/Remaja 6–18, Dewasa 18–59, Lansia >60, TBC) → atur tipe, wajib/opsional, urutan, aktif/nonaktif → Simpan.',
+    gherkin: [
+      'Given definisi field "Tekanan darah" aktif untuk Dewasa\nWhen admin tambah field "Lingkar perut" tipe angka, wajib=false, urutan=5\nThen field muncul di form W-C kunjungan baru tanpa deploy',
+      'Given ada kunjungan lama memakai field "PMO" (TBC)\nWhen admin nonaktifkan "PMO"\nThen kunjungan lama tetap tampil snapshot, kunjungan baru tidak render field itu',
+      'Given field "NIK" sudah ada di Data Keluarga\nWhen admin buat field "NIK" lagi di kelompok sama\nThen error "Nama field sudah ada" dan simpan diblok',
+    ],
+  },
+  {
+    id: 'W-C',
+    kode: 'W-C',
+    judul: 'Input Kunjungan Rumah Dinamis',
+    peran: 'Kader',
+    badge: 'Paling Kritis',
+    file: 'W-C-input-kr.md',
+    ringkas: 'Kader pilih jadwal/KK → isi Data Keluarga & Anggota → pilih 1 dari 8 sasaran → form dinamis dari W-B → validasi → simpan (1 Jadwal→1 Kunjungan).',
+    journey: 'Login Kader → Daftar Jadwal/Kunjungan miliknya → Pilih Jadwal/Keluarga (Cari KK) → Isi Data Keluarga & Anggota → Pilih 1 dari 8 sasaran → Form ter-render dinamis dari W-B → Tandai Masalah & Tindak Lanjut → Validasi wajib → Simpan → status dalam_proses → selesai.',
+    gherkin: [
+      'Given keluarga KK-001 RT02/RW04 Ngemplakrejo dan anggota Dewasa Budi\nWhen kader isi Dewasa: terdiagnosa hipertensi=2025-08-01, ada obat=true, minum 24 jam=false\nAnd simpan kunjungan\nThen kunjungan selesai dan dashboard W-E hitung +1 hipertensi tidak patuh di RT02',
+      'Given definisi "NIK" wajib=true\nWhen kader kosongkan NIK dan tekan Simpan\nThen inline error "NIK wajib diisi" dan simpan gagal',
+      'Given NIK 357... sudah ada di anggota lain\nWhen kader pakai NIK sama\nThen error "NIK sudah terdaftar" (cek async, online)',
+      'Given koneksi putus saat Simpan\nWhen tekan Simpan\nThen toast "Gagal simpan, periksa koneksi, coba lagi" (tidak ada draft offline)',
+    ],
+  },
+  {
+    id: 'W-D',
+    kode: 'W-D',
+    judul: 'Jadwal & Pengingat',
+    peran: 'Kader + System',
+    file: 'W-D-jadwal-notifikasi.md',
+    ringkas: 'Admin/Pembina buat jadwal → Kader lihat miliknya → cron H-1 & terlewat → in-app + email → selesai via W-C.',
+    journey: 'Admin/Pembina buat Jadwal (dusun, RT/RW, nama KK, waktu, kader PJ) → Kader lihat Daftar Jadwal miliknya (filter posyandu/minggu) → System cron cek H-1 & terlewat → Notifikasi in-app + email → Kader tandai Selesai → terhubung ke W-C (1 Jadwal → 1 Kunjungan).',
+    gherkin: [
+      'Given jadwal KK-002 untuk kader A tgl 2026-09-20\nWhen cron jam 07:00 H-1\nThen in-app badge + email "Besok kunjungan KK-002" ke kader A',
+      'Given jadwal 2026-09-10 lewat tanpa kunjungan\nWhen cron jam 00:00+1\nThen status jadi terlewat dan in-app "Terlewat: KK-002" + email',
+      'Given jadwal terlewat untuk KK-002\nWhen kader buat kunjungan untuk KK-002 dan simpan\nThen jadwal otomatis jadi selesai dan badge hilang',
+    ],
+  },
+  {
+    id: 'W-E',
+    kode: 'W-E',
+    judul: 'Dashboard PWS',
+    peran: 'Pembina/Kepala (+ Kader terbatas)',
+    file: 'W-E-dashboard.md',
+    ringkas: 'Ranking penyakit tertinggi per RT/RW/kelurahan → filter wilayah/sasaran/periode → drill-down Kelurahan→RW→RT → agregat anonim.',
+    journey: 'Login Pembina/Kepala → Dashboard ringkasan 4 kelurahan → Lihat ranking penyakit tertinggi per RT/RW/kelurahan (contoh hipertensi tidak patuh) → Filter wilayah/kelompok sasaran/periode → Drill-down Kelurahan→RW→RT → Lihat rekap masalah (tanpa NIK individu, agregat anonim).',
+    gherkin: [
+      'Given ada 18 kunjungan Dewasa hipertensi tidak patuh di RT02\nWhen pembina filter Kelurahan=Ngemplakrejo, Sasaran=Dewasa, Periode=2026-09 And drill-down RW04 → RT02\nThen tampil "Hipertensi tidak patuh: 18 — peringkat 1" di RT02',
+      'Given kader Ngemplakrejo RT02 login\nWhen buka dashboard\nThen hanya tampil data RT02/RW04 Ngemplakrejo, filter kelurahan lain disabled',
+      'Given filter Periode=2025-01 (belum ada data)\nWhen terapkan\nThen empty state "Belum ada kunjungan pada periode ini" + CTA ke W-C (jika kader)',
+      'Given kunjungan Budi (NIK ...) hipertensi tidak patuh\nWhen dashboard render\nThen hanya hitung agregat, tidak tampil NIK/nama di card peringkat',
+    ],
+  },
+  {
+    id: 'W-F',
+    kode: 'W-F',
+    judul: 'Rekap, Masalah & Ekspor',
+    peran: 'Pembina/Admin',
+    file: 'W-F-rekap-ekspor.md',
+    ringkas: 'Rekap otomatis agregat terhitung per minggu/sasaran/wilayah → Masalah belum/selesai/dirujuk → Ekspor Excel/PDF sesuai filter.',
+    journey: 'Pembina lihat Rekap otomatis (per minggu/sasaran/wilayah, jumlah dengan masalah, tindak lanjut) → Ekspor Excel/PDF sesuai filter dashboard → Monitor Masalah (belum/selesai/dirujuk) dari W-C.',
+    gherkin: [
+      'Given 12 kunjungan minggu ke-2 September (5 Dewasa, 4 Balita, 3 Lansia)\nWhen buka Rekap\nThen tampil agregat terhitung (bukan input manual) per sasaran/wilayah',
+      'Given filter Dashboard = Ngemplakrejo + Dewasa\nWhen klik Ekspor Excel\nThen file berisi hanya data Ngemplakrejo Dewasa sesuai filter',
+      'Given masalah TBC pada Ani status belum\nWhen pembina ubah jadi dirujuk\nThen dashboard hitung indikator "dirujuk" bertambah',
+    ],
+  },
+]
+
+export const MATRIKS_HAK = [
+  { fitur: 'Login & Profil', kader: '✅', pembina: '✅', kepala: '✅', admin: '✅' },
+  { fitur: 'Master Kelurahan/RW/RT/Posyandu/Kader', kader: '❌', pembina: '❌ (baca)', kepala: '❌ (baca)', admin: '✅ CRUD' },
+  { fitur: 'Definisi Field Form', kader: '❌', pembina: '❌', kepala: '❌', admin: '✅ CRUD' },
+  { fitur: 'Input KR Dinamis (W-C)', kader: '✅ miliknya', pembina: '❌', kepala: '❌', admin: '❌' },
+  { fitur: 'Jadwal & Notifikasi (W-D)', kader: '✅ lihat miliknya', pembina: '✅ lihat 4 kel', kepala: '✅ lihat 4 kel', admin: '✅ kelola' },
+  { fitur: 'Dashboard PWS (W-E)', kader: '✅ wilayah sendiri', pembina: '✅ 4 kelurahan', kepala: '✅ 4 kelurahan', admin: '✅ 4 kelurahan' },
+  { fitur: 'Rekap & Ekspor (W-F)', kader: '❌', pembina: '✅ ekspor', kepala: '✅ ekspor', admin: '✅ ekspor' },
+  { fitur: 'Masalah & Tindak Lanjut', kader: '✅ input', pembina: '✅ monitor', kepala: '✅ monitor', admin: '—' },
+]
+
+export const STATE_DIAGRAM = [
+  'Kunjungan: dalam_proses → selesai',
+  'Jadwal: terjadwal → selesai | terjadwal → terlewat → selesai',
+  'Masalah: belum → selesai | belum → dirujuk',
+  'Field: aktif ↔ nonaktif (histori kunjungan lama tetap pakai snapshot definisi)',
+]

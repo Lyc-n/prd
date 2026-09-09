@@ -1,11 +1,11 @@
 ---
 tags: [prd, requirement, spesifikasi]
 created: 2026-09-07
-updated: 2026-09-09
-status: resmi — acuan pembangunan (update 9 Sep)
+updated: 2026-09-10
+status: resmi — acuan pembangunan (update 10 Sep: Workflow Aplikasi + User Journey + Gherkin)
 up: ["[MOC - Project Posyandu Ngemplakrejo]"]
 aliases: [PRD, Product Requirements Document, Product Requirement]
-x-review: update 9 Sep — koreksi 8 sasaran, notifikasi in-app+email, Rencana Kerja & Timeline target demo 27 Sep
+x-review: update 10 Sep — tambah Workflow Aplikasi (6 alur, Mermaid di Obsidian, Gherkin, asumsi online), simpan di vault+repo
 ---
 
 # PRD — Dashboard PWS Posyandu (Wilayah Kerja Puskesmas Trajeng)
@@ -19,6 +19,7 @@ x-review: update 9 Sep — koreksi 8 sasaran, notifikasi in-app+email, Rencana K
 Dokumen ini adalah evolusi dari [[URS - Dashboard PWS Posyandu]] (draf kebutuhan pengguna) menjadi **PRD — Product Requirements Document** yang siap menjadi acuan bersama untuk pembangunan. Konten disintesis dari seluruh vault: URS, struktur form checklist KR (PDF 35 hlm), temuan interview, konteks kebijakan ILP, dan rencana kegiatan September 2026.
 
 > **Update 9 Sep 2026:** koreksi jumlah **8 kelompok sasaran** (temuan ekstraksi field), keputusan **notifikasi v1 = in-app + email**, dan penambahan **Rencana Kerja & Timeline** (jalur paralel, target demo online 27 Sep).
+> **Update 10 Sep 2026:** tambah **Workflow Aplikasi** (6 alur inti, User Journey per role, 25+ skenario Gherkin, diagram Mermaid di Obsidian). Asumsi: **online only** (tanpa mode offline/draft). Artefak workflow disimpan di **vault (`01 Notes/workflows/`) + repo (`docs/workflows/`)** — keduanya sinkron.
 
 ---
 
@@ -56,6 +57,7 @@ Hasil discovery yang **tidak perlu diulang** saat pembangunan dimulai:
 - Pemetaan stakeholder, pembagian peran tim, dan rencana 3-fasa (target demo online 27 Sep)
 
 > Catatan: **tidak ada kode atau starter template yang sudah ada.** Pembangunan dimulai dari nol di Milestone 1.
+> **Konvensi Workflow (10 Sep):** diagram alur memakai **Mermaid di Obsidian**; setiap alur dilengkapi **User Journey per role + skenario Given-When-Then**; asumsi **online** (tanpa sync offline); artefak disimpan di **vault dan repo**.
 
 ---
 
@@ -68,6 +70,7 @@ Hasil discovery yang **tidak perlu diulang** saat pembangunan dimulai:
 - **Tanpa analitik prediktif / machine learning** — dashboard menggambarkan kondisi aktual, bukan peramalan.
 - **Tanpa akses publik / multi-bahasa** — seluruh pengguna harus login.
 - **Data aktual 4 kelurahan menunggu izin DPMPTSP** — selama pengembangan, gunakan data contoh/placeholder; data nyata masuk saat izin jadi.
+- **Tanpa mode offline/draft di v1** — asumsi online only (keputusan 10 Sep); kader harus terhubung internet saat input (sesuai URS availability seluler, tapi tanpa queue offline).
 
 ---
 
@@ -140,6 +143,224 @@ Apa yang perlu diingat aplikasi (menjadi dasar ERD/skema pada saat pembangunan; 
 - 1 Keluarga → banyak Anggota; 1 Anggota → banyak Masalah & Tindak Lanjut
 - Kunjungan mengisi field yang didefinisikan di Definisi Field Form
 - 1 Jadwal → 1 Kunjungan (ketika jadwal direalisasikan)
+
+---
+
+## Workflow Aplikasi (App Workflows Only)
+
+> Scope: hanya alur **di dalam aplikasi** (bukan workflow kegiatan/perizinan). 6 alur inti + User Journey per role + skenario Gherkin. Diagram: **Mermaid di Obsidian** (`01 Notes/workflows/`), sinkron ke **repo `docs/workflows/`**. Asumsi: **online only** (tanpa draft offline).
+
+### Prinsip Workflow
+
+- **4 peran** dengan guard berbeda: Kader (input wilayah sendiri), Pembina Kesmas & Kepala Puskesmas (baca 4 kelurahan), Admin (kelola master + field) — sesuai § Apa yang Aplikasi Lakukan.
+- **Form fleksibel adalah engine:** W-B (Admin definisi) → W-C (Kader render dinamis). Perubahan field tidak rebuild — `Field Checklist KR - Ekstraksi Definisi Operasional` = sumber 8 sasaran.
+- **Online only (10 Sep):** semua simpan langsung ke server; tidak ada antrian offline/draft lokal. Error jaringan = toast retry, bukan sync latar.
+- **Simpan di keduanya:** vault (`01 Notes/workflows/`) = konteks domain; repo (`docs/workflows/`) = dekat kode. Keduanya Mermaid.
+
+### Matriks Hak Akses (ringkas)
+
+| Fitur | Kader | Pembina | Kepala Puskesmas | Admin |
+|---|---|---|---|---|
+| Login & Profil | ✅ | ✅ | ✅ | ✅ |
+| Master Kelurahan/RW/RT/Posyandu/Kader | ❌ | ❌ (baca) | ❌ (baca) | ✅ CRUD |
+| Definisi Field Form | ❌ | ❌ | ❌ | ✅ CRUD |
+| Input KR Dinamis (W-C) | ✅ miliknya | ❌ | ❌ | ❌ |
+| Jadwal & Notifikasi (W-D) | ✅ lihat miliknya | ✅ lihat 4 kel | ✅ lihat 4 kel | ✅ kelola |
+| Dashboard PWS (W-E) | ✅ wilayah sendiri | ✅ 4 kelurahan | ✅ 4 kelurahan | ✅ 4 kelurahan |
+| Rekap & Ekspor (W-F) | ❌ | ✅ ekspor | ✅ ekspor | ✅ ekspor |
+| Masalah & Tindak Lanjut | ✅ input | ✅ monitor | ✅ monitor | — |
+
+### State Diagram (ringkas)
+
+```
+Kunjungan: dalam_proses → selesai
+Jadwal: terjadwal → selesai | terjadwal → terlewat → selesai
+Masalah: belum → selesai | belum → dirujuk
+Field: aktif ↔ nonaktif (histori kunjungan lama tetap pakai snapshot definisi)
+```
+
+### W-A — Auth & Guard (Semua Role)
+
+**User Journey:**
+Masuk → Login (4 peran) → Guard peran → Redirect (Kader→Jadwal, Pembina/Kepala→Dashboard, Admin→Master) → Profil/Logout. Session expiry → kembali ke Login.
+
+**Mermaid:** `01 Notes/workflows/W-A-auth.md` / `docs/workflows/W-A-auth.md`
+
+**Skenario Gherkin (pilihan):**
+```gherkin
+Scenario: Login sukses sebagai Kader
+  Given akun Kader aktif dengan posyandu Ngemplakrejo
+  When input kredensial benar
+  Then redirect ke /jadwal dan guard izinkan /kunjungan/* miliknya
+
+Scenario: Akses terlarang
+  Given login sebagai Kader
+  When buka /admin/master-kelurahan
+  Then 403 + toast "Tidak berhak" dan redirect ke /jadwal
+
+Scenario: Session habis
+  Given token kedaluwarsa saat buka /dashboard
+  When guard cek auth
+  Then redirect ke /login dengan pesan "Sesi habis"
+```
+
+### W-B — Master Data & Definisi Field Fleksibel (Admin)
+
+**User Journey (Admin):**
+Kelola Kelurahan → RW/RT → Posyandu → Kader → Definisi Field per 8 sasaran (Ibu Hamil, Bersalin & Nifas, Bayi 0–6, Balita 6–71, Sekolah/Remaja 6–18 ⭐, Dewasa 18–59, Lansia >60, TBC + Data Keluarga/Rekap/Tindak Lanjut/Jadwal) → atur tipe (pilihan/angka/tanggal/checkbox/teks), wajib/opsional, urutan, aktif/nonaktif → Simpan.
+
+**Mermaid:** `01 Notes/workflows/W-B-master-field.md` / `docs/workflows/W-B-master-field.md`
+
+**Skenario Gherkin:**
+```gherkin
+Scenario: Admin tambah field baru saat format Kemenkes berubah
+  Given definisi field "Tekanan darah" aktif untuk Dewasa
+  When admin tambah field "Lingkar perut" tipe angka, wajib=false, urutan=5
+  Then field muncul di form W-C kunjungan baru tanpa deploy
+
+Scenario: Nonaktifkan field lama histori tetap valid
+  Given ada kunjungan lama memakai field "PMO" (TBC)
+  When admin nonaktifkan "PMO"
+  Then kunjungan lama tetap tampil snapshot, kunjungan baru tidak render field itu
+
+Scenario: Validasi duplikat & urutan
+  Given field "NIK" sudah ada di Data Keluarga
+  When admin buat field "NIK" lagi di kelompok sama
+  Then error "Nama field sudah ada" dan simpan diblok
+```
+
+### W-C — Input Kunjungan Rumah Dinamis (Kader, Paling Kritis)
+
+**User Journey (Kader, mobile-first, online):**
+Login Kader → Daftar Jadwal/Kunjungan miliknya → Pilih Jadwal/Keluarga (Cari KK: nama KK/No KK/RT/RW) → Isi Data Keluarga & Anggota (NIK, tgl lahir, JK, hub KK, pendidikan, pekerjaan, kelompok sasaran) → Pilih 1 dari 8 sasaran → Form ter-render dinamis dari W-B (contoh Dewasa: periksa setahun terakhir, terdiagnosa hipertensi/DM, ada obat, minum 24 jam; BaHa, suhu, buku KIA, edukasi, paraf) → Tandai Masalah & Tindak Lanjut → Validasi wajib → Simpan → status `dalam_proses → selesai`.
+
+**Mermaid:** `01 Notes/workflows/W-C-input-kr.md` / `docs/workflows/W-C-input-kr.md`
+
+**Skenario Gherkin (inti 7):**
+```gherkin
+Scenario: Happy path hipertensi tidak patuh (kasus dashboard)
+  Given keluarga KK-001 RT02/RW04 Ngemplakrejo dan anggota Dewasa Budi
+  When kader isi Dewasa: terdiagnosa hipertensi=2025-08-01, ada obat=true, minum 24 jam=false
+  And simpan kunjungan
+  Then kunjungan selesai dan dashboard W-E hitung +1 hipertensi tidak patuh di RT02
+
+Scenario: Field wajib kosong diblok
+  Given definisi "NIK" wajib=true
+  When kader kosongkan NIK dan tekan Simpan
+  Then inline error "NIK wajib diisi" dan simpan gagal
+
+Scenario: NIK duplikat
+  Given NIK 357... sudah ada di anggota lain
+  When kader pakai NIK sama
+  Then error "NIK sudah terdaftar" (cek async, online)
+
+Scenario: Keluarga belum di-master
+  Given KK "Siti" belum ada di master
+  When kader cari "Siti" tidak ketemu
+  Then tampil CTA "Minta Admin buatkan KK" atau tombol Buat Keluarga (jika diizinkan) → lanjut isi
+
+Scenario: Definisi berubah saat mengisi
+  Given kader sedang isi Bayi 0–6
+  When admin ubah definisi field Bayi di tab lain
+  Then toast "Definisi diperbarui, muat ulang" dan form re-render terbaru sebelum simpan
+
+Scenario: Anggota masuk 2 sasaran
+  Given Balita Ani umur 5 thn juga kontak TBC
+  When kader selesai isi Balita 6–71
+  Then bisa Tambah Penilaian TBC untuk Ani di kunjungan sama
+
+Scenario: Error jaringan online
+  Given koneksi putus saat Simpan
+  When tekan Simpan
+  Then toast "Gagal simpan, periksa koneksi, coba lagi" (tidak ada draft offline)
+```
+
+### W-D — Jadwal & Pengingat (Kader + System)
+
+**User Journey:**
+Admin/Pembina buat Jadwal (dusun, RT/RW, nama KK, waktu, kader PJ) → Kader lihat Daftar Jadwal miliknya (filter posyandu/minggu) → System cron cek H-1 & terlewat → Notifikasi in-app + email → Kader tandai Selesai → terhubung ke W-C (1 Jadwal → 1 Kunjungan).
+
+**Mermaid:** `01 Notes/workflows/W-D-jadwal-notifikasi.md` / `docs/workflows/W-D-jadwal-notifikasi.md`
+
+**Skenario Gherkin:**
+```gherkin
+Scenario: Jadwal H-1 kirim pengingat
+  Given jadwal KK-002 untuk kader A tgl 2026-09-20
+  When cron jam 07:00 H-1
+  Then in-app badge + email "Besok kunjungan KK-002" ke kader A
+
+Scenario: Jadwal terlewat
+  Given jadwal 2026-09-10 lewat tanpa kunjungan
+  When cron jam 00:00+1
+  Then status jadi terlewat dan in-app "Terlewat: KK-002" + email
+
+Scenario: Tandai selesai
+  Given jadwal terlewat untuk KK-002
+  When kader buat kunjungan untuk KK-002 dan simpan
+  Then jadwal otomatis jadi selesai dan badge hilang
+```
+
+### W-E — Dashboard PWS (Pembina/Kepala utama, Kader terbatas)
+
+**User Journey:**
+Login Pembina/Kepala → Dashboard ringkasan 4 kelurahan → Lihat ranking penyakit tertinggi per RT/RW/kelurahan (contoh hipertensi tidak patuh) → Filter wilayah/kelompok sasaran/periode → Drill-down Kelurahan→RW→RT → Lihat rekap masalah (tanpa NIK individu, agregat anonim).
+
+**Mermaid:** `01 Notes/workflows/W-E-dashboard.md` / `docs/workflows/W-E-dashboard.md`
+
+**Skenario Gherkin:**
+```gherkin
+Scenario: Drill-down hipertensi per RT
+  Given ada 18 kunjungan Dewasa hipertensi tidak patuh di RT02
+  When pembina filter Kelurahan=Ngemplakrejo, Sasaran=Dewasa, Periode=2026-09
+  And drill-down RW04 → RT02
+  Then tampil "Hipertensi tidak patuh: 18 — peringkat 1" di RT02
+
+Scenario: Kader hanya lihat wilayahnya
+  Given kader Ngemplakrejo RT02 login
+  When buka dashboard
+  Then hanya tampil data RT02/RW04 Ngemplakrejo, filter kelurahan lain disabled
+
+Scenario: Filter kosong
+  Given filter Periode=2025-01 (belum ada data)
+  When terapkan
+  Then empty state "Belum ada kunjungan pada periode ini" + CTA ke W-C (jika kader)
+
+Scenario: Agregat anonim
+  Given kunjungan Budi (NIK ...) hipertensi tidak patuh
+  When dashboard render
+  Then hanya hitung agregat, tidak tampil NIK/nama di card peringkat
+```
+
+### W-F — Rekap, Masalah & Ekspor (Pembina/Admin)
+
+**User Journey:**
+Pembina lihat Rekap otomatis (per minggu/sasaran/wilayah, jumlah dengan masalah, tindak lanjut) → Ekspor Excel/PDF sesuai filter dashboard → Monitor Masalah (belum/selesai/dirujuk) dari W-C.
+
+**Mermaid:** `01 Notes/workflows/W-F-rekap-ekspor.md` / `docs/workflows/W-F-rekap-ekspor.md`
+
+**Skenario Gherkin:**
+```gherkin
+Scenario: Rekap otomatis mingguan
+  Given 12 kunjungan minggu ke-2 September (5 Dewasa, 4 Balita, 3 Lansia)
+  When buka Rekap
+  Then tampil agregat terhitung (bukan input manual) per sasaran/wilayah
+
+Scenario: Ekspor sesuai filter
+  Given filter Dashboard = Ngemplakrejo + Dewasa
+  When klik Ekspor Excel
+  Then file berisi hanya data Ngemplakrejo Dewasa sesuai filter
+
+Scenario: Masalah dirujuk
+  Given masalah TBC pada Ani status belum
+  When pembina ubah jadi dirujuk
+  Then dashboard hitung indikator "dirujuk" bertambah
+```
+
+### Referensi Artefak
+
+- Folder vault: `01 Notes/workflows/` — 6 file Mermaid + `README.md` + `matriks-hak-akses.md`
+- Folder repo: `docs/workflows/` — mirror sinkron (copy 1:1 untuk dekat kode)
+- Sumber field: `Field Checklist KR - Ekstraksi Definisi Operasional` (8 sasaran + Rekap hlm 14 + Tindak Lanjut hlm 15 + Jadwal hlm 16 + Definisi Operasional hlm 17–35)
 
 ---
 
@@ -322,3 +543,4 @@ Ditandai sebagai risiko yang belum terkunci di PRD ini:
 - [[Field Checklist KR - Ekstraksi Definisi Operasional]]
 - [[Rencana Kegiatan September 2026]]
 - [[MOC - Project Posyandu Ngemplakrejo]]
+- Workflows: `01 Notes/workflows/` (vault) ↔ `docs/workflows/` (repo) — Mermaid + Gherkin, online only
