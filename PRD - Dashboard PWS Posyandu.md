@@ -146,6 +146,117 @@ Apa yang perlu diingat aplikasi (menjadi dasar ERD/skema pada saat pembangunan; 
 
 ---
 
+## Persyaratan Non-Fungsional (NFR)
+
+> 7 NFR terukur untuk v1. Sumber: `URS §5` (6 aspek) + keputusan 10 Sep `online only` + `Batasan Kegiatan Sebelum Izin` + `Perizinan DPMPTSP`. Tiap NFR punya target ukur, kriteria penerimaan, dan cara uji — agar dev & mitra sepakat "selesai itu seperti apa".
+
+| ID | Aspek | Target Ukur (v1) | Kriteria Penerimaan | Cara Uji | Prioritas | Sumber |
+|---|---|---|---|---|---|---|
+| **NFR-01** | **Kegunaan (Usability)** — kader non-teknis, minim pelatihan, mobile-first | Alur W-C (input KR) selesai <3 menit di HP 360px; 90% kader coba pertama berhasil tanpa bantuan | Form langkah 1→5 jelas, label plain, inline error di field yang salah, tombol besar untuk jempol | Uji 5 kader pakai HP sendiri (360–414px) rekam waktu + error rate | **[M]** | `URS §5 Usability`, `W-C`, `Rencana C8` |
+| **NFR-02** | **Keluwesan (Fleksibilitas)** — adaptasi format Kemenkes tanpa rebuild | Tambah/nonaktifkan field via W-B tanpa deploy; perubahan tampil di W-C <5 detik setelah simpan | Definisi field `tipe/wajib/urutan/aktif` tersimpan, kunjungan lama pakai snapshot (histori tidak hilang) | Admin tambah field `Lingkar perut` → buat kunjungan baru → cek render | **[M]** | `URS §4.6`, `Konteks ILP:92`, `Field Checklist:124` |
+| **NFR-03** | **Ketersediaan & Akses** — ponsel/data terbatas, online only | TTI <3s di 3G; error jaringan = toast retry (tanpa antrian offline) | Semua simpan langsung ke server; `Gagal simpan, periksa koneksi, coba lagi` `W-C` | Throttle 3G di DevTools → buka dashboard & simpan | **[M]** | `URS Availability`, `PRD Di Luar Cakupan:73` |
+| **NFR-04** | **Keamanan & Privasi** — data kesehatan sensitif, guard peran, agregat anonim | 4 peran guard benar; Kader tidak bisa paksa `?kelurahan=Tambaan` (403); Dashboard tanpa NIK | Matriks hak akses `Workflow:160`, JWT expiry → login `W-A`, dashboard tanpa NIK `W-E` | Coba akses silang peran + cek response 403/401 | **[M]** | `URS Keamanan`, `Batasan:36`, `W-A/W-E` |
+| **NFR-05** | **Skalabilitas** — 4 kelurahan + Pustu, banyak KK | Mendukung 4 kelurahan wajib + 8 sasaran + ratusan KK/kelurahan tanpa perubahan skema | Kelurahan `Ngemplakrejo/Tambaan/Trajeng/Mayangan` + RW/RT + Posyandu + Kader seed `Rencana A1/A2` | Seed 500 KK dummy → cek dashboard & filter tetap lancar | **[S]** | `URS Skalabilitas`, `Stakeholder:55`, `Rencana A2` |
+| **NFR-06** | **Kinerja (Performance)** — dashboard agregat responsif | p95 `GET /api/dashboard` agregat <500ms (100 kunjungan); pagination/lazy untuk 500+ baris | Agregat `COUNT per RT/RW` + filter `wilayah/sasaran/periode` `W-E`, pagination | k6/Artillery 100 kunjungan → ukur p95 | **[S]** | `URS Performance`, `W-E` |
+| **NFR-07** | **Keteramatan (Observability)** — audit & keterlacakan untuk demo/handover | Setiap kunjungan punya `created_by/at`, rekap ekspor jejak filter, log audit | `created_by/at` di Kunjungan/Jadwal/Masalah, ekspor sesuai filter `W-F` | Buat kunjungan → cek audit trail + ekspor | **[S]** | `W-F`, `Data Model` |
+
+---
+
+## Ketergantungan & Asumsi & Risiko (Dependencies & Assumptions & Risks)
+
+> Dibuat 10 Sep — keputusan `1 digabung, 2 setuju, 3 cukup di vault (hak cipta tidak masuk PRD)`. Risiko hak cipta tetap di vault `Isu Pembagian Hak Cipta` saja (tidak dimasukkan PRD sesuai instruksi).
+
+### Ketergantungan (Dependencies)
+
+| Jenis | Apa | Dampak jika telat/gagal | Mitigasi / Pemilik |
+|---|---|---|---|
+| **Eksternal** | **DPMPTSP** — Surat universitas → MPP 10 menit → izin → data 4 kelurahan `Perizinan:17` `Temuan:54` | Data real tertunda; demo pakai dummy | **Dummy 4 kelurahan** `Rencana A2` + `PRD Perhatian:72` (5 Sep, 9 Sep). Pemilik: Feri (Pasuruan) U-03 |
+| **Eksternal** | **Format Kemenkes** belum fix `Konteks:92` `Temuan:165` | Field berubah | **Definisi Field fleksibel** `NFR-02` `W-B` (tanpa rebuild). Pemilik: Admin |
+| **Eksternal** | **Dinkes** — cetak form akhir 2025 `Konteks:64` | Acuan field | Pakai PDF 35 hlm `Checklist:37` + `Field Checklist:13` 8 sasaran |
+| **Eksternal** | **Mitra (Bu Dian/Kepala Puskesmas)** — validasi URS & demo 27 Sep `QNA:299` | Scope meleset | **Validasi U-01/U-02** `Rencana:72` (follow-up WA) |
+| **Eksternal** | **Infra free-tier** — Vercel + Render/Railway + Supabase `Rencana D1` | Limit kuota | Pilih free-tier + fallback, akun demo D2 |
+| **Internal** | **W-B → W-C → W-E/W-F** `Workflow:153` + **B1→B2→B3→…** `tasks.js:46` | Jika B2/B5 telat, L besar menghambat | Prioritas L dulu (B2, B5, B6, C4, C5), jalur paralel A/B/C |
+
+### Asumsi (Assumptions)
+
+| # | Asumsi | Dasar | Jika salah |
+|---|---|---|---|
+| A-01 | KR belum matang (baru 2024, sedikit) `Konteks:62` — sistem dukung proses berkembang, bukan otomasi stabil | `Konteks:74` | Perlu onboarding kader lebih intensif (notifikasi W-D) |
+| A-02 | Kader butuh pengingat (sering terlambat) `Temuan:88` | `Temuan:88` | Pengingat jadi fitur utama, bukan bonus |
+| A-03 | Dashboard agregat dulu (privasi) `Batasan:36` — tanpa NIK di ranking | `Batasan:36` `W-E:66` | Jika butuh detail individu → guard ketat `BR-19` |
+| A-04 | Online only `PRD:73` — kader online saat input | Keputusan 10 Sep | Jika offline dibutuhkan → tambah queue (di luar v1) |
+| A-05 | Demo pakai dummy, data real setelah izin `PRD:72` | `Rencana A2` | Jika izin cepat → ganti seed dengan data real (migrasi) |
+
+### Risiko (Risks)
+
+| ID | Risiko | Dampak | Mitigasi | Pemilik |
+|---|---|---|---|---|
+| R-01 | Format berubah lagi | Field tidak cocok | **NFR-02** fleksibel + snapshot histori `W-B:22` | Admin |
+| R-02 | DPMPTSP telat | Data real telat | Dummy `Rencana A2`, 4 kelurahan wajib `Stakeholder:55` | Feri |
+| R-03 | Beban 4 kelurahan (ratusan KK) lambat | Dashboard lemot | **NFR-06** p95 <500ms + pagination `W-E:102` | Backend |
+| R-04 | Notifikasi bonus terpotong waktu | Demo tanpa pengingat | Prioritas D1–D3 `PRD:518`, B8/C6 bonus `Rencana` | Tim |
+| R-05 | Guard peran bocor | Privasi | **NFR-04** + BR-01…04 + test 403 `W-A` | Backend |
+
+> Hak cipta Unesa vs putra daerah `Isu Hak Cipta:6` **tidak dimasukkan PRD** (sesuai keputusan 3) — tetap di vault `Isu Pembagian Hak Cipta` untuk diskusi pembimbing.
+
+---
+
+## Aturan Bisnis (Business Rules)
+
+> 25 aturan bernomor + label manusia. Tiap BR: Trigger → Kondisi → Aksi → Contoh → Sumber → Workflow. Traceable ke Gherkin.
+
+### Akses & Peran (BR-01 … BR-04)
+
+| ID | Label Manusia | Trigger → Kondisi → Aksi | Contoh | Sumber | Workflow |
+|---|---|---|---|---|---|
+| **BR-01** | Kader hanya wilayahnya | Buka dashboard → jika peran=Kader → hanya RT/RW binaannya; `?kelurahan=Tambaan` paksa → 403 | Kader Ngemplakrejo RT02 buka Tambaan → 403 | `W-E:66` `PRD Matriks:160` | W-E, W-A |
+| **BR-02** | 4 peran guard | Request API → cek JWT + role → izinkan/tolak per matriks | `POST /api/kunjungan` hanya Kader | `PRD Matriks:160` `W-A` | W-A, W-B, W-C |
+| **BR-03** | Admin kelola master & field | Jika peran≠Admin → blok `POST /api/master/*`, `POST /api/definisi-field` | Kader buka `/admin/definisi-field` → 403 | `PRD Matriks:160` `W-B` | W-B |
+| **BR-04** | Sesi habis → login | Token expiry → 401 → redirect `/login` + pesan `Sesi habis` | Buka `/dashboard` expiry → `/login` | `W-A` | W-A |
+
+### Kunjungan (BR-05 … BR-09)
+
+| ID | Label | Trigger → Kondisi → Aksi | Contoh | Sumber | Workflow |
+|---|---|---|---|---|---|
+| **BR-05** | Satu Jadwal satu Kunjungan | Simpan kunjungan → `Jadwal.status=terjadwal/terlewat` → jadi `selesai` | Jadwal KK-002 → simpan kunjungan → badge hilang | `PRD:145` `W-D` `W-C` | W-D, W-C |
+| **BR-06** | Status kunjungan | Buat → `dalam_proses` → simpan valid → `selesai` | Validasi gagal → tetap `dalam_proses` | `PRD:173` `W-C` | W-C |
+| **BR-07** | Jenis kunjungan | Pilih jenis → `rutin 1×/tahun seluruh KK` vs `khusus door-to-door` | Rutin vs khusus jadi filter W-E | `Konteks:70` `Data Model:119` | W-C, W-E |
+| **BR-08** | NIK unik | Simpan anggota → cek NIK duplikat async (online) → tolak jika ada | NIK `357...` sudah ada → `NIK sudah terdaftar` | `W-C:40` | W-C |
+| **BR-09** | Validasi wajib | Simpan → cek `wajib=true` & tipe → inline error jika kosong/salah | NIK wajib kosong → `NIK wajib diisi` | `W-C:38` `W-B` | W-C, W-B |
+
+### Field Fleksibel (BR-10 … BR-16)
+
+| ID | Label | Trigger → Kondisi → Aksi | Contoh | Sumber | Workflow |
+|---|---|---|---|---|---|
+| **BR-10** | Snapshot histori | Nonaktifkan field → kunjungan lama tetap tampil snapshot, baru tidak render | PMO TBC dinonaktif → lama tampil | `W-B:22` `PRD:173` | W-B, W-C |
+| **BR-11** | Tambah field tanpa deploy | Admin tambah field → simpan → kunjungan baru langsung render | `Lingkar perut` angka urutan 5 | `PRD:40` `W-B:22` | W-B, W-C |
+| **BR-12** | Urutan tampil | Ubah urutan → preview & W-C ikut urutan baru | Drag B ke 1 → B(1) | `W-B:22` | W-B |
+| **BR-13** | Wajib/opsional | Ubah wajib → validasi W-C ikut | `Tgl lahir` wajib→opsional → boleh kosong | `W-B:22` `BR-09` | W-B, W-C |
+| **BR-14** | Tipe isian | Pilih tipe → `pilihan/angka/tanggal/checkbox/teks` | Tekanan darah angka | `Data Model:125` | W-B, W-C |
+| **BR-15** | Duplikat diblok | Buat field nama sama di kelompok sama → `Nama sudah ada` | NIK duplikat di Data Keluarga | `W-B:22` | W-B |
+| **BR-16** | 8 sasaran tetap | Definisi per 8 sasaran + Data Keluarga/Rekap/Jadwal | Sekolah/Remaja ⭐ 6–18 | `Field Checklist:13` | W-B |
+
+### Dashboard & Rekap (BR-17 … BR-22)
+
+| ID | Label | Trigger → Kondisi → Aksi | Contoh | Sumber | Workflow |
+|---|---|---|---|---|---|
+| **BR-17** | Agregat COUNT per wilayah | Dashboard → `COUNT` per masalah per RT/RW/Kelurahan | RT02: `Hipertensi 18` | `W-E:44` | W-E |
+| **BR-18** | Hipertensi tidak patuh | Hitung → `ada_obat=true AND minum_24jam=false` | Budi hipertensi tidak patuh | `Field Checklist:84` `W-C:39` | W-C, W-E |
+| **BR-19** | Agregat anonim tanpa NIK | Render ranking → tanpa NIK/nama di card | Ranking tanpa NIK, klik → rekap anonim | `W-E:66` `Batasan:36` | W-E |
+| **BR-20** | Drill-down | Pilih Kelurahan→RW→RT | Ngemplakrejo→RW04→RT02 | `W-E:25` `PRD Milestone3` | W-E |
+| **BR-21** | Rekap agregat terhitung | Buka Rekap → bukan input manual, hitung dari kolom sasaran | Minggu ke-2: 12 kunjungan | `Field Checklist:104` `W-F:46` | W-F |
+| **BR-22** | Ekspor sesuai filter | Klik Ekspor → file sesuai filter aktif | Ngemplakrejo+Dewasa → xlsx itu saja | `W-F:46` | W-F |
+
+### Jadwal & Notifikasi (BR-23 … BR-25)
+
+| ID | Label | Trigger → Kondisi → Aksi | Contoh | Sumber | Workflow |
+|---|---|---|---|---|---|
+| **BR-23** | H-1 pengingat | Cron 07:00 H-1 → in-app + email `Besok: KK-002` | KK-002 tgl 20 → 19 07:00 kirim | `W-D:44` | W-D |
+| **BR-24** | Terlewat | 00:00+1 tanpa kunjungan → `terlewat` + `Terlewat: KK-002` | 10 Sep tanpa kunjungan → 11 Sep terlewat | `PRD:173` `W-D` | W-D |
+| **BR-25** | Masalah dirujuk | Ubah `belum→dirujuk` → indikator dashboard + rekap | TBC Ani dirujuk | `PRD:173` `W-F:46` | W-F, W-E |
+
+---
+
 ## Workflow Aplikasi (App Workflows Only)
 
 > Scope: hanya alur **di dalam aplikasi** (bukan workflow kegiatan/perizinan). 6 alur inti + User Journey per role + skenario Gherkin. Diagram: **Mermaid di Obsidian** (`01 Notes/workflows/`), sinkron ke **repo `docs/workflows/`**. Asumsi: **online only** (tanpa draft offline).

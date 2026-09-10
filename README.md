@@ -18,7 +18,7 @@ Repositori ini berisi **versi web interaktif dari Product Requirements Document 
 ## Tech stack
 
 - **React 19** + **Vite 8**
-- **React Router** — 8 halaman: Sekilas, Fitur, Cakupan, Data, Workflow, Milestone, Rencana Kerja, Tanya Jawab
+- **React Router** — 9 halaman: Sekilas, Fitur, Cakupan, Data, Workflow, Tata Kelola, Milestone, Rencana Kerja, Tanya Jawab
 - **Tailwind CSS 4** (dark mode via kelas `dark`)
 - **lucide-react** — ikon
 
@@ -53,4 +53,4 @@ Progress task dapat dilacak langsung pada halaman *Rencana Kerja*.
 
 ## Kontribusi konten
 
-Konten halaman disusun ulang dari `PRD - Dashboard PWS Posyandu.md` ke `src/data/` (struktur terpusat di `content.js`, `tasks.js`, `workflows.js`). Jika konten markdown berubah, perbarui salinan di `public/` agar tombol "Unduh PRD" tetap sesuai. Workflow di `docs/workflows/` wajib sinkron dengan `01 Notes/workflows/` vault (copy 1:1).
+Konten halaman disusun ulang dari `PRD - Dashboard PWS Posyandu.md` ke `src/data/` (struktur terpusat di `content.js`, `tasks.js`, `workflows.js`, `governance.js`). Jika konten markdown berubah, perbarui salinan di `public/` agar tombol "Unduh PRD" tetap sesuai. Workflow di `docs/workflows/` wajib sinkron dengan `01 Notes/workflows/` vault (copy 1:1).

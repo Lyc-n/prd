@@ -11,6 +11,7 @@ import Milestone from './pages/Milestone'
 import Rencana from './pages/Rencana'
 import TanyaJawab from './pages/TanyaJawab'
 const Workflow = lazy(() => import('./pages/Workflow'))
+const TataKelola = lazy(() => import('./pages/TataKelola'))
 
 export default function App() {
   return (
@@ -24,6 +25,7 @@ export default function App() {
             <Route path="cakupan" element={<Cakupan />} />
             <Route path="data" element={<Data />} />
             <Route path="workflow" element={<Suspense fallback={<div className="p-8 text-sm text-zinc-500">Memuat workflow...</div>}><Workflow /></Suspense>} />
+            <Route path="tata-kelola" element={<Suspense fallback={<div className="p-8 text-sm text-zinc-500">Memuat tata kelola...</div>}><TataKelola /></Suspense>} />
             <Route path="milestone" element={<Milestone />} />
             <Route path="rencana" element={<Rencana />} />
             <Route path="qna" element={<TanyaJawab />} />

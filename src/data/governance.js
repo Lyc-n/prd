@@ -1,0 +1,137 @@
+export const NFR = [
+  {
+    id: 'NFR-01',
+    aspek: 'Kegunaan (Usability)',
+    deskripsi: 'Kader non-teknis, minim pelatihan, mobile-first',
+    target: 'Alur W-C selesai <3 menit di HP 360px; 90% kader coba pertama berhasil',
+    kriteria: 'Form langkah 1→5 jelas, label plain, inline error di field salah, tombol besar untuk jempol',
+    caraUji: 'Uji 5 kader pakai HP sendiri (360–414px) rekam waktu + error rate',
+    prioritas: 'M',
+    sumber: 'URS §5, W-C, Rencana C8',
+    color: 'emerald',
+  },
+  {
+    id: 'NFR-02',
+    aspek: 'Keluwesan (Fleksibilitas)',
+    deskripsi: 'Adaptasi format Kemenkes tanpa rebuild',
+    target: 'Tambah/nonaktifkan field via W-B tanpa deploy; tampil di W-C <5 detik',
+    kriteria: 'Definisi field tipe/wajib/urutan/aktif tersimpan, kunjungan lama pakai snapshot',
+    caraUji: 'Admin tambah "Lingkar perut" → buat kunjungan baru → cek render',
+    prioritas: 'M',
+    sumber: 'URS §4.6, Konteks ILP:92, Field Checklist:124',
+    color: 'amber',
+  },
+  {
+    id: 'NFR-03',
+    aspek: 'Ketersediaan & Akses',
+    deskripsi: 'Ponsel/data terbatas, online only',
+    target: 'TTI <3s di 3G; error jaringan = toast retry tanpa offline',
+    kriteria: 'Semua simpan langsung ke server; pesan "Gagal simpan, coba lagi"',
+    caraUji: 'Throttle 3G di DevTools → buka dashboard & simpan',
+    prioritas: 'M',
+    sumber: 'URS Availability, PRD 73, W-C',
+    color: 'sky',
+  },
+  {
+    id: 'NFR-04',
+    aspek: 'Keamanan & Privasi',
+    deskripsi: 'Data kesehatan sensitif, guard peran, agregat anonim',
+    target: '4 peran guard benar; 403 jika paksa kelurahan lain; tanpa NIK di ranking',
+    kriteria: 'Matriks hak akses, JWT expiry → login, dashboard tanpa NIK',
+    caraUji: 'Coba akses silang peran + cek 403/401',
+    prioritas: 'M',
+    sumber: 'URS Keamanan, Batasan:36, W-A/W-E',
+    color: 'violet',
+  },
+  {
+    id: 'NFR-05',
+    aspek: 'Skalabilitas',
+    deskripsi: '4 kelurahan + Pustu, banyak KK',
+    target: 'Dukung 4 kelurahan + 8 sasaran + ratusan KK/kelurahan',
+    kriteria: 'Kelurahan Ngemplakrejo/Tambaan/Trajeng/Mayangan + RW/RT + Posyandu seed',
+    caraUji: 'Seed 500 KK dummy → filter tetap lancar',
+    prioritas: 'S',
+    sumber: 'URS Skalabilitas, Rencana A2',
+    color: 'indigo',
+  },
+  {
+    id: 'NFR-06',
+    aspek: 'Kinerja (Performance)',
+    deskripsi: 'Dashboard agregat responsif',
+    target: 'p95 GET /api/dashboard <500ms (100 kunjungan); pagination untuk 500+ baris',
+    kriteria: 'Agregat COUNT per RT/RW + filter wilayah/sasaran/periode, pagination',
+    caraUji: 'k6/Artillery 100 kunjungan → ukur p95',
+    prioritas: 'S',
+    sumber: 'URS Performance, W-E',
+    color: 'rose',
+  },
+  {
+    id: 'NFR-07',
+    aspek: 'Keteramatan (Observability)',
+    deskripsi: 'Audit & keterlacakan untuk demo/handover',
+    target: 'Tiap kunjungan punya created_by/at, ekspor jejak filter, log audit',
+    kriteria: 'created_by/at di Kunjungan/Jadwal/Masalah, ekspor sesuai filter',
+    caraUji: 'Buat kunjungan → cek audit trail + ekspor',
+    prioritas: 'S',
+    sumber: 'W-F, Data Model',
+    color: 'zinc',
+  },
+]
+
+export const DEPENDENCIES = [
+  { jenis: 'Eksternal', apa: 'DPMPTSP — Surat universitas → MPP 10 menit → izin → data 4 kelurahan', dampak: 'Data real tertunda; demo pakai dummy', mitigasi: 'Dummy 4 kelurahan (Rencana A2) + PRD Perhatian', pemilik: 'Feri (U-03)' },
+  { jenis: 'Eksternal', apa: 'Format Kemenkes belum fix', dampak: 'Field berubah', mitigasi: 'Definisi Field fleksibel NFR-02 (W-B, tanpa rebuild)', pemilik: 'Admin' },
+  { jenis: 'Eksternal', apa: 'Dinkes — cetak form akhir 2025', dampak: 'Acuan field', mitigasi: 'Pakai PDF 35 hlm + 8 sasaran (Field Checklist:13)', pemilik: 'Tim' },
+  { jenis: 'Eksternal', apa: 'Mitra (Bu Dian/Kepala Puskesmas) — validasi URS & demo 27 Sep', dampak: 'Scope meleset', mitigasi: 'Validasi U-01/U-02 (follow-up WA)', pemilik: 'Feri' },
+  { jenis: 'Eksternal', apa: 'Infra free-tier — Vercel + Render/Railway + Supabase', dampak: 'Limit kuota', mitigasi: 'Pilih free-tier + fallback, akun demo D2', pemilik: 'Tim' },
+  { jenis: 'Internal', apa: 'W-B → W-C → W-E/W-F + B1→B2→B3→...', dampak: 'Jika B2/B5 telat, L besar menghambat', mitigasi: 'Prioritas L dulu (B2, B5, B6, C4, C5), jalur paralel A/B/C', pemilik: 'Tim' },
+]
+
+export const ASSUMPTIONS = [
+  { id: 'A-01', asumsi: 'KR belum matang (baru 2024, sedikit) — sistem dukung proses berkembang', dasar: 'Konteks:74', jikaSalah: 'Perlu onboarding kader lebih intensif (notifikasi W-D)' },
+  { id: 'A-02', asumsi: 'Kader butuh pengingat (sering terlambat)', dasar: 'Temuan:88', jikaSalah: 'Pengingat jadi fitur utama, bukan bonus' },
+  { id: 'A-03', asumsi: 'Dashboard agregat dulu (privasi) — tanpa NIK di ranking', dasar: 'Batasan:36, W-E:66', jikaSalah: 'Jika butuh detail individu → guard ketat BR-19' },
+  { id: 'A-04', asumsi: 'Online only — kader online saat input', dasar: 'Keputusan 10 Sep, PRD:73', jikaSalah: 'Jika offline dibutuhkan → tambah queue (di luar v1)' },
+  { id: 'A-05', asumsi: 'Demo pakai dummy, data real setelah izin', dasar: 'Rencana A2, PRD:72', jikaSalah: 'Jika izin cepat → ganti seed dengan data real' },
+]
+
+export const RISKS = [
+  { id: 'R-01', risiko: 'Format berubah lagi', dampak: 'Field tidak cocok', mitigasi: 'NFR-02 fleksibel + snapshot histori (W-B:22)', pemilik: 'Admin', level: 'M' },
+  { id: 'R-02', risiko: 'DPMPTSP telat', dampak: 'Data real telat', mitigasi: 'Dummy Rencana A2, 4 kelurahan wajib', pemilik: 'Feri', level: 'M' },
+  { id: 'R-03', risiko: 'Beban 4 kelurahan (ratusan KK) lambat', dampak: 'Dashboard lemot', mitigasi: 'NFR-06 p95 <500ms + pagination (W-E:102)', pemilik: 'Backend', level: 'S' },
+  { id: 'R-04', risiko: 'Notifikasi bonus terpotong waktu', dampak: 'Demo tanpa pengingat', mitigasi: 'Prioritas D1–D3, B8/C6 bonus', pemilik: 'Tim', level: 'S' },
+  { id: 'R-05', risiko: 'Guard peran bocor', dampak: 'Privasi', mitigasi: 'NFR-04 + BR-01…04 + test 403 (W-A)', pemilik: 'Backend', level: 'M' },
+]
+
+export const BUSINESS_RULES = [
+  // Akses & Peran
+  { id: 'BR-01', label: 'Kader hanya wilayahnya', kelompok: 'Akses & Peran', trigger: 'Buka dashboard', kondisi: 'peran=Kader', aksi: 'Hanya RT/RW binaannya; ?kelurahan=Tambaan paksa → 403', contoh: 'Kader Ngemplakrejo RT02 buka Tambaan → 403', sumber: 'W-E:66, PRD Matriks:160', workflow: 'W-E, W-A' },
+  { id: 'BR-02', label: '4 peran guard', kelompok: 'Akses & Peran', trigger: 'Request API', kondisi: 'Cek JWT + role', aksi: 'Izinkan/tolak per matriks', contoh: 'POST /api/kunjungan hanya Kader', sumber: 'PRD Matriks:160, W-A', workflow: 'W-A, W-B, W-C' },
+  { id: 'BR-03', label: 'Admin kelola master & field', kelompok: 'Akses & Peran', trigger: 'Jika peran≠Admin', kondisi: 'POST /api/master/*, POST /api/definisi-field', aksi: 'Blok 403', contoh: 'Kader buka /admin/definisi-field → 403', sumber: 'PRD Matriks:160, W-B', workflow: 'W-B' },
+  { id: 'BR-04', label: 'Sesi habis → login', kelompok: 'Akses & Peran', trigger: 'Token expiry', kondisi: '401', aksi: 'Redirect /login + pesan Sesi habis', contoh: 'Buka /dashboard expiry → /login', sumber: 'W-A', workflow: 'W-A' },
+  // Kunjungan
+  { id: 'BR-05', label: 'Satu Jadwal satu Kunjungan', kelompok: 'Kunjungan', trigger: 'Simpan kunjungan', kondisi: 'Jadwal.status=terjadwal/terlewat', aksi: 'Jadi selesai', contoh: 'Jadwal KK-002 → simpan → badge hilang', sumber: 'PRD:145, W-D, W-C', workflow: 'W-D, W-C' },
+  { id: 'BR-06', label: 'Status kunjungan', kelompok: 'Kunjungan', trigger: 'Buat', kondisi: 'dalam_proses → simpan valid → selesai', aksi: 'Gagal → tetap dalam_proses', contoh: 'Validasi gagal → tetap dalam_proses', sumber: 'PRD:173, W-C', workflow: 'W-C' },
+  { id: 'BR-07', label: 'Jenis kunjungan', kelompok: 'Kunjungan', trigger: 'Pilih jenis', kondisi: 'rutin 1×/tahun seluruh KK vs khusus door-to-door', aksi: 'Jadi filter W-E', contoh: 'Rutin vs khusus', sumber: 'Konteks:70, Data Model:119', workflow: 'W-C, W-E' },
+  { id: 'BR-08', label: 'NIK unik', kelompok: 'Kunjungan', trigger: 'Simpan anggota', kondisi: 'Cek NIK duplikat async (online)', aksi: 'Tolak jika ada', contoh: 'NIK 357... sudah ada → NIK sudah terdaftar', sumber: 'W-C:40', workflow: 'W-C' },
+  { id: 'BR-09', label: 'Validasi wajib', kelompok: 'Kunjungan', trigger: 'Simpan', kondisi: 'Cek wajib=true & tipe', aksi: 'Inline error jika kosong/salah', contoh: 'NIK wajib kosong → NIK wajib diisi', sumber: 'W-C:38, W-B', workflow: 'W-C, W-B' },
+  // Field Fleksibel
+  { id: 'BR-10', label: 'Snapshot histori', kelompok: 'Field Fleksibel', trigger: 'Nonaktifkan field', kondisi: 'Kunjungan lama ada', aksi: 'Tetap tampil snapshot, baru tidak render', contoh: 'PMO TBC dinonaktif → lama tampil', sumber: 'W-B:22, PRD:173', workflow: 'W-B, W-C' },
+  { id: 'BR-11', label: 'Tambah field tanpa deploy', kelompok: 'Field Fleksibel', trigger: 'Admin tambah field', kondisi: 'Simpan', aksi: 'Kunjungan baru langsung render', contoh: 'Lingkar perut angka urutan 5', sumber: 'PRD:40, W-B:22', workflow: 'W-B, W-C' },
+  { id: 'BR-12', label: 'Urutan tampil', kelompok: 'Field Fleksibel', trigger: 'Ubah urutan', kondisi: 'Drag', aksi: 'Preview & W-C ikut urutan baru', contoh: 'Drag B ke 1 → B(1)', sumber: 'W-B:22', workflow: 'W-B' },
+  { id: 'BR-13', label: 'Wajib/opsional', kelompok: 'Field Fleksibel', trigger: 'Ubah wajib', kondisi: 'Toggle', aksi: 'Validasi W-C ikut', contoh: 'Tgl lahir wajib→opsional → boleh kosong', sumber: 'W-B:22, BR-09', workflow: 'W-B, W-C' },
+  { id: 'BR-14', label: 'Tipe isian', kelompok: 'Field Fleksibel', trigger: 'Pilih tipe', kondisi: 'pilihan/angka/tanggal/checkbox/teks', aksi: 'Render sesuai tipe', contoh: 'Tekanan darah angka', sumber: 'Data Model:125', workflow: 'W-B, W-C' },
+  { id: 'BR-15', label: 'Duplikat diblok', kelompok: 'Field Fleksibel', trigger: 'Buat field nama sama di kelompok sama', kondisi: 'Cek duplikat', aksi: 'Nama sudah ada', contoh: 'NIK duplikat di Data Keluarga', sumber: 'W-B:22', workflow: 'W-B' },
+  { id: 'BR-16', label: '8 sasaran tetap', kelompok: 'Field Fleksibel', trigger: 'Definisi', kondisi: 'Per 8 sasaran + Data Keluarga/Rekap/Jadwal', aksi: 'Tampil sesuai sasaran', contoh: 'Sekolah/Remaja ⭐ 6–18', sumber: 'Field Checklist:13', workflow: 'W-B' },
+  // Dashboard & Rekap
+  { id: 'BR-17', label: 'Agregat COUNT per wilayah', kelompok: 'Dashboard & Rekap', trigger: 'Dashboard', kondisi: 'COUNT per masalah per RT/RW/Kelurahan', aksi: 'Tampil ranking', contoh: 'RT02: Hipertensi 18', sumber: 'W-E:44', workflow: 'W-E' },
+  { id: 'BR-18', label: 'Hipertensi tidak patuh', kelompok: 'Dashboard & Rekap', trigger: 'Hitung', kondisi: 'ada_obat=true AND minum_24jam=false', aksi: 'Hitung +1', contoh: 'Budi hipertensi tidak patuh', sumber: 'Field Checklist:84, W-C:39', workflow: 'W-C, W-E' },
+  { id: 'BR-19', label: 'Agregat anonim tanpa NIK', kelompok: 'Dashboard & Rekap', trigger: 'Render ranking', kondisi: 'Tanpa NIK/nama di card', aksi: 'Klik → rekap anonim', contoh: 'Ranking tanpa NIK', sumber: 'W-E:66, Batasan:36', workflow: 'W-E' },
+  { id: 'BR-20', label: 'Drill-down', kelompok: 'Dashboard & Rekap', trigger: 'Pilih', kondisi: 'Kelurahan→RW→RT', aksi: 'Tampil detail', contoh: 'Ngemplakrejo→RW04→RT02', sumber: 'W-E:25, PRD Milestone3', workflow: 'W-E' },
+  { id: 'BR-21', label: 'Rekap agregat terhitung', kelompok: 'Dashboard & Rekap', trigger: 'Buka Rekap', kondisi: 'Bukan input manual, hitung dari kolom sasaran', aksi: 'Tampil tabel', contoh: 'Minggu ke-2: 12 kunjungan', sumber: 'Field Checklist:104, W-F:46', workflow: 'W-F' },
+  { id: 'BR-22', label: 'Ekspor sesuai filter', kelompok: 'Dashboard & Rekap', trigger: 'Klik Ekspor', kondisi: 'File sesuai filter aktif', aksi: 'Download', contoh: 'Ngemplakrejo+Dewasa → xlsx itu saja', sumber: 'W-F:46', workflow: 'W-F' },
+  // Jadwal & Notifikasi
+  { id: 'BR-23', label: 'H-1 pengingat', kelompok: 'Jadwal & Notifikasi', trigger: 'Cron 07:00 H-1', kondisi: 'Jadwal terjadwal', aksi: 'In-app + email Besok: KK-002', contoh: 'KK-002 tgl 20 → 19 07:00 kirim', sumber: 'W-D:44', workflow: 'W-D' },
+  { id: 'BR-24', label: 'Terlewat', kelompok: 'Jadwal & Notifikasi', trigger: '00:00+1 tanpa kunjungan', kondisi: 'terjadwal', aksi: 'Jadi terlewat + Terlewat: KK-002', contoh: '10 Sep tanpa kunjungan → 11 Sep terlewat', sumber: 'PRD:173, W-D', workflow: 'W-D' },
+  { id: 'BR-25', label: 'Masalah dirujuk', kelompok: 'Jadwal & Notifikasi', trigger: 'Ubah belum→dirujuk', kondisi: 'Klik', aksi: 'Indikator dashboard + rekap', contoh: 'TBC Ani dirujuk', sumber: 'PRD:173, W-F:46', workflow: 'W-F, W-E' },
+]
