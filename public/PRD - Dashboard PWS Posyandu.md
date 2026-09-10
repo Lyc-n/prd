@@ -2,10 +2,10 @@
 tags: [prd, requirement, spesifikasi]
 created: 2026-09-07
 updated: 2026-09-11
-status: resmi — acuan pembangunan (update 11 Sep: persentase dashboard + 5 program prioritas + usulan supervisi kandidat v2)
+status: resmi — acuan pembangunan (update 11 Sep: persentase dashboard + 5 program prioritas; update 12 Sep: keputusan 13 pertanyaan terbuka)
 up: ["[MOC - Project Posyandu Ngemplakrejo]"]
 aliases: [PRD, Product Requirements Document, Product Requirement]
-x-review: update 11 Sep — tambah metrik % cakupan dashboard, filter 5 prioritas (stunting/ODGJ/bumil risti/balita risti/TB), modul usulan supervisi (nakes/UKGK/pemberdayaan/biodata kader) kandidat v2, opsi deploy gabung website Puskesmas
+x-review: update 12 Sep — 13 pertanyaan terbuka terjawab: notifikasi in-app+email, demo 27 Sep fix, aggregat dashboard/nama rekap, 5 prioritas view terpisah, UKGK/UKGM+kader/nakes+pemberdayaan masuk v1, metrik % per KK level RT/RW/kel, deploy independent Vercel
 ---
 
 # PRD — Dashboard PWS Posyandu (Wilayah Kerja Puskesmas Trajeng)
@@ -21,12 +21,27 @@ Dokumen ini adalah evolusi dari [[URS - Dashboard PWS Posyandu]] (draf kebutuhan
 > **Update 9 Sep 2026:** koreksi jumlah **8 kelompok sasaran** (temuan ekstraksi field), keputusan **notifikasi v1 = in-app + email**, dan penambahan **Rencana Kerja & Timeline** (jalur paralel, target demo online 27 Sep).
 > **Update 10 Sep 2026:** tambah **Workflow Aplikasi** (6 alur inti, User Journey per role, 25+ skenario Gherkin, diagram Mermaid di Obsidian). Asumsi: **online only** (tanpa mode offline/draft). Artefak workflow disimpan di **vault (`01 Notes/workflows/`) + repo (`docs/workflows/`)** — keduanya sinkron.
 > **Update 11 Sep 2026:** Rekaman 05:50 — **persentase cakupan dashboard** (`% dikunjungi vs belum dari total sasaran`), **% penderita TBC/terpapar**, filter **5 program prioritas** (Stunting, ODGJ, bumil risti, balita risti, TB) untuk "data sasaran yang akan dikunjungi", serta **4 modul usulan supervisi kandidat v2** (nakes, UKGK/UKGM, pemberdayaan kader+tanggal/peserta/foto, biodata kader per pos) + konfirmasi **Excel tok** & **opsi deploy gabung website Puskesmas (Bu Marten)**. Lihat [[Transkrip - Rekaman Diskusi Persentase dan Tambahan Supervisi]].
+> **Update 12 Sep 2026:** **13 pertanyaan terbuka terjawab.** Keputusan: notifikasi v1 = in-app + email; demo 27 Sep fix mitra hadir; dashboard = agregat anonim, rekap = nama; matriks akses final; tren waktu tidak v1; posyandu/KK data sudah ada; operator harian **belum pasti** (risiko); 5 prioritas = view terpisah; UKGK/UKGM + kader/nakes + pemberdayaan (lengkap: tgl+peserta+foto) **masuk v1** (field UKGK pending Bu Dian); metrik % = per KK level RT/RW/kel; deploy = independent Vercel. Lihat [[01 Notes/design/Design System]], [[01 Notes/design/ERD Visual]], [[01 Notes/design/Route Table]], [[01 Notes/design/Wireframe]].
 
 ---
 
 ## Yang Kita Bangun
 
-Aplikasi web responsif untuk **digitalisasi pendataan kunjungan rumah (KR) kader Posyandu** di wilayah kerja Puskesmas Trajeng (4 kelurahan: Ngemplakrejo, Tambaan, Trajeng, Mayangan). Kader menginput hasil kunjungan rumah secara digital, data otomatis tampil pada **dashboard PWS (Pemantauan Wilayah Setempat)** sehingga pembina posyandu dan kepala Puskesmas dapat melihat kondisi kesehatan per wilayah, dan kader menerima **pengingat jadwal kunjungan**.
+Aplikasi web responsif untuk **digitalisasi pendataan kunjungan rumah (KR) kader Posyandu** di wilayah kerja Puskesmas Trajeng (4 kelurahan, 34 posyandu, 5.820 KK, 2 Pustu). Kader menginput hasil kunjungan rumah secara digital, data otomatis tampil pada **dashboard PWS (Pemantauan Wilayah Setempat)** sehingga pembina posyandu dan kepala Puskesmas dapat melihat kondisi kesehatan per wilayah, dan kader menerima **pengingat jadwal kunjungan**.
+
+**Rincian wilayah kerja** (sumber: [pkmtrajeng.pasuruankota.go.id](https://pkmtrajeng.pasuruankota.go.id/wilayah-kerja/), [Scribd](https://id.scribd.com/document/918869296/Kak-Pemberian-Hadiah-Kepada-Ibu-Bayi-Balita-Di-Posyandu-Edit-New)):
+
+| Kelurahan | Posyandu | KK | Keterangan |
+|---|---|---|---|
+| Trajeng | 14 | 2.168 | Kelurahan induk Puskesmas |
+| Ngemplakrejo | 9 | 1.826 | + Pustu Ngemplakrejo (Jl. Hang Tuah RT 06/RW 05 No. 22) |
+| Tambaan | 5 | 1.196 | + Pustu Tambaan (Jl. Halmahera Gang Pustu RT 005/RW 004) |
+| Mayangan | 6 | 630 | |
+| **Total** | **34** | **5.820** | |
+
+**Pustu (Puskesmas Pembantu):**
+- Pustu Ngemplakrejo — Jl. Hang Tuah RT 06/RW 05 No. 22, Kel. Ngemplakrejo
+- Pustu Tambaan — Jl. Halmahera Gang Pustu RT 005/RW 004, Kel. Tambaan
 
 Saat ini proses bersifat manual: form kertas → rekap manual ke Excel → tidak ada dashboard & tidak ada notifikasi. KR baru efektif 2024 dan **format form dari Kementerian Kesehatan belum stabil**, sehingga sistem wajib mendukung perubahan format tanpa pembangunan ulang.
 
@@ -73,7 +88,8 @@ Hasil discovery yang **tidak perlu diulang** saat pembangunan dimulai:
 - **Tanpa akses publik / multi-bahasa** — seluruh pengguna harus login.
 - **Data aktual 4 kelurahan menunggu izin DPMPTSP** — selama pengembangan, gunakan data contoh/placeholder; data nyata masuk saat izin jadi.
 - **Tanpa mode offline/draft di v1** — asumsi online only (keputusan 10 Sep); kader harus terhubung internet saat input (sesuai URS availability seluler, tapi tanpa queue offline).
-- **Kandidat v2 — usulan supervisi 11 Sep (pending validasi, tidak masuk v1 sebelum definisi jelas):** **Fitur Nakes**, **UKGK/UKGM** (Usaha Kesehatan Gigi — singkatan perlu klarifikasi), **Kegiatan Pemberdayaan Kader** (tanggal, peserta hadir, foto — untuk lihat siapa yang dikumpulkan atasi masalah UKGK), **Biodata Kader per Pos** — lihat [[Transkrip - Rekaman Diskusi Persentase dan Tambahan Supervisi]] § Implikasi. Jika diminta masuk v1, tambah risiko & task.
+- **Kandidat v1 — keputusan 12 Sep (masuk v1, field detail pending validasi):** **UKGK/UKGM** (singkatan & field perlu klarifikasi ke Bu Dian sebelum Milestone 2), **Biodata Kader per Pos** (nama, no HP, pendidikan — field dasar), **Nakes** (master tenaga kesehatan Puskesmas — field dasar), **Kegiatan Pemberdayaan Kader** (tanggal kegiatan, peserta hadir, foto — lengkap). Lihat [[Transkrip - Rekaman Diskusi Persentase dan Tambahan Supervisi]] § Implikasi. Risiko: field UKGK/UKGM belum fix; jika telat, fallback ke field dinamis dari W-B.
+- **Kandidat v2 (di luar v1):** Tren waktu YoY, notifikasi WhatsApp, mode offline, analitik prediktif.
 
 ---
 
@@ -91,7 +107,8 @@ Apa yang perlu diingat aplikasi (menjadi dasar ERD/skema pada saat pembangunan; 
 ### Kelurahan
 - nama kelurahan (Ngemplakrejo, Tambaan, Trajeng, Mayangan)
 - wilayah kerja Puskesmas Trajeng
-- jumlah posyandu & target KK (terisi setelah data aktual masuk)
+- jumlah posyandu: Trajeng 14, Ngemplakrejo 9, Mayangan 6, Tambaan 5 (total 34)
+- target KK: Trajeng 2.168, Ngemplakrejo 1.826, Tambaan 1.196, Mayangan 630 (total 5.820)
 
 ### RW / RT
 - nomor RW dan nomor RT
@@ -102,6 +119,12 @@ Apa yang perlu diingat aplikasi (menjadi dasar ERD/skema pada saat pembangunan; 
 - kelurahan tempat berada
 - kader yang bertugas
 - jadwal kegiatan posyandu (pendukung penjadwalan)
+- tipe: posyandu biasa atau Pustu (Puskesmas Pembantu)
+
+### Pustu (Puskesmas Pembantu)
+- Pustu Ngemplakrejo — Jl. Hang Tuah RT 06/RW 05 No. 22, Kel. Ngemplakrejo
+- Pustu Tambaan — Jl. Halmahera Gang Pustu RT 005/RW 004, Kel. Tambaan
+- Pustu memiliki kader sendiri, tercatat sebagai entitas terpisah dari posyandu biasa
 
 ### Keluarga (KK)
 - nama kepala keluarga & No. KK
@@ -139,12 +162,12 @@ Apa yang perlu diingat aplikasi (menjadi dasar ERD/skema pada saat pembangunan; 
 - keluarga yang dijadwalkan, kader penanggung jawab, waktu kunjungan
 - status: terjadwal / selesai / terlewat (dasar pengingat)
 
-### Kandidat v2 — Entitas Usulan Supervisi 11 Sep (pending, tidak masuk ERD v1)
-- **Nakes** — master tenaga kesehatan Puskesmas (biodata nakes) — belum ada field pasti [rekaman 01:18]
-- **Biodata Kader per Pos** — profil kader di pos (nama, pendidikan, foto?) [01:39]
-- **Kegiatan Pemberdayaan** — tanggal kegiatan, peserta hadir (list nama), foto — untuk UKGK [02:39]
-- **UKGK / UKGM** — kegiatan UKG (gigi) — singkatan perlu klarifikasi [01:58]
-> Catatan: jangan masuk skema v1 sebelum validasi — lihat `Di Luar Cakupan` kandidat v2.
+### Entitas v1 — Usulan Supervisi (keputusan 12 Sep: masuk v1)
+- **Nakes** — master tenaga kesehatan Puskesmas (field dasar: nama, no HP, pendidikan) [rekaman 01:18]
+- **Biodata Kader per Pos** — profil kader di pos (nama, no HP, pendidikan) [01:39]
+- **Kegiatan Pemberdayaan** — tanggal kegiatan, peserta hadir (list nama), foto [02:39]
+- **UKGK / UKGM** — kegiatan UKG (gigi) — singkatan & field **pending klarifikasi Bu Dian** [01:58]. Fallback: field dinamis dari W-B
+> Catatan: masuk ERD v1. Field UKGK/UKGM belum fix — tanya Bu Dian sebelum Milestone 2.
 
 **Relasi utama:**
 - 1 Kelurahan → banyak RW/RT dan banyak Posyandu
@@ -166,7 +189,7 @@ Apa yang perlu diingat aplikasi (menjadi dasar ERD/skema pada saat pembangunan; 
 | **NFR-02** | **Keluwesan (Fleksibilitas)** — adaptasi format Kemenkes tanpa rebuild | Tambah/nonaktifkan field via W-B tanpa deploy; perubahan tampil di W-C <5 detik setelah simpan | Definisi field `tipe/wajib/urutan/aktif` tersimpan, kunjungan lama pakai snapshot (histori tidak hilang) | Admin tambah field `Lingkar perut` → buat kunjungan baru → cek render | **[M]** | `URS §4.6`, `Konteks ILP:92`, `Field Checklist:124` |
 | **NFR-03** | **Ketersediaan & Akses** — ponsel/data terbatas, online only | TTI <3s di 3G; error jaringan = toast retry (tanpa antrian offline) | Semua simpan langsung ke server; `Gagal simpan, periksa koneksi, coba lagi` `W-C` | Throttle 3G di DevTools → buka dashboard & simpan | **[M]** | `URS Availability`, `PRD Di Luar Cakupan:73` |
 | **NFR-04** | **Keamanan & Privasi** — data kesehatan sensitif, guard peran, agregat anonim | 4 peran guard benar; Kader tidak bisa paksa `?kelurahan=Tambaan` (403); Dashboard tanpa NIK | Matriks hak akses `Workflow:160`, JWT expiry → login `W-A`, dashboard tanpa NIK `W-E` | Coba akses silang peran + cek response 403/401 | **[M]** | `URS Keamanan`, `Batasan:36`, `W-A/W-E` |
-| **NFR-05** | **Skalabilitas** — 4 kelurahan + Pustu, banyak KK | Mendukung 4 kelurahan wajib + 8 sasaran + ratusan KK/kelurahan tanpa perubahan skema | Kelurahan `Ngemplakrejo/Tambaan/Trajeng/Mayangan` + RW/RT + Posyandu + Kader seed `Rencana A1/A2` | Seed 500 KK dummy → cek dashboard & filter tetap lancar | **[S]** | `URS Skalabilitas`, `Stakeholder:55`, `Rencana A2` |
+| **NFR-05** | **Skalabilitas** — 4 kelurahan + 2 Pustu, 34 posyandu, 5.820 KK | Mendukung 4 kelurahan + 2 Pustu + 34 posyandu + 8 sasaran + 5.820 KK tanpa perubahan skema | Kelurahan (Trajeng 14/2.168, Ngemplakrejo 9/1.826, Tambaan 5/1.196, Mayangan 6/630) + Pustu (Ngemplakrejo, Tambaan) + RW/RT + Kader seed | Seed 5.820 KK dummy proporsional → cek dashboard & filter tetap lancar | **[S]** | `URS Skalabilitas`, `pkmtrajeng.pasuruankota.go.id` |
 | **NFR-06** | **Kinerja (Performance)** — dashboard agregat responsif | p95 `GET /api/dashboard` agregat <500ms (100 kunjungan); pagination/lazy untuk 500+ baris | Agregat `COUNT per RT/RW` + filter `wilayah/sasaran/periode` `W-E`, pagination | k6/Artillery 100 kunjungan → ukur p95 | **[S]** | `URS Performance`, `W-E` |
 | **NFR-07** | **Keteramatan (Observability)** — audit & keterlacakan untuk demo/handover | Setiap kunjungan punya `created_by/at`, rekap ekspor jejak filter, log audit | `created_by/at` di Kunjungan/Jadwal/Masalah, ekspor sesuai filter `W-F` | Buat kunjungan → cek audit trail + ekspor | **[S]** | `W-F`, `Data Model` |
 
@@ -206,6 +229,7 @@ Apa yang perlu diingat aplikasi (menjadi dasar ERD/skema pada saat pembangunan; 
 | R-03 | Beban 4 kelurahan (ratusan KK) lambat | Dashboard lemot | **NFR-06** p95 <500ms + pagination `W-E:102` | Backend |
 | R-04 | Notifikasi bonus terpotong waktu | Demo tanpa pengingat | Prioritas D1–D3 `PRD:518`, B8/C6 bonus `Rencana` | Tim |
 | R-05 | Guard peran bocor | Privasi | **NFR-04** + BR-01…04 + test 403 `W-A` | Backend |
+| R-06 | Operator harian belum pasti | Sistem tidak terawat setelah handover | Dokumentasi handover lengkap + D4 + training Bu Dian/admin | Tim |
 
 > Hak cipta Unesa vs putra daerah `Isu Hak Cipta:6` **tidak dimasukkan PRD** (sesuai keputusan 3) — tetap di vault `Isu Pembagian Hak Cipta` untuk diskusi pembimbing.
 
@@ -633,7 +657,7 @@ Task diberi level (🟢 S / 🟡 M / 🔴 L) dan estimasi **tentatif** (dikoreks
 | C6 | Notifikasi in-app + daftar jadwal kader | 🟡 M | 8 jam | B8 |
 | C7 | Rekap & ekspor Excel/PDF | 🟢 S | 6 jam | B9 |
 | C8 | Polish mobile, loading/error, aksesibilitas | 🟡 M | 8 jam | C4, C5 |
-| D1 | **Deploy online**: Vercel (frontend) + backend (Render/Railway) + Supabase (PostgreSQL) — *opsi gabung website Puskesmas (Bu Marten) perlu validasi 11 Sep, fallback independent* | 🟡 M | 6 jam | inti B/C |
+| D1 | **Deploy online**: Vercel (frontend) + backend (Render/Railway) + Supabase (PostgreSQL) — **keputusan 12 Sep: independent Vercel** (bukan gabung website Puskesmas) | 🟡 M | 6 jam | inti B/C |
 | D2 | Akun demo 4 peran + data placeholder | 🟢 S | 2 jam | D1 |
 | D3 | Script demo 15 menit + uji dari HP client | 🟢 S | 3 jam | D2 |
 | D4 | Dokumentasi ringkas + draft handover | 🟢 S | 4 jam | — |
@@ -648,21 +672,21 @@ Task diberi level (🟢 S / 🟡 M / 🔴 L) dan estimasi **tentatif** (dikoreks
 
 ## Pertanyaan Terbuka (perlu validasi mitra)
 
-Ditandai sebagai risiko yang belum terkunci di PRD ini:
+> **Update 12 Sep:** Semua pertanyaan terjawab. Keputusan final ada di jawaban masing-masing.
 
-- [ ] **Bentuk notifikasi final** — v1 = in-app + email; konfirmasi saluran yang benar-benar dipakai kader (WhatsApp/email/app) serta kepada siapa dan trigger-nya
-- [ ] **Rencana demo 27 Sep 2026** — konfirmasi kesediaan mitra (Bu Dian / Kepala Puskesmas) menerima demo online (link, bisa dari HP/PC) sesuai [[Rencana Kegiatan September 2026]]
-- [ ] **Data individu vs agregat** — tampilkan per orang atau cukup per wilayah (privasi)?
-- [ ] **Batasan akses data** — siapa boleh melihat data apa (kader, pembina, kepala Puskesmas, admin)?
-- [ ] **Tren waktu** — perlu perbandingan data antar tahun?
-- [ ] **Jumlah pasti posyandu & target KK** per kelurahan (dari Bu Dian setelah DPMPTSP)
-- [ ] **Operator harian sistem** setelah handover
-- [ ] **Update 11 Sep — 5 program prioritas**: validasi pemetaan Stunting/ODGJ/bumil risti/balita risti/TB ke field checklist & 8 sasaran; apakah view 5 prioritas menggantikan atau filter tambahan? ([[Transkrip - Rekaman Diskusi Persentase dan Tambahan Supervisi]])
-- [ ] **Update 11 Sep — UKGK/UKGM**: klarifikasi singkatan & field yang diharapkan
-- [ ] **Update 11 Sep — Biodata Kader & Nakes**: field detail, foto, apakah nakes = master Puskesmas?
-- [ ] **Update 11 Sep — Pemberdayaan**: butuh Kegiatan (tanggal, peserta, foto) — retensi & izin foto?
-- [ ] **Update 11 Sep — Metrik %**: rumus pasti `% dikunjungi/total sasaran` & `% penderita/terpapar` + level agregat (RT/RW/kel)?
-- [ ] **Update 11 Sep — Deploy gabung**: hosting website Puskesmas jenis apa, akses Bu Marten, subpath/subdomain, backup? (alternatif independent Vercel tetap fallback)
+- [x] **Bentuk notifikasi final** — ✅ v1 = in-app + email (email free-tier sebagai backup)
+- [x] **Rencana demo 27 Sep 2026** — ✅ Fix, mitra (Bu Dian / Kepala Puskesmas) hadir
+- [x] **Data individu vs agregat** — ✅ Dashboard = agregat anonim (tanpa NIK); Rekap = nama untuk tindak lanjut
+- [x] **Batasan akses data** — ✅ Sesuai matriks PRD (BR-01 s.d. BR-04 + matriks hak akses)
+- [x] **Tren waktu** — ✅ Tidak perlu di v1. Hanya filter periode (bulan/minggu)
+- [x] **Jumlah pasti posyandu & target KK** — ✅ Data dari internet: 34 posyandu (Trajeng 14, Ngemplakrejo 9, Mayangan 6, Tambaan 5) + 5.820 KK (Trajeng 2.168, Ngemplakrejo 1.826, Tambaan 1.196, Mayangan 630) + 2 Pustu (Ngemplakrejo, Tambaan). Sumber: pkmtrajeng.pasuruankota.go.id
+- [x] **Operator harian sistem** — ⚠️ Belum pasti. Mitigasi: dokumentasi handover lengkap (D4)
+- [x] **Update 11 Sep — 5 program prioritas** — ✅ View terpisah (bukan pengganti 8 sasaran). 8 sasaran tetap di form input; 5 prioritas = filter tambahan di dashboard
+- [x] **Update 11 Sep — UKGK/UKGM** — ✅ Masuk v1. Field pending klarifikasi ke Bu Dian sebelum Milestone 2. Fallback: field dinamis dari W-B
+- [x] **Update 11 Sep — Biodata Kader & Nakes** — ✅ Masuk v1, field dasar (nama, no HP, pendidikan)
+- [x] **Update 11 Sep — Pemberdayaan** — ✅ Masuk v1, lengkap (tanggal kegiatan, peserta hadir, foto). Storage foto via Supabase Storage / Cloudinary
+- [x] **Update 11 Sep — Metrik %** — ✅ Rumus: `% dikunjungi = (kunjungan unik KK / total KK target) × 100`. Level agregat: RT/RW/kelurahan. `% penderita = (jumlah dengan masalah / total kunjungan sasaran) × 100`
+- [x] **Update 11 Sep — Deploy gabung** — ✅ Independent Vercel (bukan gabung website Puskesmas)
 
 ## Terkait
 - [[URS - Dashboard PWS Posyandu]]
