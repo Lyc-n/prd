@@ -1,11 +1,11 @@
 ---
 tags: [prd, requirement, spesifikasi]
 created: 2026-09-07
-updated: 2026-09-10
-status: resmi — acuan pembangunan (update 10 Sep: Workflow Aplikasi + User Journey + Gherkin)
+updated: 2026-09-11
+status: resmi — acuan pembangunan (update 11 Sep: persentase dashboard + 5 program prioritas + usulan supervisi kandidat v2)
 up: ["[MOC - Project Posyandu Ngemplakrejo]"]
 aliases: [PRD, Product Requirements Document, Product Requirement]
-x-review: update 10 Sep — tambah Workflow Aplikasi (6 alur, Mermaid di Obsidian, Gherkin, asumsi online), simpan di vault+repo
+x-review: update 11 Sep — tambah metrik % cakupan dashboard, filter 5 prioritas (stunting/ODGJ/bumil risti/balita risti/TB), modul usulan supervisi (nakes/UKGK/pemberdayaan/biodata kader) kandidat v2, opsi deploy gabung website Puskesmas
 ---
 
 # PRD — Dashboard PWS Posyandu (Wilayah Kerja Puskesmas Trajeng)
@@ -20,6 +20,7 @@ Dokumen ini adalah evolusi dari [[URS - Dashboard PWS Posyandu]] (draf kebutuhan
 
 > **Update 9 Sep 2026:** koreksi jumlah **8 kelompok sasaran** (temuan ekstraksi field), keputusan **notifikasi v1 = in-app + email**, dan penambahan **Rencana Kerja & Timeline** (jalur paralel, target demo online 27 Sep).
 > **Update 10 Sep 2026:** tambah **Workflow Aplikasi** (6 alur inti, User Journey per role, 25+ skenario Gherkin, diagram Mermaid di Obsidian). Asumsi: **online only** (tanpa mode offline/draft). Artefak workflow disimpan di **vault (`01 Notes/workflows/`) + repo (`docs/workflows/`)** — keduanya sinkron.
+> **Update 11 Sep 2026:** Rekaman 05:50 — **persentase cakupan dashboard** (`% dikunjungi vs belum dari total sasaran`), **% penderita TBC/terpapar**, filter **5 program prioritas** (Stunting, ODGJ, bumil risti, balita risti, TB) untuk "data sasaran yang akan dikunjungi", serta **4 modul usulan supervisi kandidat v2** (nakes, UKGK/UKGM, pemberdayaan kader+tanggal/peserta/foto, biodata kader per pos) + konfirmasi **Excel tok** & **opsi deploy gabung website Puskesmas (Bu Marten)**. Lihat [[Transkrip - Rekaman Diskusi Persentase dan Tambahan Supervisi]].
 
 ---
 
@@ -38,7 +39,8 @@ Saat ini proses bersifat manual: form kertas → rekap manual ke Excel → tidak
 - **Login & peran** — Kader, pembina (Bu Dian), kepala Puskesmas, dan admin masuk dengan hak akses berbeda (input vs baca vs kelola).
 - **Input kunjungan rumah digital** — Kader mengisi hasil kunjungan mengikuti struktur form resmi (data keluarga + per kelompok sasaran), termasuk menandai masalah kesehatan yang ditemukan.
 - **Form fleksibel** — Admin mengubah struktur form (tambah/edit/nonaktifkan field) **tanpa menulis ulang aplikasi**, mengikuti format Kemenkes yang masih berubah.
-- **Dashboard PWS** — Penyakit/masalah kesehatan tertinggi per RT/RW/kelurahan (contoh nyata: hipertensi tidak patuh berobat), dengan filter wilayah, kelompok sasaran, dan waktu.
+- **Dashboard PWS** — Penyakit/masalah kesehatan tertinggi per RT/RW/kelurahan (contoh nyata: hipertensi tidak patuh berobat), dengan filter wilayah, kelompok sasaran, dan waktu; plus **% cakupan kunjungan** (`dikunjungi vs belum / total sasaran`) dan **% prevalensi per penyakit** (mis. TBC terpapar) — *update 11 Sep rekaman 00:07–00:12*.
+- **Filter prioritas 5 program** — view "data sasaran yang akan dikunjungi" **hanya 5 prioritas**: Stunting, ODGJ, bumil risti, balita risti, TB (bukan 8 sasaran penuh) — *usulan supervisi 11 Sep [01:24]*, pending validasi.
 - **Pengingat jadwal (in-app + email)** — Kader tahu kapan waktunya kunjungan rumah (rutin 1×/tahun atau khusus door-to-door) dan ketika jadwal terlewat; pengingat email otomatis (gratis) sebagai saluran kedua. WhatsApp tidak termasuk v1.
 - **Rekap & ekspor** — Rekap otomatis per kelompok sasaran/wilayah menggantikan rekap manual Excel, bisa diekspor ke Excel/PDF.
 - **Master data** — Admin mengelola kelurahan, posyandu, kader, dan wilayah RW/RT.
@@ -71,6 +73,7 @@ Hasil discovery yang **tidak perlu diulang** saat pembangunan dimulai:
 - **Tanpa akses publik / multi-bahasa** — seluruh pengguna harus login.
 - **Data aktual 4 kelurahan menunggu izin DPMPTSP** — selama pengembangan, gunakan data contoh/placeholder; data nyata masuk saat izin jadi.
 - **Tanpa mode offline/draft di v1** — asumsi online only (keputusan 10 Sep); kader harus terhubung internet saat input (sesuai URS availability seluler, tapi tanpa queue offline).
+- **Kandidat v2 — usulan supervisi 11 Sep (pending validasi, tidak masuk v1 sebelum definisi jelas):** **Fitur Nakes**, **UKGK/UKGM** (Usaha Kesehatan Gigi — singkatan perlu klarifikasi), **Kegiatan Pemberdayaan Kader** (tanggal, peserta hadir, foto — untuk lihat siapa yang dikumpulkan atasi masalah UKGK), **Biodata Kader per Pos** — lihat [[Transkrip - Rekaman Diskusi Persentase dan Tambahan Supervisi]] § Implikasi. Jika diminta masuk v1, tambah risiko & task.
 
 ---
 
@@ -135,6 +138,13 @@ Apa yang perlu diingat aplikasi (menjadi dasar ERD/skema pada saat pembangunan; 
 ### Jadwal Kunjungan
 - keluarga yang dijadwalkan, kader penanggung jawab, waktu kunjungan
 - status: terjadwal / selesai / terlewat (dasar pengingat)
+
+### Kandidat v2 — Entitas Usulan Supervisi 11 Sep (pending, tidak masuk ERD v1)
+- **Nakes** — master tenaga kesehatan Puskesmas (biodata nakes) — belum ada field pasti [rekaman 01:18]
+- **Biodata Kader per Pos** — profil kader di pos (nama, pendidikan, foto?) [01:39]
+- **Kegiatan Pemberdayaan** — tanggal kegiatan, peserta hadir (list nama), foto — untuk UKGK [02:39]
+- **UKGK / UKGM** — kegiatan UKG (gigi) — singkatan perlu klarifikasi [01:58]
+> Catatan: jangan masuk skema v1 sebelum validasi — lihat `Di Luar Cakupan` kandidat v2.
 
 **Relasi utama:**
 - 1 Kelurahan → banyak RW/RT dan banyak Posyandu
@@ -414,7 +424,7 @@ Scenario: Tandai selesai
 ### W-E — Dashboard PWS (Pembina/Kepala utama, Kader terbatas)
 
 **User Journey:**
-Login Pembina/Kepala → Dashboard ringkasan 4 kelurahan → Lihat ranking penyakit tertinggi per RT/RW/kelurahan (contoh hipertensi tidak patuh) → Filter wilayah/kelompok sasaran/periode → Drill-down Kelurahan→RW→RT → Lihat rekap masalah (tanpa NIK individu, agregat anonim).
+Login Pembina/Kepala → Dashboard ringkasan 4 kelurahan → KPI **% cakupan** (`dikunjungi vs belum / total sasaran` *11 Sep*) + ranking penyakit tertinggi per RT/RW/kelurahan (contoh hipertensi tidak patuh) + **% prevalensi** per penyakit (TBC terpapar *11 Sep*) → Filter wilayah/kelompok sasaran/**prioritas 5 program** (Stunting/ODGJ/bumil risti/balita risti/TB *11 Sep [01:24]*) /periode → Drill-down Kelurahan→RW→RT → Lihat rekap masalah (tanpa NIK individu, agregat anonim).
 
 **Mermaid:** `01 Notes/workflows/W-E-dashboard.md` / `docs/workflows/W-E-dashboard.md`
 
@@ -443,6 +453,8 @@ Scenario: Agregat anonim
 ```
 
 ### W-F — Rekap, Masalah & Ekspor (Pembina/Admin)
+
+> **Update 11 Sep:** rekap perlu dukung **% cakupan & % penderita** sesuai metrik dashboard baru — ekspor ikut filter prioritas 5 program jika diterapkan.
 
 **User Journey:**
 Pembina lihat Rekap otomatis (per minggu/sasaran/wilayah, jumlah dengan masalah, tindak lanjut) → Ekspor Excel/PDF sesuai filter dashboard → Monitor Masalah (belum/selesai/dirujuk) dari W-C.
@@ -621,7 +633,7 @@ Task diberi level (🟢 S / 🟡 M / 🔴 L) dan estimasi **tentatif** (dikoreks
 | C6 | Notifikasi in-app + daftar jadwal kader | 🟡 M | 8 jam | B8 |
 | C7 | Rekap & ekspor Excel/PDF | 🟢 S | 6 jam | B9 |
 | C8 | Polish mobile, loading/error, aksesibilitas | 🟡 M | 8 jam | C4, C5 |
-| D1 | **Deploy online**: Vercel (frontend) + backend (Render/Railway) + Supabase (PostgreSQL) | 🟡 M | 6 jam | inti B/C |
+| D1 | **Deploy online**: Vercel (frontend) + backend (Render/Railway) + Supabase (PostgreSQL) — *opsi gabung website Puskesmas (Bu Marten) perlu validasi 11 Sep, fallback independent* | 🟡 M | 6 jam | inti B/C |
 | D2 | Akun demo 4 peran + data placeholder | 🟢 S | 2 jam | D1 |
 | D3 | Script demo 15 menit + uji dari HP client | 🟢 S | 3 jam | D2 |
 | D4 | Dokumentasi ringkas + draft handover | 🟢 S | 4 jam | — |
@@ -645,6 +657,12 @@ Ditandai sebagai risiko yang belum terkunci di PRD ini:
 - [ ] **Tren waktu** — perlu perbandingan data antar tahun?
 - [ ] **Jumlah pasti posyandu & target KK** per kelurahan (dari Bu Dian setelah DPMPTSP)
 - [ ] **Operator harian sistem** setelah handover
+- [ ] **Update 11 Sep — 5 program prioritas**: validasi pemetaan Stunting/ODGJ/bumil risti/balita risti/TB ke field checklist & 8 sasaran; apakah view 5 prioritas menggantikan atau filter tambahan? ([[Transkrip - Rekaman Diskusi Persentase dan Tambahan Supervisi]])
+- [ ] **Update 11 Sep — UKGK/UKGM**: klarifikasi singkatan & field yang diharapkan
+- [ ] **Update 11 Sep — Biodata Kader & Nakes**: field detail, foto, apakah nakes = master Puskesmas?
+- [ ] **Update 11 Sep — Pemberdayaan**: butuh Kegiatan (tanggal, peserta, foto) — retensi & izin foto?
+- [ ] **Update 11 Sep — Metrik %**: rumus pasti `% dikunjungi/total sasaran` & `% penderita/terpapar` + level agregat (RT/RW/kel)?
+- [ ] **Update 11 Sep — Deploy gabung**: hosting website Puskesmas jenis apa, akses Bu Marten, subpath/subdomain, backup? (alternatif independent Vercel tetap fallback)
 
 ## Terkait
 - [[URS - Dashboard PWS Posyandu]]
