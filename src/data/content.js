@@ -9,7 +9,7 @@ export const TEKS_HERO = {
   deskripsi:
     'Aplikasi web responsif untuk digitalisasi pendataan kunjungan rumah (KR) kader Posyandu di wilayah kerja Puskesmas Trajeng (4 kelurahan). Kader menginput hasil kunjungan, data otomatis tampil pada dashboard PWS kondisi kesehatan per wilayah, dan kader menerima pengingat jadwal kunjungan. Format form Kemenkes belum stabil, sehingga sistem wajib mendukung perubahan tanpa pembangunan ulang.',
   koreksi:
-    'Koreksi 10 Sep: Workflow Aplikasi (6 alur Mermaid + Gherkin, online only) · 8 kelompok sasaran · notifikasi v1 = in-app + email · target demo 27 Sep 2026.',
+    'Update 11 Sep: KPI % cakupan dikunjungi vs belum + % prevalensi TBC/terpapar, filter 5 program prioritas (Stunting/ODGJ/bumil risti/balita risti/TB), 4 modul kandidat v2 (nakes/UKGK/pemberdayaan/biodata kader), opsi deploy gabung website Puskesmas. · 10 Sep: Workflow 6 alur Mermaid + Gherkin · 8 sasaran · demo 27 Sep.',
 }
 
 export const TAG_TEKNOLOGI = ['React', 'Express / Node.js', 'PostgreSQL (data fleksibel)', 'REST API', 'Web responsif (mobile)', 'Ekspor Excel/PDF', 'Deploy online']
@@ -25,21 +25,23 @@ export const FITUR = [
   { icon: Users, judul: 'Login & peran', teks: 'Kader, pembina, kepala Puskesmas, dan admin masuk dengan hak akses berbeda (input vs baca vs kelola).' },
   { icon: FileText, judul: 'Input kunjungan rumah digital', teks: 'Kader mengisi hasil kunjungan mengikuti struktur form resmi (data keluarga + per kelompok sasaran), termasuk menandai masalah kesehatan.' },
   { icon: Wand2, judul: 'Form fleksibel', teks: 'Admin mengubah struktur form (tambah/edit/nonaktifkan field) tanpa menulis ulang aplikasi, mengikuti format Kemenkes yang masih berubah.' },
-  { icon: Eye, judul: 'Dashboard PWS', teks: 'Penyakit/masalah kesehatan tertinggi per RT/RW/kelurahan (contoh: hipertensi tidak patuh berobat), dengan filter wilayah, kelompok sasaran, dan waktu.' },
+  { icon: Eye, judul: 'Dashboard PWS + KPI %', teks: 'Penyakit tertinggi per RT/RW/kelurahan (contoh: hipertensi tidak patuh berobat) + KPI % cakupan dikunjungi vs belum / total sasaran & % prevalensi TBC/terpapar (rekaman 11 Sep 00:07–00:12). Filter wilayah/kelompok sasaran/periode + filter 5 program prioritas (Stunting, ODGJ, bumil risti, balita risti, TB).' },
   { icon: Bell, judul: 'Pengingat jadwal (in-app + email)', teks: 'Kader tahu kapan waktunya kunjungan rumah (rutin 1×/tahun atau khusus door-to-door) dan ketika jadwal terlewat; pengingat email otomatis (gratis) sebagai saluran kedua. WhatsApp tidak termasuk v1.' },
-  { icon: Download, judul: 'Rekap & ekspor', teks: 'Rekap otomatis per kelompok sasaran/wilayah menggantikan rekap manual Excel, dapat diekspor ke Excel & PDF.' },
+  { icon: Download, judul: 'Rekap & ekspor', teks: 'Rekap otomatis per kelompok sasaran/wilayah menggantikan rekap manual Excel, dapat diekspor ke Excel & PDF — ikut filter prioritas 5 program.' },
   { icon: Database, judul: 'Master data', teks: 'Admin mengelola kelurahan, posyandu, kader, dan wilayah RW/RT.' },
   { icon: Kanban, judul: 'Task board interaktif', teks: 'Rencana kerja bisa disaring per jalur/level, progress dicentang langsung (tersimpan di perangkat ini).', highlight: true },
+  { icon: PackageCheck, judul: '5 program prioritas (filter sasaran)', teks: 'View “data sasaran yang akan dikunjungi” hanya 5 prioritas: Stunting, ODGJ, bumil risti, balita risti, TB (bukan 8 sasaran penuh) — usulan supervisi 11 Sep [01:24], pending validasi.', highlight: true },
 ]
 
 export const TERSEDIA = [
-  'URS & prioritas kebutuhan [M]/[S]',
+  'URS & prioritas kebutuhan [M]/[S] + update 11 Sep (KPI % & 5 prioritas)',
   'Struktur form checklist KR (PDF 35 hlm)',
   '8 kelompok sasaran siklus hidup (koreksi 9 Sep)',
-  'Alur proses kunjungan saat ini',
+  'Alur proses kunjungan saat ini (form fisik → Excel tok 11 Sep)',
   'Konteks kebijakan ILP & timeline KR',
   'Pemetaan stakeholder & rencana 3-fasa (demo 27 Sep)',
   'Workflow Aplikasi 6 alur (Mermaid) + User Journey per role + Gherkin (online only, 10 Sep)',
+  'Rekaman 05:50 11 Sep — persentase dashboard + 4 modul kandidat v2 (nakes/UKGK/pemberdayaan/biodata kader) + opsi deploy gabung website Puskesmas (Bu Marten)',
 ]
 export const CATATAN_TERSEDIA = 'Tidak ada kode atau starter template yang sudah ada — pembangunan dimulai dari nol di Milestone 1.'
 
@@ -51,7 +53,9 @@ export const OUT_OF_SCOPE = [
   { judul: 'Tanpa analitik prediktif / machine learning', teks: 'dashboard menggambarkan kondisi aktual, bukan peramalan.' },
   { judul: 'Tanpa akses publik / multi-bahasa', teks: 'seluruh pengguna harus login.' },
   { judul: 'Tanpa mode offline/draft di v1', teks: 'asumsi online only (10 Sep); kader harus online saat input, error jaringan = retry tanpa antrian offline.' },
-  { judul: 'Data aktual 4 kelurahan menunggu izin DPMPTSP', teks: 'demo 27 Sep memakai data dummy; data nyata masuk saat izin jadi.' },
+  { judul: 'Data aktual 4 kelurahan menunggu izin DPMPTSP', teks: 'demo 27 Sep memakai data dummy; data nyata masuk saat izin jadi. Saat ini Excel tok (11 Sep).' },
+  { judul: 'Kandidat v2 — usulan supervisi 11 Sep (pending, tidak masuk v1)', teks: 'Fitur Nakes, UKGK/UKGM (singkatan perlu klarifikasi), Kegiatan Pemberdayaan Kader (tanggal, peserta hadir, foto), Biodata Kader per Pos — lihat Transkrip Rekaman 11 Sep. Butuh definisi field & validasi beban sebelum masuk scope.' },
+  { judul: 'Tanpa subsumsi 8 sasaran menjadi 5 prioritas', teks: '8 siklus hidup tetap; 5 program Stunting/ODGJ/bumil risti/balita risti/TB hanya filter view “sasaran yang akan dikunjungi” (11 Sep [01:24]), bukan mengganti struktur data.' },
 ]
 
 export const KELOMPOK_SASARAN = [
@@ -215,6 +219,37 @@ export const ENTITIES = [
       { id: 'kunjungan', label: 'Kunjungan Rumah' },
     ],
   },
+  {
+    id: 'kegiatan',
+    nama: 'Kegiatan Pemberdayaan (kandidat v2)',
+    bintang: true,
+    fields: [
+      ['tanggal', 'tanggal kegiatan pengumpulan warga (atasi masalah UKGK)'],
+      ['peserta', 'daftar peserta hadir (siapa yang sudah dikumpulkan)'],
+      ['foto', 'foto kegiatan (opsional, bisa dimasukkan)'],
+      ['kait posyandu', 'posyandu/UKGK terkait'],
+    ],
+    related: [
+      { id: 'posyandu', label: 'Posyandu' },
+      { id: 'user', label: 'Pengguna (kader)' },
+    ],
+    notes: ['usulan supervisi 11 Sep [02:39] — pending validasi, tidak masuk ERD v1'],
+  },
+  {
+    id: 'nakes',
+    nama: 'Nakes & UKGK/UKGM (kandidat v2)',
+    bintang: true,
+    fields: [
+      ['nakes', 'biodata tenaga kesehatan Puskesmas (belum detail)'],
+      ['biodata kader', 'kader per pos: profil di pos (nama, pendidikan, foto?)'],
+      ['ukgk', 'UKGK/UKGM — singkatan perlu klarifikasi (Usaha Kesehatan Gigi?)'],
+    ],
+    related: [
+      { id: 'posyandu', label: 'Posyandu' },
+      { id: 'user', label: 'Pengguna' },
+    ],
+    notes: ['usulan supervisi 11 Sep [01:30][01:39] — pending, tidak masuk v1'],
+  },
 ]
 
 export const MILESTONES = [
@@ -256,16 +291,16 @@ export const MILESTONES = [
     nomor: 3,
     judul: 'Dashboard PWS',
     deskripsi:
-      'Pembina dan kepala Puskesmas melihat kondisi kesehatan per wilayah — inti kebutuhan "penyakit tertinggi per RT/RW" dari wawancara.',
+      'Pembina dan kepala Puskesmas melihat kondisi kesehatan per wilayah — inti kebutuhan "penyakit tertinggi per RT/RW" + KPI % cakupan (dikunjungi vs belum / total sasaran) & % prevalensi TBC (11 Sep).',
     dibangun: [
-      'Halaman dashboard: ringkasan kondisi per kelurahan',
-      'Visualisasi masalah kesehatan tertinggi per RT/RW/kelurahan',
-      'Filter wilayah, kelompok sasaran, periode waktu',
+      'Halaman dashboard: ringkasan kondisi + KPI % cakupan per kelurahan (11 Sep)',
+      'Visualisasi masalah kesehatan tertinggi per RT/RW/kelurahan + % prevalensi per penyakit',
+      'Filter wilayah, kelompok sasaran, periode waktu + filter 5 program prioritas (Stunting/ODGJ/bumil risti/balita risti/TB, 11 Sep)',
       'Drill-down kelurahan → RW → RT',
       'Kuota akses per peran: kader hanya wilayahnya; pembina/kapus 4 kelurahan',
     ],
-    bukan: ['Notifikasi & pengingat (M4)', 'Rekap & ekspor (M4)', 'Analitik prediktif', 'Data aktual nyata (pakai contoh sampai izin DPMPTSP)'],
-    selesaiKetika: 'Pembina bisa memfilter dashboard dan langsung melihat urutan masalah kesehatan per wilayah dari data yang diinput kader.',
+    bukan: ['Notifikasi & pengingat (M4)', 'Rekap & ekspor (M4)', 'Analitik prediktif', 'Data aktual nyata (pakai contoh sampai izin DPMPTSP)', 'Modul kandidat v2 (nakes/UKGK/pemberdayaan/biodata) — out of scope v1'],
+    selesaiKetika: 'Pembina bisa memfilter dashboard (termasuk 5 prioritas) dan langsung melihat urutan masalah + KPI % per wilayah dari data yang diinput kader.',
   },
   {
     id: 'ms-4',
@@ -288,9 +323,10 @@ export const MILESTONES = [
 ]
 
 export const PERINGATAN_RENCANA = [
-  { icon: AlertTriangle, tone: 'text-amber-500', teks: 'Data real 4 kelurahan menunggu izin DPMPTSP → demo memakai <strong>data dummy</strong>; data nyata disuntik setelah izin jadi.' },
+  { icon: AlertTriangle, tone: 'text-amber-500', teks: 'Data real 4 kelurahan menunggu izin DPMPTSP → demo memakai <strong>data dummy</strong>; data nyata disuntik setelah izin jadi. Saat ini <strong>Excel tok</strong> (11 Sep).' },
   { icon: AlertTriangle, tone: 'text-amber-500', teks: 'Format form Kemenkes belum stabil → seluruh rancangan bergantung pada <strong>definisi field</strong> (tidak boleh hard-code).' },
-  { icon: AlertTriangle, tone: 'text-amber-500', teks: 'Notifikasi (B8–C6) & rekap/ekspor (B9–C7) bersifat <strong>bonus</strong> bila waktu Fasa III menipis; prioritas demo: D1–D3.' },
+  { icon: AlertTriangle, tone: 'text-amber-500', teks: 'Notifikasi (B8–C6) & rekap/ekspor (B9–C7) bersifat <strong>bonus</strong> bila waktu Fasa III menipis; prioritas demo: D1–D3. Deploy opsi gabung website Puskesmas (Bu Marten) perlu validasi — fallback Vercel tetap.' },
+  { icon: AlertTriangle, tone: 'text-amber-500', teks: 'Kandidat v2 11 Sep (nakes/UKGK/pemberdayaan/biodata kader) <strong>tidak masuk v1</strong> — pending validasi field & beban. 5 prioritas hanya filter view, bukan ganti 8 sasaran.' },
   { icon: BookOpen, tone: 'text-zinc-400 dark:text-zinc-600', teks: 'L-01 <em>Logbook</em> Asah/Dicoding per individu berjalan di sela-sela (bukan task bersama).' },
 ]
 
@@ -302,6 +338,12 @@ export const QNA = [
   'Tren waktu — perlu perbandingan data antar tahun?',
   'Jumlah pasti posyandu & target KK per kelurahan (dari Bu Dian setelah DPMPTSP).',
   'Operator harian sistem setelah handover.',
+  'Update 11 Sep — 5 program prioritas: pemetaan Stunting/ODGJ/bumil risti/balita risti/TB ke field checklist & 8 sasaran; view 5 prioritas menggantikan atau filter tambahan? (rekaman 01:24)',
+  'Update 11 Sep — UKGK/UKGM: klarifikasi singkatan & field yang diharapkan (Usaha Kesehatan Gigi?).',
+  'Update 11 Sep — Biodata Kader & Nakes: field detail (pendidikan, foto, KTP?), apakah nakes = master Puskesmas?',
+  'Update 11 Sep — Pemberdayaan: butuh Kegiatan (tanggal, peserta, foto) — izin foto & retensi?',
+  'Update 11 Sep — Metrik %: rumus pasti % dikunjungi/total sasaran & % penderita/terpapar + level agregat (RT/RW/kel)?',
+  'Update 11 Sep — Deploy gabung: hosting website Puskesmas jenis apa (shared/VPS), akses Bu Marten, subpath/subdomain, backup?',
 ]
 
 export const DISCLAIMER =

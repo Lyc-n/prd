@@ -79,28 +79,33 @@ export const NFR = [
 ]
 
 export const DEPENDENCIES = [
-  { jenis: 'Eksternal', apa: 'DPMPTSP — Surat universitas → MPP 10 menit → izin → data 4 kelurahan', dampak: 'Data real tertunda; demo pakai dummy', mitigasi: 'Dummy 4 kelurahan (Rencana A2) + PRD Perhatian', pemilik: 'Feri (U-03)' },
+  { jenis: 'Eksternal', apa: 'DPMPTSP — Surat universitas → MPP 10 menit → izin → data 4 kelurahan', dampak: 'Data real tertunda; demo pakai dummy', mitigasi: 'Dummy 4 kelurahan (Rencana A2) + PRD Perhatian — saat ini Excel tok (11 Sep)', pemilik: 'Feri (U-03)' },
   { jenis: 'Eksternal', apa: 'Format Kemenkes belum fix', dampak: 'Field berubah', mitigasi: 'Definisi Field fleksibel NFR-02 (W-B, tanpa rebuild)', pemilik: 'Admin' },
   { jenis: 'Eksternal', apa: 'Dinkes — cetak form akhir 2025', dampak: 'Acuan field', mitigasi: 'Pakai PDF 35 hlm + 8 sasaran (Field Checklist:13)', pemilik: 'Tim' },
-  { jenis: 'Eksternal', apa: 'Mitra (Bu Dian/Kepala Puskesmas) — validasi URS & demo 27 Sep', dampak: 'Scope meleset', mitigasi: 'Validasi U-01/U-02 (follow-up WA)', pemilik: 'Feri' },
-  { jenis: 'Eksternal', apa: 'Infra free-tier — Vercel + Render/Railway + Supabase', dampak: 'Limit kuota', mitigasi: 'Pilih free-tier + fallback, akun demo D2', pemilik: 'Tim' },
-  { jenis: 'Internal', apa: 'W-B → W-C → W-E/W-F + B1→B2→B3→...', dampak: 'Jika B2/B5 telat, L besar menghambat', mitigasi: 'Prioritas L dulu (B2, B5, B6, C4, C5), jalur paralel A/B/C', pemilik: 'Tim' },
+  { jenis: 'Eksternal', apa: 'Mitra (Bu Dian/Kepala Puskesmas) — validasi URS & demo 27 Sep', dampak: 'Scope meleset', mitigasi: 'Validasi U-01/U-02 (follow-up WA) + 6 pertanyaan baru 11 Sep', pemilik: 'Feri' },
+  { jenis: 'Eksternal', apa: 'Infra — Vercel+Render+Supabase free-tier; opsi gabung website Puskesmas (Bu Marten) 11 Sep', dampak: 'Limit kuota / akses hosting Puskesmas belum jelas', mitigasi: 'Fallback independent Vercel tetap; validasi hosting Bu Marten (shared/VPS, subpath, backup) D1', pemilik: 'Tim' },
+  { jenis: 'Internal', apa: 'W-B → W-C → W-E/W-F + B1→B2→B3→...', dampak: 'Jika B2/B5 telat, L besar menghambat', mitigasi: 'Prioritas L dulu (B2, B5, B6, C4, C5), jalur paralel A/B/C. Tambahan % & 5 prioritas di W-E tidak ubah skema', pemilik: 'Tim' },
 ]
 
 export const ASSUMPTIONS = [
   { id: 'A-01', asumsi: 'KR belum matang (baru 2024, sedikit) — sistem dukung proses berkembang', dasar: 'Konteks:74', jikaSalah: 'Perlu onboarding kader lebih intensif (notifikasi W-D)' },
   { id: 'A-02', asumsi: 'Kader butuh pengingat (sering terlambat)', dasar: 'Temuan:88', jikaSalah: 'Pengingat jadi fitur utama, bukan bonus' },
-  { id: 'A-03', asumsi: 'Dashboard agregat dulu (privasi) — tanpa NIK di ranking', dasar: 'Batasan:36, W-E:66', jikaSalah: 'Jika butuh detail individu → guard ketat BR-19' },
+  { id: 'A-03', asumsi: 'Dashboard agregat dulu (privasi) — tanpa NIK di ranking, tapi butuh KPI % cakupan vs prevalensi (11 Sep)', dasar: 'Batasan:36, W-E:66, Rekaman 00:07', jikaSalah: 'Jika butuh detail individu → guard ketat BR-19' },
   { id: 'A-04', asumsi: 'Online only — kader online saat input', dasar: 'Keputusan 10 Sep, PRD:73', jikaSalah: 'Jika offline dibutuhkan → tambah queue (di luar v1)' },
-  { id: 'A-05', asumsi: 'Demo pakai dummy, data real setelah izin', dasar: 'Rencana A2, PRD:72', jikaSalah: 'Jika izin cepat → ganti seed dengan data real' },
+  { id: 'A-05', asumsi: 'Demo pakai dummy, data real setelah izin — Excel tok 11 Sep', dasar: 'Rencana A2, PRD:72, Rekaman 03:23', jikaSalah: 'Jika izin cepat → ganti seed dengan data real' },
+  { id: 'A-06', asumsi: '8 sasaran siklus hidup tetap; 5 prioritas hanya filter view "sasaran yang akan dikunjungi"', dasar: 'Transkrip 11 Sep [01:24] — Stunting/ODGJ/bumil risti/balita risti/TB', jikaSalah: 'Jika 5 prioritas ganti 8 → ubah ERD & definisi field (risiko)' },
+  { id: 'A-07', asumsi: 'Kandidat v2 (nakes/UKGK/pemberdayaan/biodata) pending — tidak masuk v1', dasar: 'Transkrip 11 Sep [01:30][01:39][02:39]', jikaSalah: 'Jika diminta v1 → tambah task & risiko, tunda demo' },
 ]
 
 export const RISKS = [
   { id: 'R-01', risiko: 'Format berubah lagi', dampak: 'Field tidak cocok', mitigasi: 'NFR-02 fleksibel + snapshot histori (W-B:22)', pemilik: 'Admin', level: 'M' },
-  { id: 'R-02', risiko: 'DPMPTSP telat', dampak: 'Data real telat', mitigasi: 'Dummy Rencana A2, 4 kelurahan wajib', pemilik: 'Feri', level: 'M' },
-  { id: 'R-03', risiko: 'Beban 4 kelurahan (ratusan KK) lambat', dampak: 'Dashboard lemot', mitigasi: 'NFR-06 p95 <500ms + pagination (W-E:102)', pemilik: 'Backend', level: 'S' },
+  { id: 'R-02', risiko: 'DPMPTSP telat', dampak: 'Data real telat (Excel tok)', mitigasi: 'Dummy Rencana A2, 4 kelurahan wajib', pemilik: 'Feri', level: 'M' },
+  { id: 'R-03', risiko: 'Beban 4 kelurahan (ratusan KK) lambat', dampak: 'Dashboard lemot (+ % agregat)', mitigasi: 'NFR-06 p95 <500ms + pagination (W-E:102)', pemilik: 'Backend', level: 'S' },
   { id: 'R-04', risiko: 'Notifikasi bonus terpotong waktu', dampak: 'Demo tanpa pengingat', mitigasi: 'Prioritas D1–D3, B8/C6 bonus', pemilik: 'Tim', level: 'S' },
   { id: 'R-05', risiko: 'Guard peran bocor', dampak: 'Privasi', mitigasi: 'NFR-04 + BR-01…04 + test 403 (W-A)', pemilik: 'Backend', level: 'M' },
+  { id: 'R-06', risiko: '5 prioritas disalahpahami ganti 8 sasaran', dampak: 'Scope creep, ERD salah', mitigasi: 'Tegaskan hanya filter view (A-06), BR-26, validasi mitra 11 Sep', pemilik: 'Tim', level: 'M' },
+  { id: 'R-07', risiko: 'Kandidat v2 dipaksa masuk v1 (nakes/UKGK/pemberdayaan/biodata)', dampak: 'Overload Fasa III, demo molor', mitigasi: 'Pisah kandidat v2 — out of scope v1, butuh definisi field dulu', pemilik: 'Tim', level: 'M' },
+  { id: 'R-08', risiko: 'Deploy gabung website Puskesmas tidak siap', dampak: 'Hosting/akses Bu Marten belum jelas', mitigasi: 'Fallback Vercel independent (D1), validasi shared/VPS/subpath', pemilik: 'Tim', level: 'S' },
 ]
 
 export const BUSINESS_RULES = [
@@ -134,4 +139,8 @@ export const BUSINESS_RULES = [
   { id: 'BR-23', label: 'H-1 pengingat', kelompok: 'Jadwal & Notifikasi', trigger: 'Cron 07:00 H-1', kondisi: 'Jadwal terjadwal', aksi: 'In-app + email Besok: KK-002', contoh: 'KK-002 tgl 20 → 19 07:00 kirim', sumber: 'W-D:44', workflow: 'W-D' },
   { id: 'BR-24', label: 'Terlewat', kelompok: 'Jadwal & Notifikasi', trigger: '00:00+1 tanpa kunjungan', kondisi: 'terjadwal', aksi: 'Jadi terlewat + Terlewat: KK-002', contoh: '10 Sep tanpa kunjungan → 11 Sep terlewat', sumber: 'PRD:173, W-D', workflow: 'W-D' },
   { id: 'BR-25', label: 'Masalah dirujuk', kelompok: 'Jadwal & Notifikasi', trigger: 'Ubah belum→dirujuk', kondisi: 'Klik', aksi: 'Indikator dashboard + rekap', contoh: 'TBC Ani dirujuk', sumber: 'PRD:173, W-F:46', workflow: 'W-F, W-E' },
+  // Update 11 Sep — KPI % & 5 prioritas
+  { id: 'BR-26', label: '% cakupan dikunjungi vs belum (baru 11 Sep)', kelompok: 'Dashboard & Rekap', trigger: 'Buka Dashboard', kondisi: 'Hitung dikunjungi / total sasaran ×100% per wilayah', aksi: 'Tampil KPI % per kelurahan/RW/RT (anonim agregat)', contoh: 'Ngemplakrejo 60/100 → 60% dikunjungi, 40% belum', sumber: 'Rekaman 00:07–00:10, W-E', workflow: 'W-E' },
+  { id: 'BR-27', label: '% prevalensi penderita TBC/terpapar (baru 11 Sep)', kelompok: 'Dashboard & Rekap', trigger: 'Hitung prevalensi', kondisi: 'penderita vs total sasaran per wilayah', aksi: 'Tampil % per penyakit (anonim)', contoh: 'TBC 10/100 → 10% terpapar', sumber: 'Rekaman 00:12, W-E', workflow: 'W-E, W-F' },
+  { id: 'BR-28', label: 'Filter 5 program prioritas (baru 11 Sep)', kelompok: 'Dashboard & Rekap', trigger: 'Pilih filter Prioritas', kondisi: 'Stunting/ODGJ/bumil risti/balita risti/TB (bukan 8 penuh)', aksi: 'Hanya tampil 5 prioritas; 8 siklus hidup tetap di master', contoh: 'Filter Prioritas=ODGJ → hanya ODGJ', sumber: 'Rekaman 01:24, W-E', workflow: 'W-E, W-F' },
 ]

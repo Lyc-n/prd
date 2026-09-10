@@ -10,14 +10,16 @@ export const OVERVIEW_MERMAID = `flowchart LR
   A[Admin<br/>W-B<br/>Master & Field] -->|definisi field| B[Kader<br/>W-C<br/>Input KR]
   B -->|kunjungan selesai| C{System<br/>W-D<br/>Jadwal}
   C -->|pengingat| B
-  B -->|agregat| D[Pembina / Kepala<br/>W-E<br/>Dashboard PWS]
+  B -->|agregat + %| D[Pembina / Kepala<br/>W-E<br/>Dashboard PWS<br/>KPI % & 5 prioritas]
   D --> E[Pembina<br/>W-F<br/>Rekap & Ekspor]
   B -.-> E
+  D -.->|kandidat v2| F[Pemberdayaan/Nakes/UKGK<br/>di luar v1]
   style A fill:#fffbeb,stroke:#f59e0b,stroke-width:2px
   style B fill:#ecfdf5,stroke:#10b981,stroke-width:2px
   style C fill:#f4f4f5,stroke:#71717a,stroke-width:2px
   style D fill:#f0f9ff,stroke:#0ea5e9,stroke-width:2px
-  style E fill:#f5f3ff,stroke:#8b5cf6,stroke-width:2px`
+  style E fill:#f5f3ff,stroke:#8b5cf6,stroke-width:2px
+  style F fill:#fefce8,stroke:#ca8a04,stroke-dasharray: 5 5`
 
 export const WORKFLOWS = [
   {
@@ -191,23 +193,23 @@ export const WORKFLOWS = [
     peran: 'Pembina/Kepala (+ Kader terbatas)',
     roleKey: 'sky',
     file: 'W-E-dashboard.md',
-    ringkas: 'Ranking penyakit tertinggi per RT/RW/kelurahan → filter wilayah/sasaran/periode → drill-down Kelurahan→RW→RT → agregat anonim.',
-    journey: 'Login Pembina/Kepala → Dashboard ringkasan 4 kelurahan → Lihat ranking penyakit tertinggi per RT/RW/kelurahan (contoh hipertensi tidak patuh) → Filter wilayah/kelompok sasaran/periode → Drill-down Kelurahan→RW→RT → Lihat rekap masalah (tanpa NIK individu, agregat anonim).',
+    ringkas: 'KPI % cakupan + ranking penyakit per RT/RW/kelurahan → filter wilayah/sasaran/5 prioritas/periode → drill-down → agregat anonim (update 11 Sep).',
+    journey: 'Login Pembina/Kepala → Dashboard ringkasan 4 kelurahan (KPI % cakupan dikunjungi vs belum / total sasaran) → Ranking penyakit + % prevalensi (TBC terpapar) → Filter wilayah/kelompok sasaran/5 program prioritas (Stunting/ODGJ/bumil risti/balita risti/TB)/periode → Drill-down Kelurahan→RW→RT → Rekap anonim.',
     steps: [
-      { no: 1, label: 'Lihat ringkasan 4 kelurahan', actor: 'Pembina/Kepala', icon: 'Layout' },
-      { no: 2, label: 'Lihat ranking per wilayah', actor: 'Semua', icon: 'BarChart' },
-      { no: 3, label: 'Filter & drill-down', actor: 'Semua', icon: 'Filter' },
+      { no: 1, label: 'Lihat ringkasan + KPI % cakupan', actor: 'Pembina/Kepala', icon: 'Layout' },
+      { no: 2, label: 'Lihat ranking + % prevalensi', actor: 'Semua', icon: 'BarChart' },
+      { no: 3, label: 'Filter 5 prioritas & drill-down', actor: 'Semua', icon: 'Filter' },
       { no: 4, label: 'Kader: hanya wilayahnya', actor: 'Kader', icon: 'Shield' },
     ],
     mermaid: `flowchart TD
-  A[Masuk sebagai Pembina/Kepala/Kader] --> B[Ringkasan 4 kelurahan]
-  B --> C[Ranking penyakit<br/>per Kelurahan]
+  A[Masuk sebagai Pembina/Kepala/Kader] --> B[Ringkasan 4 kelurahan<br/>KPI % cakupan]
+  B --> C[Ranking penyakit + %<br/>per Kelurahan]
   C --> D{Pilih filter}
-  D --> E[Wilayah / Sasaran / Periode]
+  D --> E[Wilayah / Sasaran / 5 Prioritas / Periode]
   E --> F[Data terfilter]
   F --> G{Mau drill-down?}
   G -->|Kelurahan ke RW| H[Tampil RW]
-  G -->|RW ke RT| I[Tampil RT + jumlah]
+  G -->|RW ke RT| I[Tampil RT + jumlah + %]
   G -->|Tidak| J[Ranking agregat]
   H --> I
   I --> K{Siapa yang lihat?}
@@ -218,10 +220,13 @@ export const WORKFLOWS = [
   style L fill:#ecfdf5,stroke:#10b981
   style M fill:#f5f3ff,stroke:#8b5cf6`,
     gherkin: [
+      { title: 'KPI % cakupan per kelurahan (baru 11 Sep)', given: 'Total sasaran 100 KK di Ngemplakrejo, 60 sudah dikunjungi', when: 'Buka Dashboard', then: 'Tampil KPI "60% dikunjungi, 40% belum" di card Ngemplakrejo' },
+      { title: '% prevalensi TBC (baru 11 Sep)', given: '10 dari 100 warga TBC terpapar', when: 'Lihat ranking TBC', then: 'Tampil "TBC: 10% terpapar" agregat anonim' },
+      { title: 'Filter 5 program prioritas (baru 11 Sep)', given: 'Dashboard ada kunjungan semua sasaran', when: 'Filter Prioritas = Stunting', then: 'Hanya tampil sasaran Stunting; 8 siklus hidup tetap di master' },
       { title: 'Drill-down hipertensi per RT', given: 'Ada 18 kunjungan hipertensi tidak patuh di RT02/RW04 periode 2026-09', when: 'Filter Ngemplakrejo + Dewasa + 2026-09 lalu drill-down RW04 → RT02', then: 'Tampil "Hipertensi tidak patuh: 18 — peringkat 1" di RT02' },
-      { title: 'Kader hanya lihat wilayahnya', given: 'Kader Ngemplakrejo RT02 sudah login', when: 'Buka dashboard', then: 'Hanya tampil RT02/RW04, filter kelurahan lain tidak aktif' },
+      { title: 'Kader hanya lihat wilayahnya', given: 'Kader Ngemplakrejo RT02 sudah login', when: 'Buka dashboard', then: 'Hanya tampil RT02/RW04, filter kelurahan lain tidak aktif — KPI % hanya wilayahnya' },
       { title: 'Filter kosong', given: 'Filter Periode 2025-01 belum ada data', when: 'Terapkan filter', then: 'Pesan "Belum ada kunjungan" + tombol Buat Kunjungan (jika Kader)' },
-      { title: 'Agregat anonim', given: 'Kunjungan Budi hipertensi tidak patuh', when: 'Dashboard tampil ranking', then: 'Hanya hitung jumlah, tidak tampil NIK/nama' },
+      { title: 'Agregat anonim', given: 'Kunjungan Budi hipertensi tidak patuh', when: 'Dashboard tampil ranking', then: 'Hanya hitung jumlah/%, tidak tampil NIK/nama' },
     ],
   },
   {
@@ -231,8 +236,8 @@ export const WORKFLOWS = [
     peran: 'Pembina/Admin',
     roleKey: 'violet',
     file: 'W-F-rekap-ekspor.md',
-    ringkas: 'Rekap otomatis agregat terhitung per minggu/sasaran/wilayah → Masalah belum/selesai/dirujuk → Ekspor Excel/PDF sesuai filter.',
-    journey: 'Pembina lihat Rekap otomatis (per minggu/sasaran/wilayah, jumlah dengan masalah, tindak lanjut) → Ekspor Excel/PDF sesuai filter dashboard → Monitor Masalah (belum/selesai/dirujuk) dari W-C.',
+    ringkas: 'Rekap otomatis agregat + % cakupan/prevalensi per minggu/sasaran/wilayah → Masalah belum/selesai/dirujuk → Ekspor Excel/PDF sesuai filter 5 prioritas (update 11 Sep).',
+    journey: 'Pembina lihat Rekap otomatis (per minggu/sasaran/wilayah, KPI % cakupan & % prevalensi, jumlah masalah) → Ekspor Excel/PDF sesuai filter dashboard + 5 prioritas → Monitor Masalah (belum/selesai/dirujuk) dari W-C.',
     steps: [
       { no: 1, label: 'Lihat rekap otomatis', actor: 'Pembina', icon: 'Table' },
       { no: 2, label: 'Lihat daftar masalah', actor: 'Pembina', icon: 'Alert' },

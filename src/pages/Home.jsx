@@ -6,17 +6,18 @@ import {
 } from '../data/content'
 
 const DESKRIPSI = {
-  fitur: 'Apa saja yang bisa dilakukan aplikasi, dan bahan riset yang sudah tersedia.',
-  cakupan: 'Hal-hal yang sengaja tidak dikerjakan di v1, supaya harapan tetap realistis.',
-  data: 'Data yang perlu diingat aplikasi — dasar rancangan basis data (10 entitas).',
-  workflow: 'Alur di dalam aplikasi: 6 workflow + User Journey per role + skenario Gherkin (Mermaid, online only).',
-  'tata-kelola': 'Gabungan NFR 7 terukur + dependensi/risiko + 25 aturan bisnis BR-01…BR-25.',
-  milestone: 'Jalan pembangunan bertahap M1–M4 dan definisi "selesai" untuk tiap tahap.',
+  fitur: 'Apa yang bisa dilakukan + 5 program prioritas & KPI % cakupan (update 11 Sep).',
+  cakupan: 'Hal-hal yang tidak dikerjakan di v1 + kandidat v2 (nakes/UKGK/pemberdayaan/biodata).',
+  data: 'Data yang perlu diingat — 10 entitas v1 + 2 kandidat v2 (Kegiatan Pemberdayaan, Nakes/UKGK).',
+  workflow: '6 Workflow + KPI % & filter 5 prioritas di W-E + Gherkin baru 11 Sep (online only).',
+  'tata-kelola': 'NFR 7 + Dependensi/Asumsi 7 + Risiko 8 + Aturan Bisnis 28 (BR-26..28 baru 11 Sep).',
+  milestone: 'Jalan pembangunan M1–M4 + KPI % di M3, kandidat v2 out-of-scope.',
   rencana: 'Rencana kerja 3 fasa sampai demo online 27 Sep, dengan task interaktif.',
-  qna: 'Pertanyaan yang masih perlu dikonfirmasi ke mitra (Bu Dian dkk.).',
+  qna: '13 pertanyaan — 7 awal + 6 baru 11 Sep (UKGK, biodata, deploy Bu Marten, dsb.).',
 }
 
 const KELOMPOK = ['Ibu Hamil', 'Bersalin/Nifas', 'Bayi', 'Balita/Apras', 'Usia Sekolah/Remaja', 'Dewasa', 'Lansia', 'TBC']
+const PRIORITAS_5 = ['Stunting', 'ODGJ', 'Bumil Risti', 'Balita Risti', 'TB']
 
 export default function Home() {
   const cards = NAV_ITEMS.filter((n) => n.to !== '/')
@@ -35,7 +36,7 @@ export default function Home() {
 
         <div className="flex flex-wrap gap-2">
           <span className="inline-flex items-center px-2.5 py-1 rounded-full bg-indigo-50 dark:bg-indigo-950/40 border border-indigo-200 dark:border-indigo-900 text-xs font-medium text-indigo-700 dark:text-indigo-300">
-            Update 10 Sep 2026
+            Update 11 Sep 2026
           </span>
           {TAG_TEKNOLOGI.map((t) => (
             <span
@@ -92,6 +93,8 @@ export default function Home() {
           </span>
           <p className="mt-3 font-medium">8 kelompok sasaran</p>
           <p className="mt-1 text-sm text-emerald-700 dark:text-emerald-300 leading-relaxed">{KELOMPOK.join(', ')}</p>
+          <p className="mt-2 text-xs font-medium text-emerald-700 dark:text-emerald-300">Filter prioritas (11 Sep): {PRIORITAS_5.join(' · ')}</p>
+          <p className="mt-1 text-xs text-emerald-600 dark:text-emerald-400">Kandidat v2 (pending): Nakes, UKGK/UKGM, Pemberdayaan (tgl/peserta/foto), Biodata Kader per Pos</p>
         </div>
       </section>
 
