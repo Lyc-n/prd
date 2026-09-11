@@ -1,32 +1,34 @@
 ---
 tags: [workflow, matrix, hak-akses]
 created: 2026-09-10
+updated: 2026-09-12
 up: ["[PRD - Dashboard PWS Posyandu]"]
 ---
 
-# Matriks Hak Akses — 4 Peran × 6 Fitur
+# Matriks Hak Akses — 3 Peran × 6 Fitur
 
-> Guard per route + API. Kader = wilayah sendiri; Pembina/Kepala = 4 kelurahan; Admin = full. Online only.
+> Guard per route + API. Kader = wilayah sendiri; Pengawas = 4 kelurahan; Admin = full. Online only.
+> **Update 12 Sep:** Pembina & Kepala Puskesmas digabung jadi **Pengawas** (hak akses identik).
 
-| Fitur / Route | Kader | Pembina (Bu Dian) | Kepala Puskesmas | Admin | Catatan Guard |
-|---|---|---|---|---|---|
-| `POST /api/auth/login` | ✅ | ✅ | ✅ | ✅ | Publik |
-| `GET /api/profil`, `PUT /api/profil` | ✅ miliknya | ✅ miliknya | ✅ miliknya | ✅ miliknya | Auth |
-| `GET /dashboard` (FE) | ✅ wilayah sendiri | ✅ 4 kel | ✅ 4 kel | ✅ 4 kel | Role guard FE |
-| `GET /api/dashboard?*` | ✅ filter terkunci wilayahnya (403 jika paksa 4 kel) | ✅ | ✅ | ✅ | BE cek wilayah binaan |
-| `GET /api/kunjungan` (list) | ✅ miliknya | ❌ (lihat agregat) | ❌ | ✅ (opsional) | Kader scope |
-| `POST /api/kunjungan` (W-C) | ✅ | ❌ | ❌ | ❌ | Kader only |
-| `GET /api/jadwal` | ✅ miliknya | ✅ 4 kel | ✅ 4 kel | ✅ | Filter per role |
-| `POST /api/jadwal` | ❌ | ✅ | ❌ | ✅ | Pembina/Admin |
-| `GET /api/rekap` + `GET /api/rekap/export` | ❌ 403 | ✅ | ✅ | ✅ | Pembina/Kepala/Admin |
-| `GET /api/master/kelurahan/rw/rt/posyandu/kader` | ❌ (baca dashboard) | ❌ baca | ❌ baca | ✅ CRUD | Admin only |
-| `GET/POST/PUT /api/definisi-field` | ❌ | ❌ | ❌ | ✅ CRUD | Admin only |
-| `GET /api/masalah` + `PUT status` | ✅ input miliknya | ✅ monitor+ubah | ✅ monitor | — | Kader input, Pembina ubah status |
+| Fitur / Route | Kader | Pengawas | Admin | Catatan Guard |
+|---|---|---|---|---|
+| `POST /api/auth/login` | ✅ | ✅ | ✅ | Publik |
+| `GET /api/profil`, `PUT /api/profil` | ✅ miliknya | ✅ miliknya | ✅ miliknya | Auth |
+| `GET /dashboard` (FE) | ✅ wilayah sendiri | ✅ 4 kel | ✅ 4 kel | Role guard FE |
+| `GET /api/dashboard?*` | ✅ filter terkunci wilayahnya (403 jika paksa 4 kel) | ✅ | ✅ | BE cek wilayah binaan |
+| `GET /api/kunjungan` (list) | ✅ miliknya | ❌ (lihat agregat) | ✅ (opsional) | Kader scope |
+| `POST /api/kunjungan` (W-C) | ✅ | ❌ | ❌ | Kader only |
+| `GET /api/jadwal` | ✅ miliknya | ✅ 4 kel | ✅ | Filter per role |
+| `POST /api/jadwal` | ❌ | ✅ | ✅ | Pengawas/Admin |
+| `GET /api/rekap` + `GET /api/rekap/export` | ❌ 403 | ✅ | ✅ | Pengawas/Admin |
+| `GET /api/master/kelurahan/rw/rt/posyandu/kader` | ❌ (baca dashboard) | ❌ baca | ✅ CRUD | Admin only |
+| `GET/POST/PUT /api/definisi-field` | ❌ | ❌ | ✅ CRUD | Admin only |
+| `GET /api/masalah` + `PUT status` | ✅ input miliknya | ✅ monitor+ubah | — | Kader input, Pengawas ubah status |
 
 ## Aturan Filter Dashboard (W-E)
 
 - Kader: `kelurahan` & `rw/rt` terkunci ke wilayah binaan (`posyandu.wilayah`). Request `?kelurahan=Tambaan` padahal binaan Ngemplakrejo → 403.
-- Pembina/Kepala/Admin: bebas filter 4 kelurahan.
+- Pengawas/Admin: bebas filter 4 kelurahan.
 
 ## State & Transisi
 
@@ -47,8 +49,8 @@ Scenario: Admin akses master
   When POST "/api/definisi-field" {nama:"Lingkar perut"}
   Then 201 dan field aktif untuk kunjungan baru
 
-Scenario: Pembina ekspor rekap
-  Given login Pembina
+Scenario: Pengawas ekspor rekap
+  Given login Pengawas
   When GET "/api/rekap/export?kelurahan=Ngemplakrejo&format=xlsx"
   Then 200 file xlsx sesuai filter
 

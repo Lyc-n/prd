@@ -12,18 +12,18 @@ up: ["[PRD - Dashboard PWS Posyandu]"]
 
 | Step | Aktor | Aksi | Keluaran |
 |---|---|---|---|
-| 1 | Admin/Pembina | Buat Jadwal (pilih KK, kader PJ, waktu, jenis rutin/khusus) | Jadwal `terjadwal` |
+| 1 | Admin/Pengawas | Buat Jadwal (pilih KK, kader PJ, waktu, jenis rutin/khusus) | Jadwal `terjadwal` |
 | 2 | Kader | Lihat Daftar Jadwal miliknya (filter posyandu/minggu/kelurahan) | List jadwal |
 | 3 | System (cron) | Cek H-1 & terlewat (00:00+1) | Trigger notifikasi |
 | 4 | System | Kirim in-app badge + email ("Besok: KK-002" / "Terlewat: KK-002") | Notifikasi |
 | 5 | Kader | Buat Kunjungan W-C untuk KK tersebut → Simpan | Jadwal → `selesai`, badge hilang |
-| 6 | Pembina/Kepala | Lihat Rekap jadwal per minggu/wilayah (W-F) | Monitor keterlambatan |
+| 6 | Pengawas | Lihat Rekap jadwal per minggu/wilayah (W-F) | Monitor keterlambatan |
 
 ## Diagram Mermaid — Flow
 
 ```mermaid
 flowchart TD
-    A[Admin/Pembina buat Jadwal\nKK, kader PJ, waktu, jenis] --> B[Jadwal status terjadwal]
+    A[Admin/Pengawas buat Jadwal\nKK, kader PJ, waktu, jenis] --> B[Jadwal status terjadwal]
     B --> C[Kader lihat Daftar Jadwal\nfilter posyandu/minggu]
     C --> D{Apakah H-1?}
     D -->|Ya| E[Cron 07:00: in-app + email\n'Besok kunjungan KK-002']
@@ -74,7 +74,7 @@ Feature: Jadwal & Pengingat in-app + email
     When kader filter Posyandu=Ngemplakrejo
     Then hanya tampil jadwal Ngemplakrejo miliknya
 
-  Scenario: Pembina lihat keterlambatan
+  Scenario: Pengawas lihat keterlambatan
     Given 5 jadwal terlewat di Tambaan minggu ini
     When pembina buka Rekap jadwal
     Then tampil "Terlewat: 5" dan drill-down per kader/KK

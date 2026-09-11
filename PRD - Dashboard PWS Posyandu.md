@@ -27,7 +27,7 @@ Dokumen ini adalah evolusi dari [[URS - Dashboard PWS Posyandu]] (draf kebutuhan
 
 ## Yang Kita Bangun
 
-Aplikasi web responsif untuk **digitalisasi pendataan kunjungan rumah (KR) kader Posyandu** di wilayah kerja Puskesmas Trajeng (4 kelurahan, 34 posyandu, 5.820 KK, 2 Pustu). Kader menginput hasil kunjungan rumah secara digital, data otomatis tampil pada **dashboard PWS (Pemantauan Wilayah Setempat)** sehingga pembina posyandu dan kepala Puskesmas dapat melihat kondisi kesehatan per wilayah, dan kader menerima **pengingat jadwal kunjungan**.
+Aplikasi web responsif untuk **digitalisasi pendataan kunjungan rumah (KR) kader Posyandu** di wilayah kerja Puskesmas Trajeng (4 kelurahan, 34 posyandu, 5.820 KK, 2 Pustu). Kader menginput hasil kunjungan rumah secara digital, data otomatis tampil pada **dashboard PWS (Pemantauan Wilayah Setempat)** sehingga pengawas (pembina & kepala Puskesmas — digabung jadi satu peran) dapat melihat kondisi kesehatan per wilayah, dan kader menerima **pengingat jadwal kunjungan**.
 
 **Rincian wilayah kerja** (sumber: [pkmtrajeng.pasuruankota.go.id](https://pkmtrajeng.pasuruankota.go.id/wilayah-kerja/), [Scribd](https://id.scribd.com/document/918869296/Kak-Pemberian-Hadiah-Kepada-Ibu-Bayi-Balita-Di-Posyandu-Edit-New)):
 
@@ -51,7 +51,7 @@ Saat ini proses bersifat manual: form kertas → rekap manual ke Excel → tidak
 
 ## Apa yang Aplikasi Lakukan
 
-- **Login & peran** — Kader, pembina (Bu Dian), kepala Puskesmas, dan admin masuk dengan hak akses berbeda (input vs baca vs kelola).
+- **Login & peran** — Kader, pengawas (gabungan pembina & kepala Puskesmas), dan admin masuk dengan hak akses berbeda (input vs baca vs kelola).
 - **Input kunjungan rumah digital** — Kader mengisi hasil kunjungan mengikuti struktur form resmi (data keluarga + per kelompok sasaran), termasuk menandai masalah kesehatan yang ditemukan.
 - **Form fleksibel** — Admin mengubah struktur form (tambah/edit/nonaktifkan field) **tanpa menulis ulang aplikasi**, mengikuti format Kemenkes yang masih berubah.
 - **Dashboard PWS** — Penyakit/masalah kesehatan tertinggi per RT/RW/kelurahan (contoh nyata: hipertensi tidak patuh berobat), dengan filter wilayah, kelompok sasaran, dan waktu; plus **% cakupan kunjungan** (`dikunjungi vs belum / total sasaran`) dan **% prevalensi per penyakit** (mis. TBC terpapar) — *update 11 Sep rekaman 00:07–00:12*.
@@ -99,7 +99,7 @@ Apa yang perlu diingat aplikasi (menjadi dasar ERD/skema pada saat pembangunan; 
 
 ### Pengguna & Role
 - nama lengkap
-- peran: kader, pembina kesmas (Bu Dian), kepala Puskesmas, admin
+- peran: kader, pengawas (gabungan pembina & kepala Puskesmas), admin
 - posyandu / wilayah binaan (khusus kader & pembina)
 - kontak No HP (untuk notifikasi & koordinasi)
 - kredensial masuk (sistem login, bukan akun pihak ketiga)
@@ -188,7 +188,7 @@ Apa yang perlu diingat aplikasi (menjadi dasar ERD/skema pada saat pembangunan; 
 | **NFR-01** | **Kegunaan (Usability)** — kader non-teknis, minim pelatihan, mobile-first | Alur W-C (input KR) selesai <3 menit di HP 360px; 90% kader coba pertama berhasil tanpa bantuan | Form langkah 1→5 jelas, label plain, inline error di field yang salah, tombol besar untuk jempol | Uji 5 kader pakai HP sendiri (360–414px) rekam waktu + error rate | **[M]** | `URS §5 Usability`, `W-C`, `Rencana C8` |
 | **NFR-02** | **Keluwesan (Fleksibilitas)** — adaptasi format Kemenkes tanpa rebuild | Tambah/nonaktifkan field via W-B tanpa deploy; perubahan tampil di W-C <5 detik setelah simpan | Definisi field `tipe/wajib/urutan/aktif` tersimpan, kunjungan lama pakai snapshot (histori tidak hilang) | Admin tambah field `Lingkar perut` → buat kunjungan baru → cek render | **[M]** | `URS §4.6`, `Konteks ILP:92`, `Field Checklist:124` |
 | **NFR-03** | **Ketersediaan & Akses** — ponsel/data terbatas, online only | TTI <3s di 3G; error jaringan = toast retry (tanpa antrian offline) | Semua simpan langsung ke server; `Gagal simpan, periksa koneksi, coba lagi` `W-C` | Throttle 3G di DevTools → buka dashboard & simpan | **[M]** | `URS Availability`, `PRD Di Luar Cakupan:73` |
-| **NFR-04** | **Keamanan & Privasi** — data kesehatan sensitif, guard peran, agregat anonim | 4 peran guard benar; Kader tidak bisa paksa `?kelurahan=Tambaan` (403); Dashboard tanpa NIK | Matriks hak akses `Workflow:160`, JWT expiry → login `W-A`, dashboard tanpa NIK `W-E` | Coba akses silang peran + cek response 403/401 | **[M]** | `URS Keamanan`, `Batasan:36`, `W-A/W-E` |
+| **NFR-04** | **Keamanan & Privasi** — data kesehatan sensitif, guard peran, agregat anonim | 3 peran guard benar; Kader tidak bisa paksa `?kelurahan=Tambaan` (403); Dashboard tanpa NIK | Matriks hak akses `Workflow:160`, JWT expiry → login `W-A`, dashboard tanpa NIK `W-E` | Coba akses silang peran + cek response 403/401 | **[M]** | `URS Keamanan`, `Batasan:36`, `W-A/W-E` |
 | **NFR-05** | **Skalabilitas** — 4 kelurahan + 2 Pustu, 34 posyandu, 5.820 KK | Mendukung 4 kelurahan + 2 Pustu + 34 posyandu + 8 sasaran + 5.820 KK tanpa perubahan skema | Kelurahan (Trajeng 14/2.168, Ngemplakrejo 9/1.826, Tambaan 5/1.196, Mayangan 6/630) + Pustu (Ngemplakrejo, Tambaan) + RW/RT + Kader seed | Seed 5.820 KK dummy proporsional → cek dashboard & filter tetap lancar | **[S]** | `URS Skalabilitas`, `pkmtrajeng.pasuruankota.go.id` |
 | **NFR-06** | **Kinerja (Performance)** — dashboard agregat responsif | p95 `GET /api/dashboard` agregat <500ms (100 kunjungan); pagination/lazy untuk 500+ baris | Agregat `COUNT per RT/RW` + filter `wilayah/sasaran/periode` `W-E`, pagination | k6/Artillery 100 kunjungan → ukur p95 | **[S]** | `URS Performance`, `W-E` |
 | **NFR-07** | **Keteramatan (Observability)** — audit & keterlacakan untuk demo/handover | Setiap kunjungan punya `created_by/at`, rekap ekspor jejak filter, log audit | `created_by/at` di Kunjungan/Jadwal/Masalah, ekspor sesuai filter `W-F` | Buat kunjungan → cek audit trail + ekspor | **[S]** | `W-F`, `Data Model` |
@@ -244,7 +244,7 @@ Apa yang perlu diingat aplikasi (menjadi dasar ERD/skema pada saat pembangunan; 
 | ID | Label Manusia | Trigger → Kondisi → Aksi | Contoh | Sumber | Workflow |
 |---|---|---|---|---|---|
 | **BR-01** | Kader hanya wilayahnya | Buka dashboard → jika peran=Kader → hanya RT/RW binaannya; `?kelurahan=Tambaan` paksa → 403 | Kader Ngemplakrejo RT02 buka Tambaan → 403 | `W-E:66` `PRD Matriks:160` | W-E, W-A |
-| **BR-02** | 4 peran guard | Request API → cek JWT + role → izinkan/tolak per matriks | `POST /api/kunjungan` hanya Kader | `PRD Matriks:160` `W-A` | W-A, W-B, W-C |
+| **BR-02** | 3 peran guard | Request API → cek JWT + role → izinkan/tolak per matriks | `POST /api/kunjungan` hanya Kader | `PRD Matriks:160` `W-A` | W-A, W-B, W-C |
 | **BR-03** | Admin kelola master & field | Jika peran≠Admin → blok `POST /api/master/*`, `POST /api/definisi-field` | Kader buka `/admin/definisi-field` → 403 | `PRD Matriks:160` `W-B` | W-B |
 | **BR-04** | Sesi habis → login | Token expiry → 401 → redirect `/login` + pesan `Sesi habis` | Buka `/dashboard` expiry → `/login` | `W-A` | W-A |
 
@@ -297,23 +297,23 @@ Apa yang perlu diingat aplikasi (menjadi dasar ERD/skema pada saat pembangunan; 
 
 ### Prinsip Workflow
 
-- **4 peran** dengan guard berbeda: Kader (input wilayah sendiri), Pembina Kesmas & Kepala Puskesmas (baca 4 kelurahan), Admin (kelola master + field) — sesuai § Apa yang Aplikasi Lakukan.
+- **3 peran** dengan guard berbeda: Kader (input wilayah sendiri), Pengawas (baca 4 kelurahan), Admin (kelola master + field) — sesuai § Apa yang Aplikasi Lakukan.
 - **Form fleksibel adalah engine:** W-B (Admin definisi) → W-C (Kader render dinamis). Perubahan field tidak rebuild — `Field Checklist KR - Ekstraksi Definisi Operasional` = sumber 8 sasaran.
 - **Online only (10 Sep):** semua simpan langsung ke server; tidak ada antrian offline/draft lokal. Error jaringan = toast retry, bukan sync latar.
 - **Simpan di keduanya:** vault (`01 Notes/workflows/`) = konteks domain; repo (`docs/workflows/`) = dekat kode. Keduanya Mermaid.
 
 ### Matriks Hak Akses (ringkas)
 
-| Fitur | Kader | Pembina | Kepala Puskesmas | Admin |
-|---|---|---|---|---|
-| Login & Profil | ✅ | ✅ | ✅ | ✅ |
-| Master Kelurahan/RW/RT/Posyandu/Kader | ❌ | ❌ (baca) | ❌ (baca) | ✅ CRUD |
-| Definisi Field Form | ❌ | ❌ | ❌ | ✅ CRUD |
-| Input KR Dinamis (W-C) | ✅ miliknya | ❌ | ❌ | ❌ |
-| Jadwal & Notifikasi (W-D) | ✅ lihat miliknya | ✅ lihat 4 kel | ✅ lihat 4 kel | ✅ kelola |
-| Dashboard PWS (W-E) | ✅ wilayah sendiri | ✅ 4 kelurahan | ✅ 4 kelurahan | ✅ 4 kelurahan |
-| Rekap & Ekspor (W-F) | ❌ | ✅ ekspor | ✅ ekspor | ✅ ekspor |
-| Masalah & Tindak Lanjut | ✅ input | ✅ monitor | ✅ monitor | — |
+| Fitur | Kader | Pengawas | Admin |
+|---|---|---|---|
+| Login & Profil | ✅ | ✅ | ✅ |
+| Master Kelurahan/RW/RT/Posyandu/Kader | ❌ | ❌ (baca) | ✅ CRUD |
+| Definisi Field Form | ❌ | ❌ | ✅ CRUD |
+| Input KR Dinamis (W-C) | ✅ miliknya | ❌ | ❌ |
+| Jadwal & Notifikasi (W-D) | ✅ lihat miliknya | ✅ lihat 4 kel | ✅ kelola |
+| Dashboard PWS (W-E) | ✅ wilayah sendiri | ✅ 4 kelurahan | ✅ 4 kelurahan |
+| Rekap & Ekspor (W-F) | ❌ | ✅ ekspor | ✅ ekspor |
+| Masalah & Tindak Lanjut | ✅ input | ✅ monitor | — |
 
 ### State Diagram (ringkas)
 
@@ -327,7 +327,7 @@ Field: aktif ↔ nonaktif (histori kunjungan lama tetap pakai snapshot definisi)
 ### W-A — Auth & Guard (Semua Role)
 
 **User Journey:**
-Masuk → Login (4 peran) → Guard peran → Redirect (Kader→Jadwal, Pembina/Kepala→Dashboard, Admin→Master) → Profil/Logout. Session expiry → kembali ke Login.
+Masuk → Login (3 peran) → Guard peran → Redirect (Kader→Jadwal, Pengawas→Dashboard, Admin→Master) → Profil/Logout. Session expiry → kembali ke Login.
 
 **Mermaid:** `01 Notes/workflows/W-A-auth.md` / `docs/workflows/W-A-auth.md`
 
@@ -423,7 +423,7 @@ Scenario: Error jaringan online
 ### W-D — Jadwal & Pengingat (Kader + System)
 
 **User Journey:**
-Admin/Pembina buat Jadwal (dusun, RT/RW, nama KK, waktu, kader PJ) → Kader lihat Daftar Jadwal miliknya (filter posyandu/minggu) → System cron cek H-1 & terlewat → Notifikasi in-app + email → Kader tandai Selesai → terhubung ke W-C (1 Jadwal → 1 Kunjungan).
+Admin/Pengawas buat Jadwal (dusun, RT/RW, nama KK, waktu, kader PJ) → Kader lihat Daftar Jadwal miliknya (filter posyandu/minggu) → System cron cek H-1 & terlewat → Notifikasi in-app + email → Kader tandai Selesai → terhubung ke W-C (1 Jadwal → 1 Kunjungan).
 
 **Mermaid:** `01 Notes/workflows/W-D-jadwal-notifikasi.md` / `docs/workflows/W-D-jadwal-notifikasi.md`
 
@@ -445,10 +445,10 @@ Scenario: Tandai selesai
   Then jadwal otomatis jadi selesai dan badge hilang
 ```
 
-### W-E — Dashboard PWS (Pembina/Kepala utama, Kader terbatas)
+### W-E — Dashboard PWS (Pengawas utama, Kader terbatas)
 
 **User Journey:**
-Login Pembina/Kepala → Dashboard ringkasan 4 kelurahan → KPI **% cakupan** (`dikunjungi vs belum / total sasaran` *11 Sep*) + ranking penyakit tertinggi per RT/RW/kelurahan (contoh hipertensi tidak patuh) + **% prevalensi** per penyakit (TBC terpapar *11 Sep*) → Filter wilayah/kelompok sasaran/**prioritas 5 program** (Stunting/ODGJ/bumil risti/balita risti/TB *11 Sep [01:24]*) /periode → Drill-down Kelurahan→RW→RT → Lihat rekap masalah (tanpa NIK individu, agregat anonim).
+Login Pengawas → Dashboard ringkasan 4 kelurahan → KPI **% cakupan** (`dikunjungi vs belum / total sasaran` *11 Sep*) + ranking penyakit tertinggi per RT/RW/kelurahan (contoh hipertensi tidak patuh) + **% prevalensi** per penyakit (TBC terpapar *11 Sep*) → Filter wilayah/kelompok sasaran/**prioritas 5 program** (Stunting/ODGJ/bumil risti/balita risti/TB *11 Sep [01:24]*) /periode → Drill-down Kelurahan→RW→RT → Lihat rekap masalah (tanpa NIK individu, agregat anonim).
 
 **Mermaid:** `01 Notes/workflows/W-E-dashboard.md` / `docs/workflows/W-E-dashboard.md`
 
@@ -476,12 +476,12 @@ Scenario: Agregat anonim
   Then hanya hitung agregat, tidak tampil NIK/nama di card peringkat
 ```
 
-### W-F — Rekap, Masalah & Ekspor (Pembina/Admin)
+### W-F — Rekap, Masalah & Ekspor (Pengawas/Admin)
 
 > **Update 11 Sep:** rekap perlu dukung **% cakupan & % penderita** sesuai metrik dashboard baru — ekspor ikut filter prioritas 5 program jika diterapkan.
 
 **User Journey:**
-Pembina lihat Rekap otomatis (per minggu/sasaran/wilayah, jumlah dengan masalah, tindak lanjut) → Ekspor Excel/PDF sesuai filter dashboard → Monitor Masalah (belum/selesai/dirujuk) dari W-C.
+Pengawas lihat Rekap otomatis (per minggu/sasaran/wilayah, jumlah dengan masalah, tindak lanjut) → Ekspor Excel/PDF sesuai filter dashboard → Monitor Masalah (belum/selesai/dirujuk) dari W-C.
 
 **Mermaid:** `01 Notes/workflows/W-F-rekap-ekspor.md` / `docs/workflows/W-F-rekap-ekspor.md`
 
@@ -518,7 +518,7 @@ Membangun kerangka aplikasi yang bisa diakses pengguna dengan peran berbeda, plu
 ### Yang dibangun
 
 - Proyek berjalan (React + Express/Node + PostgreSQL) yang bisa dibuka di browser lokal
-- Login untuk 4 peran (kader, pembina, kepala Puskesmas, admin) dengan hak akses berbeda
+- Login untuk 3 peran (kader, pengawas, admin) dengan hak akses berbeda
 - Pengelolaan master data: kelurahan, RW/RT, posyandu, pengguna/kader
 - Pengelolaan **definisi field form** (tambah/edit/nonaktifkan) sebagai fondasi fleksibilitas form
 - Halaman profil & manajemen akun dasar
@@ -562,7 +562,7 @@ Kader di lapangan (dari HP) bisa membuat kunjungan baru, data tersimpan, dan isi
 
 ## Milestone 3 — Dashboard PWS
 
-Pembina dan kepala Puskesmas bisa melihat kondisi kesehatan per wilayah — inti kebutuhan "penyakit tertinggi per RT/RW" dari wawancara.
+Pengawas bisa melihat kondisi kesehatan per wilayah — inti kebutuhan "penyakit tertinggi per RT/RW" dari wawancara.
 
 ### Yang dibangun
 
@@ -570,7 +570,7 @@ Pembina dan kepala Puskesmas bisa melihat kondisi kesehatan per wilayah — inti
 - Visualisasi masalah kesehatan tertinggi per RT/RW/kelurahan (contoh: hipertensi tidak patuh berobat)
 - Filter: wilayah, kelompok sasaran, dan periode waktu
 - Drill-down dari tingkat kelurahan → RW → RT
-- Kuota akses per peran: kader hanya melihat wilayahnya sendiri; pembina/kepala Puskesmas melihat 4 kelurahan
+- Kuota akses per peran: kader hanya melihat wilayahnya sendiri; pengawas melihat 4 kelurahan
 
 ### Yang TIDAK termasuk di Milestone 3
 
@@ -581,7 +581,7 @@ Pembina dan kepala Puskesmas bisa melihat kondisi kesehatan per wilayah — inti
 
 ### Selesai ketika
 
-Pembina bisa memfilter dashboard dan langsung melihat urutan masalah kesehatan per wilayah dari data yang diinput kader.
+Pengawas bisa memfilter dashboard dan langsung melihat urutan masalah kesehatan per wilayah dari data yang diinput kader.
 
 ---
 
@@ -628,7 +628,7 @@ Task diberi level (🟢 S / 🟡 M / 🔴 L) dan estimasi **tentatif** (dikoreks
 |---|---|---|---|---|
 | B1 | Scaffold repo client+server, env, ESLint, script migrate/seed | 🟡 M | 6 jam | — |
 | B2 | Skema DB + migration (dari Field Checklist) | 🔴 L | 12 jam | B1 |
-| B3 | Auth & role (4 peran) + middleware | 🟡 M | 10 jam | B1 |
+| B3 | Auth & role (3 peran) + middleware | 🟡 M | 10 jam | B1 |
 | B4 | API CRUD master data (kelurahan, RW/RT, posyandu, kader) | 🟡 M | 10 jam | B3 |
 | C1 | Scaffold React + routing + layout + guard peran | 🟡 M | 8 jam | — |
 | C2 | Halaman login | 🟢 S | 5 jam | C1 |
@@ -658,7 +658,7 @@ Task diberi level (🟢 S / 🟡 M / 🔴 L) dan estimasi **tentatif** (dikoreks
 | C7 | Rekap & ekspor Excel/PDF | 🟢 S | 6 jam | B9 |
 | C8 | Polish mobile, loading/error, aksesibilitas | 🟡 M | 8 jam | C4, C5 |
 | D1 | **Deploy online**: Vercel (frontend) + backend (Render/Railway) + Supabase (PostgreSQL) — **keputusan 12 Sep: independent Vercel** (bukan gabung website Puskesmas) | 🟡 M | 6 jam | inti B/C |
-| D2 | Akun demo 4 peran + data placeholder | 🟢 S | 2 jam | D1 |
+| D2 | Akun demo 3 peran + data placeholder | 🟢 S | 2 jam | D1 |
 | D3 | Script demo 15 menit + uji dari HP client | 🟢 S | 3 jam | D2 |
 | D4 | Dokumentasi ringkas + draft handover | 🟢 S | 4 jam | — |
 

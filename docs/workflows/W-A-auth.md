@@ -6,7 +6,7 @@ up: ["[PRD - Dashboard PWS Posyandu]"]
 
 # W-A — Auth & Guard (Semua Role)
 
-> Alur login 4 peran: Kader, Pembina (Bu Dian), Kepala Puskesmas, Admin. Guard peran + redirect + session.
+> Alur login 3 peran: Kader, Pengawas (Bu Dian), Admin. Guard peran + redirect + session.
 
 ## User Journey
 
@@ -15,7 +15,7 @@ up: ["[PRD - Dashboard PWS Posyandu]"]
 | 1 | Semua | Buka `/login` | Form kredensial |
 | 2 | Semua | Input username+password | Validasi |
 | 3 | System | Auth + role middleware | Token + role |
-| 4 | System | Redirect per role | Kader→`/jadwal`, Pembina/Kepala→`/dashboard`, Admin→`/master` |
+| 4 | System | Redirect per role | Kader→`/jadwal`, Pengawas→`/dashboard`, Admin→`/master` |
 | 5 | Semua | Buka `/profil` | Lihat/ubah password, No HP |
 | 6 | Semua | Logout / session expiry | Kembali ke `/login` |
 
@@ -24,11 +24,11 @@ up: ["[PRD - Dashboard PWS Posyandu]"]
 ```mermaid
 flowchart TD
     A[Buka /login] --> B{Input kredensial}
-    B -->|Benar| C[Auth: cek role<br/>Kader/Pembina/Kepala/Admin]
+    B -->|Benar| C[Auth: cek role<br/>Kader/Pengawas/Admin]
     B -->|Salah| B1[Inline error<br/>'Kredensial salah'] --> B
     C --> D{Role?}
     D -->|Kader| E[Redirect /jadwal]
-    D -->|Pembina / Kepala| F[Redirect /dashboard<br/>4 kelurahan]
+    D -->|Pengawas| F[Redirect /dashboard<br/>4 kelurahan]
     D -->|Admin| G[Redirect /master]
     E --> H[Guard: cek token tiap route]
     F --> H
@@ -63,15 +63,15 @@ sequenceDiagram
 ## Skenario Gherkin
 
 ```gherkin
-Feature: Auth & Guard 4 peran
+Feature: Auth & Guard 3 peran
 
   Scenario: Login sukses sebagai Kader
     Given akun Kader "kader_a" aktif dengan posyandu Ngemplakrejo RW04
     When input username "kader_a" dan password benar
     Then redirect ke "/jadwal" dan guard izinkan GET "/api/kunjungan?milik=saya"
 
-  Scenario: Login sukses sebagai Pembina
-    Given akun Pembina "bu_dian" aktif
+  Scenario: Login sukses sebagai Pengawas
+    Given akun Pengawas "bu_dian" aktif
     When login benar
     Then redirect ke "/dashboard" dan bisa lihat 4 kelurahan
 
@@ -103,5 +103,5 @@ Feature: Auth & Guard 4 peran
 
 ## Catatan
 
-- 4 peran + wilayah binaan Kader → dipakai guard W-E (Kader hanya wilayahnya).
+- 3 peran + wilayah binaan Kader → dipakai guard W-E (Kader hanya wilayahnya).
 - Online only: tidak ada simpan token offline khusus; expiry ditangani guard.

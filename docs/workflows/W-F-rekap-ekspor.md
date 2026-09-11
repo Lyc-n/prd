@@ -4,7 +4,7 @@ created: 2026-09-10
 up: ["[PRD - Dashboard PWS Posyandu]"]
 ---
 
-# W-F — Rekap, Masalah & Ekspor (Pembina/Admin)
+# W-F — Rekap, Masalah & Ekspor (Pengawas/Admin)
 
 > Rekap otomatis (agregat terhitung, bukan input manual) per minggu/sasaran/wilayah + Masalah (belum/selesai/dirujuk) + Ekspor Excel/PDF sesuai filter dashboard.
 
@@ -12,18 +12,18 @@ up: ["[PRD - Dashboard PWS Posyandu]"]
 
 | Step | Aktor | Aksi | Keluaran |
 |---|---|---|---|
-| 1 | Pembina | Buka Rekap (default minggu ini, 4 kelurahan) | Tabel agregat per sasaran/wilayah + jumlah masalah |
-| 2 | Pembina | Filter rekap (sama dengan W-E: wilayah/sasaran/periode) | Data terfilter |
+| 1 | Pengawas | Buka Rekap (default minggu ini, 4 kelurahan) | Tabel agregat per sasaran/wilayah + jumlah masalah |
+| 2 | Pengawas | Filter rekap (sama dengan W-E: wilayah/sasaran/periode) | Data terfilter |
 | 3 | System | Hitung agregat: jumlah keluarga dikunjungi, per sasaran, dengan masalah (TBC, tidak minum obat, tanda bahaya) | Angka rekap |
-| 4 | Pembina | Lihat Masalah & Tindak Lanjut (nama, NIK, masalah, tindak lanjut, status) | List masalah |
-| 5 | Pembina | Ubah status Masalah → selesai/dirujuk | Update dashboard |
-| 6 | Pembina | Klik Ekspor Excel/PDF | File sesuai filter |
+| 4 | Pengawas | Lihat Masalah & Tindak Lanjut (nama, NIK, masalah, tindak lanjut, status) | List masalah |
+| 5 | Pengawas | Ubah status Masalah → selesai/dirujuk | Update dashboard |
+| 6 | Pengawas | Klik Ekspor Excel/PDF | File sesuai filter |
 
 ## Diagram Mermaid — Flow
 
 ```mermaid
 flowchart TD
-    A[Pembina buka Rekap] --> B[Filter wilayah/sasaran/periode]
+    A[Pengawas buka Rekap] --> B[Filter wilayah/sasaran/periode]
     B --> C[System hitung agregat\nCOUNT kunjungan per RT/RW/kelurahan\n+ kelompok masalah]
     C --> D[Tampil tabel rekap\nper minggu/sasaran/wilayah]
     D --> E{Lihat Masalah?}

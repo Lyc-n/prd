@@ -12,20 +12,20 @@ up: ["[PRD - Dashboard PWS Posyandu]"]
 
 | Step | Aktor | Aksi | Keluaran |
 |---|---|---|---|
-| 1 | Pembina/Kepala | Login → Dashboard ringkasan 4 kelurahan | Card per kelurahan (total KK, total masalah) |
+| 1 | Pengawas | Login → Dashboard ringkasan 4 kelurahan | Card per kelurahan (total KK, total masalah) |
 | 2 | Semua | Lihat ranking penyakit tertinggi per wilayah (contoh: hipertensi tidak patuh) | List peringkat + jumlah |
 | 3 | Semua | Filter: Kelurahan, RW/RT, Kelompok sasaran (8), Periode (bulan/minggu) | Data terfilter |
 | 4 | Semua | Drill-down Kelurahan → RW → RT | Detail RT + chart |
 | 5 | Kader | Buka dashboard | Hanya wilayah binaannya, filter kelurahan lain disabled |
-| 6 | Pembina | Klik masalah → lihat Rekap W-F / tindak lanjut | Navigasi ke Rekap |
+| 6 | Pengawas | Klik masalah → lihat Rekap W-F / tindak lanjut | Navigasi ke Rekap |
 
-Aturan akses: Kader = wilayah sendiri; Pembina/Kepala/Admin = 4 kelurahan.
+Aturan akses: Kader = wilayah sendiri; Pengawas/Admin = 4 kelurahan.
 
 ## Diagram Mermaid — Flow
 
 ```mermaid
 flowchart TD
-    A[Login Pembina/Kepala/Kader/Admin] --> B[Dashboard ringkasan 4 kelurahan]
+    A[Login Pengawas/Kader/Admin] --> B[Dashboard ringkasan 4 kelurahan]
     B --> C[Ranking penyakit tertinggi\nper Kelurahan]
     C --> D{Filter}
     D --> D1[Wilayah: Kelurahan/RW/RT]

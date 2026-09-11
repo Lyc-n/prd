@@ -17,8 +17,8 @@ up: ["[PRD - Dashboard PWS Posyandu]"]
 | [[W-B-master-field]] | Master & Definisi Field Fleksibel | Admin | PRD W-B |
 | [[W-C-input-kr]] | Input KR Dinamis | Kader | PRD W-C |
 | [[W-D-jadwal-notifikasi]] | Jadwal & Pengingat | Kader + System | PRD W-D |
-| [[W-E-dashboard]] | Dashboard PWS | Pembina/Kepala (+ Kader terbatas) | PRD W-E |
-| [[W-F-rekap-ekspor]] | Rekap, Masalah & Ekspor | Pembina/Admin | PRD W-F |
+| [[W-E-dashboard]] | Dashboard PWS | Pengawas (+ Kader terbatas) | PRD W-E |
+| [[W-F-rekap-ekspor]] | Rekap, Masalah & Ekspor | Pengawas/Admin | PRD W-F |
 | [[matriks-hak-akses]] | Matriks Hak Akses 4×6 | — | PRD Matriks |
 
 ## Konvensi
