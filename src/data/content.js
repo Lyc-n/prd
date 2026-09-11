@@ -22,7 +22,7 @@ export const STATS = [
 ]
 
 export const FITUR = [
-  { icon: Users, judul: 'Login & peran', teks: 'Kader, pembina, kepala Puskesmas, dan admin masuk dengan hak akses berbeda (input vs baca vs kelola).' },
+  { icon: Users, judul: 'Login & peran', teks: 'Kader, pengawas, dan admin masuk dengan hak akses berbeda (input vs baca vs kelola).' },
   { icon: FileText, judul: 'Input kunjungan rumah digital', teks: 'Kader mengisi hasil kunjungan mengikuti struktur form resmi (data keluarga + per kelompok sasaran), termasuk menandai masalah kesehatan.' },
   { icon: Wand2, judul: 'Form fleksibel', teks: 'Admin mengubah struktur form (tambah/edit/nonaktifkan field) tanpa menulis ulang aplikasi, mengikuti format Kemenkes yang masih berubah.' },
   { icon: Eye, judul: 'Dashboard PWS + KPI %', teks: 'Penyakit tertinggi per RT/RW/kelurahan (contoh: hipertensi tidak patuh berobat) + KPI % cakupan dikunjungi vs belum / total sasaran & % prevalensi TBC/terpapar (rekaman 11 Sep 00:07–00:12). Filter wilayah/kelompok sasaran/periode + filter 5 program prioritas (Stunting, ODGJ, bumil risti, balita risti, TB).' },
@@ -75,8 +75,8 @@ export const ENTITIES = [
     nama: 'Pengguna & Role',
     fields: [
       ['nama', 'nama lengkap pengguna'],
-      ['peran', 'kader, pembina kesmas, kepala Puskesmas, admin'],
-      ['wilayah binaan', 'posyandu/kelurahan tanggung jawab (kader & pembina)'],
+      ['peran', 'kader, pengawas, admin'],
+      ['wilayah binaan', 'posyandu/kelurahan tanggung jawab (kader & pengawas)'],
       ['kontak', 'No. HP & email untuk koordinasi & notifikasi'],
       ['kredensial', 'akun masuk sistem (bukan pihak ketiga)'],
     ],
@@ -261,7 +261,7 @@ export const MILESTONES = [
       'Kerangka aplikasi yang bisa diakses pengguna dengan peran berbeda, plus master data wilayah/posyandu/kader dan definisi field form sebagai landasan milestone berikutnya.',
     dibangun: [
       'Proyek berjalan (React + Express/Node + PostgreSQL) yang terbuka di browser',
-      'Login untuk 4 peran dengan hak akses berbeda',
+      'Login untuk 3 peran dengan hak akses berbeda',
       'Master data: kelurahan, RW/RT, posyandu, pengguna/kader',
       'Pengelolaan definisi field form (fondasi fleksibilitas)',
       'Profil & manajemen akun dasar',
@@ -291,16 +291,16 @@ export const MILESTONES = [
     nomor: 3,
     judul: 'Dashboard PWS',
     deskripsi:
-      'Pembina dan kepala Puskesmas melihat kondisi kesehatan per wilayah — inti kebutuhan "penyakit tertinggi per RT/RW" + KPI % cakupan (dikunjungi vs belum / total sasaran) & % prevalensi TBC (11 Sep).',
+      'Pengawas melihat kondisi kesehatan per wilayah — inti kebutuhan "penyakit tertinggi per RT/RW" + KPI % cakupan (dikunjungi vs belum / total sasaran) & % prevalensi TBC (11 Sep).',
     dibangun: [
       'Halaman dashboard: ringkasan kondisi + KPI % cakupan per kelurahan (11 Sep)',
       'Visualisasi masalah kesehatan tertinggi per RT/RW/kelurahan + % prevalensi per penyakit',
       'Filter wilayah, kelompok sasaran, periode waktu + filter 5 program prioritas (Stunting/ODGJ/bumil risti/balita risti/TB, 11 Sep)',
       'Drill-down kelurahan → RW → RT',
-      'Kuota akses per peran: kader hanya wilayahnya; pembina/kapus 4 kelurahan',
+      'Kuota akses per peran: kader hanya wilayahnya; pengawas 4 kelurahan',
     ],
     bukan: ['Notifikasi & pengingat (M4)', 'Rekap & ekspor (M4)', 'Analitik prediktif', 'Data aktual nyata (pakai contoh sampai izin DPMPTSP)', 'Modul kandidat v2 (nakes/UKGK/pemberdayaan/biodata) — out of scope v1'],
-    selesaiKetika: 'Pembina bisa memfilter dashboard (termasuk 5 prioritas) dan langsung melihat urutan masalah + KPI % per wilayah dari data yang diinput kader.',
+    selesaiKetika: 'Pengawas bisa memfilter dashboard (termasuk 5 prioritas) dan langsung melihat urutan masalah + KPI % per wilayah dari data yang diinput kader.',
   },
   {
     id: 'ms-4',
@@ -318,7 +318,7 @@ export const MILESTONES = [
     ],
     bukan: ['Notifikasi WhatsApp (lanjutan, butuh validasi mitra & biaya)', 'Aplikasi mobile native', 'Integrasi ke server pusat Kemenkes'],
     selesaiKetika:
-      'Kader bisa melihat & menandai jadwalnya, pembina bisa mengekspor rekap, dan aplikasi stabil dipakai dari ponsel pada uji lapangan, ditutup dengan dokumen handover.',
+      'Kader bisa melihat & menandai jadwalnya, pengawas bisa mengekspor rekap, dan aplikasi stabil dipakai dari ponsel pada uji lapangan, ditutup dengan dokumen handover.',
   },
 ]
 
@@ -334,7 +334,7 @@ export const QNA = [
   'Bentuk notifikasi final — v1 = in-app + email; konfirmasi saluran yang benar-benar dipakai kader (WhatsApp/email/app) serta kepada siapa dan trigger-nya.',
   'Rencana demo 27 Sep 2026 — konfirmasi kesediaan mitra (Bu Dian / Kepala Puskesmas) menerima demo online, bisa dari HP/PC.',
   'Data individu vs agregat — tampilkan per orang atau cukup per wilayah (privasi).',
-  'Batasan akses data — siapa boleh melihat data apa (kader, pembina, kepala Puskesmas, admin).',
+  'Batasan akses data — siapa boleh melihat data apa (kader, pengawas, admin).',
   'Tren waktu — perlu perbandingan data antar tahun?',
   'Jumlah pasti posyandu & target KK per kelurahan (dari Bu Dian setelah DPMPTSP).',
   'Operator harian sistem setelah handover.',

@@ -36,7 +36,7 @@ export const NFR = [
     id: 'NFR-04',
     aspek: 'Keamanan & Privasi',
     deskripsi: 'Data kesehatan sensitif, guard peran, agregat anonim',
-    target: '4 peran guard benar; 403 jika paksa kelurahan lain; tanpa NIK di ranking',
+    target: '3 peran guard benar; 403 jika paksa kelurahan lain; tanpa NIK di ranking',
     kriteria: 'Matriks hak akses, JWT expiry → login, dashboard tanpa NIK',
     caraUji: 'Coba akses silang peran + cek 403/401',
     prioritas: 'M',
@@ -111,7 +111,7 @@ export const RISKS = [
 export const BUSINESS_RULES = [
   // Akses & Peran
   { id: 'BR-01', label: 'Kader hanya wilayahnya', kelompok: 'Akses & Peran', trigger: 'Buka dashboard', kondisi: 'peran=Kader', aksi: 'Hanya RT/RW binaannya; ?kelurahan=Tambaan paksa → 403', contoh: 'Kader Ngemplakrejo RT02 buka Tambaan → 403', sumber: 'W-E:66, PRD Matriks:160', workflow: 'W-E, W-A' },
-  { id: 'BR-02', label: '4 peran guard', kelompok: 'Akses & Peran', trigger: 'Request API', kondisi: 'Cek JWT + role', aksi: 'Izinkan/tolak per matriks', contoh: 'POST /api/kunjungan hanya Kader', sumber: 'PRD Matriks:160, W-A', workflow: 'W-A, W-B, W-C' },
+  { id: 'BR-02', label: '3 peran guard', kelompok: 'Akses & Peran', trigger: 'Request API', kondisi: 'Cek JWT + role', aksi: 'Izinkan/tolak per matriks', contoh: 'POST /api/kunjungan hanya Kader', sumber: 'PRD Matriks:160, W-A', workflow: 'W-A, W-B, W-C' },
   { id: 'BR-03', label: 'Admin kelola master & field', kelompok: 'Akses & Peran', trigger: 'Jika peran≠Admin', kondisi: 'POST /api/master/*, POST /api/definisi-field', aksi: 'Blok 403', contoh: 'Kader buka /admin/definisi-field → 403', sumber: 'PRD Matriks:160, W-B', workflow: 'W-B' },
   { id: 'BR-04', label: 'Sesi habis → login', kelompok: 'Akses & Peran', trigger: 'Token expiry', kondisi: '401', aksi: 'Redirect /login + pesan Sesi habis', contoh: 'Buka /dashboard expiry → /login', sumber: 'W-A', workflow: 'W-A' },
   // Kunjungan

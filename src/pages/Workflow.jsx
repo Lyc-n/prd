@@ -22,7 +22,7 @@ function RoleLegend() {
           </div>
         ))}
       </div>
-      <p className="mt-3 text-xs text-zinc-500 dark:text-zinc-400">Warna dipakai konsisten di semua diagram & langkah. Contoh: hijau = Kader, biru = Pembina, ungu = Kepala, kuning = Admin, abu = System.</p>
+      <p className="mt-3 text-xs text-zinc-500 dark:text-zinc-400">Warna dipakai konsisten di semua diagram & langkah. Contoh: hijau = Kader, biru = Pengawas, kuning = Admin, abu = System.</p>
     </div>
   )
 }
@@ -217,7 +217,7 @@ export default function WorkflowPage() {
               <pre className="rounded-md border border-zinc-200 dark:border-zinc-800 bg-zinc-950 text-zinc-100 p-4 text-xs leading-relaxed overflow-x-auto whitespace-pre">{OVERVIEW_MERMAID}</pre>
             )}
             <p className="mt-3 text-sm text-zinc-600 dark:text-zinc-400 leading-relaxed">
-              Alur besar: <strong>Admin atur field (W-B)</strong> → <strong>Kader input kunjungan (W-C)</strong> → <strong>System pengingat jadwal (W-D)</strong> → <strong>Pembina/Kepala lihat Dashboard (W-E)</strong> → <strong>Pembina rekap & ekspor (W-F)</strong>. Warna mengikuti palet peran di bawah.
+              Alur besar: <strong>Admin atur field (W-B)</strong> → <strong>Kader input kunjungan (W-C)</strong> → <strong>System pengingat jadwal (W-D)</strong> → <strong>Pengawas lihat Dashboard (W-E)</strong> → <strong>Pengawas rekap & ekspor (W-F)</strong>. Warna mengikuti palet peran di bawah.
             </p>
           </div>
         </div>
@@ -257,8 +257,7 @@ export default function WorkflowPage() {
               <tr className="text-left text-xs uppercase tracking-[0.14em] text-zinc-500 dark:text-zinc-400">
                 <th className="px-4 py-3 font-semibold">Fitur</th>
                 <th className="px-4 py-3 font-semibold"><span className="inline-flex items-center gap-1.5"><span className="w-2 h-2 rounded-full bg-emerald-500" /> Kader</span></th>
-                <th className="px-4 py-3 font-semibold"><span className="inline-flex items-center gap-1.5"><span className="w-2 h-2 rounded-full bg-sky-500" /> Pembina</span></th>
-                <th className="px-4 py-3 font-semibold"><span className="inline-flex items-center gap-1.5"><span className="w-2 h-2 rounded-full bg-violet-500" /> Kepala</span></th>
+                <th className="px-4 py-3 font-semibold"><span className="inline-flex items-center gap-1.5"><span className="w-2 h-2 rounded-full bg-sky-500" /> Pengawas</span></th>
                 <th className="px-4 py-3 font-semibold"><span className="inline-flex items-center gap-1.5"><span className="w-2 h-2 rounded-full bg-amber-500" /> Admin</span></th>
               </tr>
             </thead>
@@ -267,15 +266,14 @@ export default function WorkflowPage() {
                 <tr key={r.fitur}>
                   <td className="px-4 py-3 font-medium text-zinc-800 dark:text-zinc-200">{r.fitur}</td>
                   <td className="px-4 py-3 text-zinc-600 dark:text-zinc-400">{r.kader}</td>
-                  <td className="px-4 py-3 text-zinc-600 dark:text-zinc-400">{r.pembina}</td>
-                  <td className="px-4 py-3 text-zinc-600 dark:text-zinc-400">{r.kepala}</td>
+                  <td className="px-4 py-3 text-zinc-600 dark:text-zinc-400">{r.pengawas}</td>
                   <td className="px-4 py-3 text-zinc-600 dark:text-zinc-400">{r.admin}</td>
                 </tr>
               ))}
             </tbody>
           </table>
         </div>
-        <p className="text-xs text-zinc-500 dark:text-zinc-400">Warna header = palet peran. Kader hanya lihat wilayah binaannya (filter 4 kelurahan diblok). Pembina/Kepala/Admin lihat 4 kelurahan.</p>
+        <p className="text-xs text-zinc-500 dark:text-zinc-400">Warna header = palet peran. Kader hanya lihat wilayah binaannya (filter 4 kelurahan diblok). Pengawas/Admin lihat 4 kelurahan.</p>
       </section>
 
       <section className="space-y-5">

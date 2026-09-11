@@ -1,7 +1,6 @@
 export const ROLE_PALETTE = [
   { role: 'Kader', jalur: 'A', desc: 'Pelaksana kunjungan — input data di lapangan', color: 'emerald', chip: 'bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-300 border-emerald-200 dark:border-emerald-900', dot: 'bg-emerald-500' },
-  { role: 'Pembina', jalur: 'B', desc: 'Kesmas / pengelola Posyandu — pantau 4 kelurahan', color: 'sky', chip: 'bg-sky-50 dark:bg-sky-950/40 text-sky-700 dark:text-sky-300 border-sky-200 dark:border-sky-900', dot: 'bg-sky-500' },
-  { role: 'Kepala Puskesmas', jalur: 'C', desc: 'Otoritas kesehatan — lihat dashboard & ambil keputusan', color: 'violet', chip: 'bg-violet-50 dark:bg-violet-950/40 text-violet-700 dark:text-violet-300 border-violet-200 dark:border-violet-900', dot: 'bg-violet-500' },
+  { role: 'Pengawas', jalur: 'B', desc: 'Kesmas & Kepala Puskesmas (satu peran) — pantau 4 kelurahan', color: 'sky', chip: 'bg-sky-50 dark:bg-sky-950/40 text-sky-700 dark:text-sky-300 border-sky-200 dark:border-sky-900', dot: 'bg-sky-500' },
   { role: 'Admin', jalur: 'D', desc: 'Kelola master data & definisi field', color: 'amber', chip: 'bg-amber-50 dark:bg-amber-950/40 text-amber-700 dark:text-amber-300 border-amber-200 dark:border-amber-900', dot: 'bg-amber-500' },
   { role: 'System', jalur: '-', desc: 'Proses otomatis (cron, agregat, email)', color: 'zinc', chip: 'bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-300 border-zinc-200 dark:border-zinc-700', dot: 'bg-zinc-500' },
 ]
@@ -10,15 +9,15 @@ export const OVERVIEW_MERMAID = `flowchart LR
   A[Admin<br/>W-B<br/>Master & Field] -->|definisi field| B[Kader<br/>W-C<br/>Input KR]
   B -->|kunjungan selesai| C{System<br/>W-D<br/>Jadwal}
   C -->|pengingat| B
-  B -->|agregat + %| D[Pembina / Kepala<br/>W-E<br/>Dashboard PWS<br/>KPI % & 5 prioritas]
-  D --> E[Pembina<br/>W-F<br/>Rekap & Ekspor]
+  B -->|agregat + %| D[Pengawas<br/>W-E<br/>Dashboard PWS<br/>KPI % & 5 prioritas]
+  D --> E[Pengawas<br/>W-F<br/>Rekap & Ekspor]
   B -.-> E
   D -.->|kandidat v2| F[Pemberdayaan/Nakes/UKGK<br/>di luar v1]
   style A fill:#fffbeb,stroke:#f59e0b,stroke-width:2px
   style B fill:#ecfdf5,stroke:#10b981,stroke-width:2px
   style C fill:#f4f4f5,stroke:#71717a,stroke-width:2px
   style D fill:#f0f9ff,stroke:#0ea5e9,stroke-width:2px
-  style E fill:#f5f3ff,stroke:#8b5cf6,stroke-width:2px
+  style E fill:#f0f9ff,stroke:#0ea5e9,stroke-width:2px
   style F fill:#fefce8,stroke:#ca8a04,stroke-dasharray: 5 5`
 
 export const WORKFLOWS = [
@@ -29,8 +28,8 @@ export const WORKFLOWS = [
     peran: 'Semua Role',
     roleKey: 'zinc',
     file: 'W-A-auth.md',
-    ringkas: 'Login 4 peran → guard → redirect per role → profil/logout. Session habis kembali ke login.',
-    journey: 'Masuk → Login (4 peran) → Guard peran → Redirect (Kader→Jadwal, Pembina/Kepala→Dashboard, Admin→Master) → Profil/Logout. Session habis → kembali ke Login.',
+    ringkas: 'Login 3 peran → guard → redirect per role → profil/logout. Session habis kembali ke login.',
+    journey: 'Masuk → Login (3 peran) → Guard peran → Redirect (Kader→Jadwal, Pengawas→Dashboard, Admin→Master) → Profil/Logout. Session habis → kembali ke Login.',
     steps: [
       { no: 1, label: 'Buka halaman Login', actor: 'Semua', icon: 'LogIn' },
       { no: 2, label: 'Masukkan kredensial', actor: 'Semua', icon: 'Key' },
@@ -39,11 +38,11 @@ export const WORKFLOWS = [
     ],
     mermaid: `flowchart TD
   A[Buka /login] --> B{Masukkan kredensial}
-  B -->|Benar| C[Sistem cek peran<br/>Kader / Pembina / Kepala / Admin]
+  B -->|Benar| C[Sistem cek peran<br/>Kader / Pengawas / Admin]
   B -->|Salah| B1[Tampilkan pesan<br/>'Kredensial salah'] --> B
   C --> D{Peran?}
   D -->|Kader| E[Ke /jadwal<br/>hijau]
-  D -->|Pembina / Kepala| F[Ke /dashboard<br/>biru/ungu]
+  D -->|Pengawas| F[Ke /dashboard<br/>biru]
   D -->|Admin| G[Ke /master<br/>kuning]
   E --> H{Guard cek izin}
   F --> H
@@ -154,17 +153,17 @@ export const WORKFLOWS = [
     peran: 'Kader + System',
     roleKey: 'zinc',
     file: 'W-D-jadwal-notifikasi.md',
-    ringkas: 'Admin/Pembina buat jadwal → Kader lihat miliknya → cron H-1 & terlewat → in-app + email → selesai via W-C.',
-    journey: 'Admin/Pembina buat Jadwal (dusun, RT/RW, nama KK, waktu, kader PJ) → Kader lihat Daftar Jadwal miliknya (filter posyandu/minggu) → System cron cek H-1 & terlewat → Notifikasi in-app + email → Kader tandai Selesai → terhubung ke W-C (1 Jadwal → 1 Kunjungan).',
+    ringkas: 'Admin/Pengawas buat jadwal → Kader lihat miliknya → cron H-1 & terlewat → in-app + email → selesai via W-C.',
+    journey: 'Admin/Pengawas buat Jadwal (dusun, RT/RW, nama KK, waktu, kader PJ) → Kader lihat Daftar Jadwal miliknya (filter posyandu/minggu) → System cron cek H-1 & terlewat → Notifikasi in-app + email → Kader tandai Selesai → terhubung ke W-C (1 Jadwal → 1 Kunjungan).',
     steps: [
-      { no: 1, label: 'Buat jadwal untuk KK', actor: 'Admin/Pembina', icon: 'Calendar' },
+      { no: 1, label: 'Buat jadwal untuk KK', actor: 'Admin/Pengawas', icon: 'Calendar' },
       { no: 2, label: 'Kader lihat jadwal miliknya', actor: 'Kader', icon: 'Eye' },
       { no: 3, label: 'H-1: pengingat', actor: 'System', icon: 'Bell' },
       { no: 4, label: 'Terlewat: peringatan', actor: 'System', icon: 'Alert' },
       { no: 5, label: 'Selesai via kunjungan', actor: 'Kader', icon: 'Check' },
     ],
     mermaid: `flowchart TD
-  A[Admin/Pembina buat jadwal<br/>KK, kader, waktu] --> B[Jadwal: terjadwal]
+  A[Admin/Pengawas buat jadwal<br/>KK, kader, waktu] --> B[Jadwal: terjadwal]
   B --> C[Kader lihat daftar jadwal]
   C --> D{Apakah H-1?}
   D -->|Ya 07:00| E[Kirim pengingat<br/>in-app + email<br/>'Besok: KK-002']
@@ -190,19 +189,19 @@ export const WORKFLOWS = [
     id: 'W-E',
     kode: 'W-E',
     judul: 'Dashboard PWS',
-    peran: 'Pembina/Kepala (+ Kader terbatas)',
+    peran: 'Pengawas (+ Kader terbatas)',
     roleKey: 'sky',
     file: 'W-E-dashboard.md',
     ringkas: 'KPI % cakupan + ranking penyakit per RT/RW/kelurahan → filter wilayah/sasaran/5 prioritas/periode → drill-down → agregat anonim (update 11 Sep).',
-    journey: 'Login Pembina/Kepala → Dashboard ringkasan 4 kelurahan (KPI % cakupan dikunjungi vs belum / total sasaran) → Ranking penyakit + % prevalensi (TBC terpapar) → Filter wilayah/kelompok sasaran/5 program prioritas (Stunting/ODGJ/bumil risti/balita risti/TB)/periode → Drill-down Kelurahan→RW→RT → Rekap anonim.',
+    journey: 'Login Pengawas → Dashboard ringkasan 4 kelurahan (KPI % cakupan dikunjungi vs belum / total sasaran) → Ranking penyakit + % prevalensi (TBC terpapar) → Filter wilayah/kelompok sasaran/5 program prioritas (Stunting/ODGJ/bumil risti/balita risti/TB)/periode → Drill-down Kelurahan→RW→RT → Rekap anonim.',
     steps: [
-      { no: 1, label: 'Lihat ringkasan + KPI % cakupan', actor: 'Pembina/Kepala', icon: 'Layout' },
+      { no: 1, label: 'Lihat ringkasan + KPI % cakupan', actor: 'Pengawas', icon: 'Layout' },
       { no: 2, label: 'Lihat ranking + % prevalensi', actor: 'Semua', icon: 'BarChart' },
       { no: 3, label: 'Filter 5 prioritas & drill-down', actor: 'Semua', icon: 'Filter' },
       { no: 4, label: 'Kader: hanya wilayahnya', actor: 'Kader', icon: 'Shield' },
     ],
     mermaid: `flowchart TD
-  A[Masuk sebagai Pembina/Kepala/Kader] --> B[Ringkasan 4 kelurahan<br/>KPI % cakupan]
+  A[Masuk sebagai Pengawas/Kader] --> B[Ringkasan 4 kelurahan<br/>KPI % cakupan]
   B --> C[Ranking penyakit + %<br/>per Kelurahan]
   C --> D{Pilih filter}
   D --> E[Wilayah / Sasaran / 5 Prioritas / Periode]
@@ -214,7 +213,7 @@ export const WORKFLOWS = [
   H --> I
   I --> K{Siapa yang lihat?}
   K -->|Kader| L[Hanya wilayah binaannya]
-  K -->|Pembina/Kepala| M[Full 4 kelurahan]
+  K -->|Pengawas| M[Full 4 kelurahan]
   J --> N[Klik masalah → Rekap]
   style B fill:#f0f9ff,stroke:#0ea5e9
   style L fill:#ecfdf5,stroke:#10b981
@@ -233,16 +232,16 @@ export const WORKFLOWS = [
     id: 'W-F',
     kode: 'W-F',
     judul: 'Rekap, Masalah & Ekspor',
-    peran: 'Pembina/Admin',
-    roleKey: 'violet',
+    peran: 'Pengawas/Admin',
+    roleKey: 'sky',
     file: 'W-F-rekap-ekspor.md',
     ringkas: 'Rekap otomatis agregat + % cakupan/prevalensi per minggu/sasaran/wilayah → Masalah belum/selesai/dirujuk → Ekspor Excel/PDF sesuai filter 5 prioritas (update 11 Sep).',
-    journey: 'Pembina lihat Rekap otomatis (per minggu/sasaran/wilayah, KPI % cakupan & % prevalensi, jumlah masalah) → Ekspor Excel/PDF sesuai filter dashboard + 5 prioritas → Monitor Masalah (belum/selesai/dirujuk) dari W-C.',
+    journey: 'Pengawas lihat Rekap otomatis (per minggu/sasaran/wilayah, KPI % cakupan & % prevalensi, jumlah masalah) → Ekspor Excel/PDF sesuai filter dashboard + 5 prioritas → Monitor Masalah (belum/selesai/dirujuk) dari W-C.',
     steps: [
-      { no: 1, label: 'Lihat rekap otomatis', actor: 'Pembina', icon: 'Table' },
-      { no: 2, label: 'Lihat daftar masalah', actor: 'Pembina', icon: 'Alert' },
-      { no: 3, label: 'Ubah status masalah', actor: 'Pembina', icon: 'Check' },
-      { no: 4, label: 'Ekspor Excel/PDF', actor: 'Pembina', icon: 'Download' },
+      { no: 1, label: 'Lihat rekap otomatis', actor: 'Pengawas', icon: 'Table' },
+      { no: 2, label: 'Lihat daftar masalah', actor: 'Pengawas', icon: 'Alert' },
+      { no: 3, label: 'Ubah status masalah', actor: 'Pengawas', icon: 'Check' },
+      { no: 4, label: 'Ekspor Excel/PDF', actor: 'Pengawas', icon: 'Download' },
     ],
     mermaid: `flowchart TD
   A[Buka Rekap] --> B[Pilih filter<br/>wilayah/sasaran/periode]
@@ -266,14 +265,14 @@ export const WORKFLOWS = [
 ]
 
 export const MATRIKS_HAK = [
-  { fitur: 'Login & Profil', kader: '✅ Bisa', pembina: '✅ Bisa', kepala: '✅ Bisa', admin: '✅ Bisa' },
-  { fitur: 'Master Kelurahan/RW/RT/Posyandu/Kader', kader: '❌ Tidak', pembina: '❌ Tidak', kepala: '❌ Tidak', admin: '✅ Bisa (CRUD)' },
-  { fitur: 'Definisi Field Form', kader: '❌ Tidak', pembina: '❌ Tidak', kepala: '❌ Tidak', admin: '✅ Bisa (CRUD)' },
-  { fitur: 'Input KR Dinamis (W-C)', kader: '✅ Bisa (miliknya)', pembina: '❌ Tidak', kepala: '❌ Tidak', admin: '❌ Tidak' },
-  { fitur: 'Jadwal & Notifikasi (W-D)', kader: '✅ Lihat miliknya', pembina: '✅ Lihat 4 kel', kepala: '✅ Lihat 4 kel', admin: '✅ Kelola' },
-  { fitur: 'Dashboard PWS (W-E)', kader: '✅ Wilayah sendiri', pembina: '✅ 4 kelurahan', kepala: '✅ 4 kelurahan', admin: '✅ 4 kelurahan' },
-  { fitur: 'Rekap & Ekspor (W-F)', kader: '❌ Tidak', pembina: '✅ Bisa ekspor', kepala: '✅ Bisa ekspor', admin: '✅ Bisa ekspor' },
-  { fitur: 'Masalah & Tindak Lanjut', kader: '✅ Input', pembina: '✅ Pantau', kepala: '✅ Pantau', admin: '—' },
+  { fitur: 'Login & Profil', kader: '✅ Bisa', pengawas: '✅ Bisa', admin: '✅ Bisa' },
+  { fitur: 'Master Kelurahan/RW/RT/Posyandu/Kader', kader: '❌ Tidak', pengawas: '❌ Tidak', admin: '✅ Bisa (CRUD)' },
+  { fitur: 'Definisi Field Form', kader: '❌ Tidak', pengawas: '❌ Tidak', admin: '✅ Bisa (CRUD)' },
+  { fitur: 'Input KR Dinamis (W-C)', kader: '✅ Bisa (miliknya)', pengawas: '❌ Tidak', admin: '❌ Tidak' },
+  { fitur: 'Jadwal & Notifikasi (W-D)', kader: '✅ Lihat miliknya', pengawas: '✅ Lihat 4 kel', admin: '✅ Kelola' },
+  { fitur: 'Dashboard PWS (W-E)', kader: '✅ Wilayah sendiri', pengawas: '✅ 4 kelurahan', admin: '✅ 4 kelurahan' },
+  { fitur: 'Rekap & Ekspor (W-F)', kader: '❌ Tidak', pengawas: '✅ Bisa ekspor', admin: '✅ Bisa ekspor' },
+  { fitur: 'Masalah & Tindak Lanjut', kader: '✅ Input', pengawas: '✅ Pantau', admin: '—' },
 ]
 
 export const STATE_DIAGRAM = [
